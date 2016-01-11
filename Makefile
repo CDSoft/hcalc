@@ -53,7 +53,7 @@ GHC_OPT_LINUX	= $(GHC_OPT) -outputdir $(BUILD_LINUX)
 GHC_OPT_WIN 	= $(GHC_OPT) -outputdir $(BUILD_WIN)
 
 GHC_OPT_TEST_LINUX	= $(GHC_OPT_TEST) -outputdir $(BUILD_LINUX)/test -fhpc
-GHC_OPT_TEST_WIN	= $(GHC_OPT_TEST) -outputdir $(BUILD_WIN)/test   -fhpc
+GHC_OPT_TEST_WIN	= $(GHC_OPT_TEST) -outputdir $(BUILD_WIN)/test
 
 .DELETE_ON_ERROR:
 
@@ -88,10 +88,7 @@ ucalcTest: $(TEST) $(MODULES) #ucalc
 ucalcTest.exe: $(TEST) $(MODULES) #ucalc.exe
 	@mkdir -p $(BUILD_WIN)/test
 	$(WINE) ghc $(GHC_OPT_TEST_WIN) --make $(TEST) $(MODULES)
-	-rm -f ${@:.exe=.tix}
 	$(WINE) $@ ucalc.exe
-	$(WINE) hpc markup --exclude=Main --destdir=$(BUILD_WIN)/test $@
-	$(WINE) hpc report --exclude=Main $@
 
 $(BUILD)/icon.png:
 	@mkdir -p $(dir $@)

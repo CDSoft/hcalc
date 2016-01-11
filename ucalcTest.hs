@@ -37,7 +37,22 @@ doUnitTests = do
         )
     putStrLn $ "Unit tests passed (" ++ show (length unitTests) ++ " tests)"
 
+(===) :: Expr -> Expr -> Bool
+(R x) === (R y)
+    | isNaN x && isNaN y = True -- right only for unit testing!
+    | isNaN x = False
+    | isNaN y = False
+    | isInfinite x && isInfinite y = x*y > 0
+    | isInfinite x = False
+    | isInfinite y = False
+    | abs x < eps && abs y < eps = True
+    | otherwise = abs (x-y) / abs y < eps
+    where eps = 1e-12
+x === y = x == y
+
 (/==) :: Expr -> Expr -> Bool
+x /== y = not $ x === y
+{-
 (R x) /== (R y)
     | isNaN x && isNaN y = False -- right only for unit testing!
     | isNaN x = True
@@ -47,6 +62,7 @@ doUnitTests = do
     | isInfinite y = True
     | otherwise = abs (x-y) / abs y > 1e-12
 x /== y = x /= y
+-}
 
 nan :: Double
 nan = 0.0 / 0.0
@@ -729,4 +745,4 @@ unitTests =
     ]
 
 
--- TODO : pour tester l'interface et l'affichage => faire un main minimal et mettre ucalc.hs dans un module CLI testable
+-- TODO : pour tester l'interface et l'affichage => faire un main minimal et mettre ucalc.hs dans un module Interface testable

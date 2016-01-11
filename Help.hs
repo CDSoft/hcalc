@@ -1,4 +1,4 @@
-module Help where
+module Help(welcome, help) where
 
 import Data.List
 

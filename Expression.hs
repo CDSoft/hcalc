@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Expression where
+module Expression(Expr(..), Conf, State, eval, emptyState, emptyConf, setMTime, dec, hex, oct, bin, float, size, mtime) where
 
 import Data.Ratio
 import Data.Bits
@@ -8,6 +8,8 @@ import Data.Bits
 -- import Data.Char
 import Data.Maybe
 import Text.Show.Functions()
+--import System.Directory
+import Data.Time.Clock
 
 import IEEE754
 import Help
@@ -52,6 +54,7 @@ data Conf = Conf
     , oct :: Bool
     , bin :: Bool
     , float :: Bool
+    , mtime :: Maybe UTCTime
     }
     deriving (Show, Eq)
 
@@ -60,6 +63,9 @@ type State = (Conf, Env, Env) -- (conf, global, local)
 
 instance Eq (a -> b) where
     _ == _ = False
+
+instance Show UTCTime where
+    show _ = "<mtime>"
 
 -- need functions to evaluae sequences and propagate states and errors
 
@@ -86,6 +92,9 @@ setFlt (conf, global, local) = (conf{float=True}, global, local)
 
 setLocal :: Env -> (State, Expr) -> (State, Expr)
 setLocal local ((conf, global, _), expr) = ((conf, global, local), expr)
+
+setMTime :: State -> UTCTime -> State
+setMTime (conf, global, local) t = (conf{mtime=Just t}, global, local)
 
 eval2 :: State -> Expr -> Expr -> (State, Expr, Expr)
 eval2 st e1 e2 = (st2, e1', e2')
@@ -498,7 +507,7 @@ evalBuiltinArgs n st@(_, _, local) = evalAll st exprs
 --eval st expr = (st, expr) -- => non, sinon ghc ne sgnalera pas les cas non implémentés
 
 emptyConf :: Conf
-emptyConf = Conf {size = 0, hex = False, dec = False, oct = False, bin = False, float = False}
+emptyConf = Conf {size = 0, hex = False, dec = False, oct = False, bin = False, float = False, mtime = Nothing}
 
 emptyState :: State
 emptyState = (emptyConf, [], [])
@@ -569,6 +578,7 @@ builtin = [ ("true", B True)
           , funcRB "isnan" isNaN
 
           , funcBye "bye"
+          , funcBye "exit"
           , funcPut "help" help
           , funcPut "ascii" ascii
           ]
@@ -646,11 +656,8 @@ funcBye name = builtinFunction name 0 $ Bye name
 mantissa :: Double -> Double
 mantissa x = x / (2.0 ** fromIntegral (exponent x))
 
-exponent' :: Double -> Integer
-exponent' = ceiling . logBase 2
-
-bye :: String
-bye = undefined -- TODO : comment sortir ??? utiliser un code particulier
+--exponent' :: Double -> Integer
+--exponent' = ceiling . logBase 2
 
 getState :: State -> String -> Int -> Maybe Expr
 getState (_, global, local) name arity = get (local++global++builtin)

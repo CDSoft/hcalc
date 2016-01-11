@@ -1,4 +1,4 @@
-module PrettyPrint where
+module PrettyPrint(prompt, pp) where
 
 import Expression
 
@@ -33,12 +33,20 @@ showBase b x s = prefix ++ fmt (padding ++ map toUpper ds)
 pp :: Conf -> Expr -> String
 pp cfg (Z x) = intercalate "\n" xs
     where
-        xs = show x : ppBase dec "dec" 10 ++ ppBase hex "hex" 16 ++ ppBase oct "oct" 8 ++ ppBase bin "bin" 2
+        xs = show x : ppBase dec "dec" 10 ++ ppBase hex "hex" 16 ++ ppBase oct "oct" 8 ++ ppBase bin "bin" 2 ++ ppFloat float
         x' = x `mod` (2^size cfg)
         ppBase f str b = case (f cfg, size cfg) of
             (False, _) -> []
             (True, 0) -> [prompt str ++ showBase b x 0]
             (True, n) -> [prompt (str++show n) ++ showBase b x' n]
+        ppFloat f = case (f cfg, size cfg) of
+            (True, 32) -> [prompt "flt32" ++ show xf32 ++ " <=> " ++ showBase 16 xi32 32]
+            (True, 64) -> [prompt "flt64" ++ show xf64 ++ " <=> " ++ showBase 16 xi64 64]
+            _ -> []
+        xf32 = integerToFloat x
+        xf64 = integerToDouble x
+        xi32 = word32ToInteger $ integerToWord32 x
+        xi64 = word64ToInteger $ integerToWord64 x
 
 pp cfg (Q x) = intercalate "\n" xs
     where
@@ -46,8 +54,8 @@ pp cfg (Q x) = intercalate "\n" xs
         n = numerator x
         d = denominator x
         ppFloat f = case (f cfg, size cfg) of
-            (True, 32) -> [prompt "~float32" ++ show xf32 ++ " <=> " ++ showBase 16 xi32 32]
-            (True, 64) -> [prompt "~float64" ++ show xf64 ++ " <=> " ++ showBase 16 xi64 64]
+            (True, 32) -> [prompt "~flt32" ++ show xf32 ++ " <=> " ++ showBase 16 xi32 32]
+            (True, 64) -> [prompt "~flt64" ++ show xf64 ++ " <=> " ++ showBase 16 xi64 64]
             (_, _) -> [prompt "~" ++ show (fromRational x :: Double)]
         xf32 = doubleToFloat (fromRational x)
         xi32 = floatToInteger xf32
@@ -58,8 +66,8 @@ pp cfg (R x) = intercalate "\n" xs
     where
         xs = show x : ppFloat float
         ppFloat f = case (f cfg, size cfg) of
-            (True, 32) -> [prompt "float32" ++ show xf32 ++ " <=> " ++ showBase 16 xi32 32]
-            (True, 64) -> [prompt "float64" ++ show xf64 ++ " <=> " ++ showBase 16 xi64 64]
+            (True, 32) -> [prompt "flt32" ++ show xf32 ++ " <=> " ++ showBase 16 xi32 32]
+            (True, 64) -> [prompt "flt64" ++ show xf64 ++ " <=> " ++ showBase 16 xi64 64]
             _ -> []
         xf32 = doubleToFloat x
         xi32 = floatToInteger xf32
