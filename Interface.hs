@@ -1,47 +1,41 @@
-{-# LANGUAGE CPP #-}
+{- Ultimate Calc
+Copyright (C) 2016 Christophe Delord
+http://cdsoft.fr/ucalc
 
-{- Calculator in Haskell
+This file is part of Ultimate Calc.
 
-The code constains all the non regression tests
-as well as the documentation.
+Ultimate Calc is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-This is a exercice to demonstrate an incremental test driven process:
-- write a test case
-- write the code until it passes the test case
-- write another test case...
+Ultimate Calc is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-usage:
-calc -l displays the license
-calc -h displays some help
-calc -t runs the non regression tests
-calc expr computes expr and exit
-calc enters the CLI mode
-
+You should have received a copy of the GNU General Public License
+along with Ultimate Calc.  If not, see <http://www.gnu.org/licenses/>.
 -}
 
--- TODO : evaluation : env global et local
--- si l'env local est vide, on est en global => les définitions vont dans l'env global
--- si l'env local n'est pas vide, les définitions sont dans l'env local
+{- The module Interface implements the command line interface
+of the calculator.
+-}
 
--- TODO : strings et tuples
+{-# LANGUAGE CPP #-}
 
-module Interface(mainCalc) where
+module Interface(doArgs) where
 
 import Expression
 import Parser
 import PrettyPrint
 import Help
 
---import Data.Ratio
---import Data.Bits
 import Data.List
---import Data.Maybe
 import System.Environment
---import Control.Monad
-
---import Foreign.C
---import Foreign.C.Types
---import Data.Word
+import System.IO
+import System.FilePath
+import System.Directory
 
 #ifdef linux_HOST_OS
 import Data.Char
@@ -51,120 +45,101 @@ import System.Posix.Process
 #endif
 #ifdef mingw32_HOST_OS
 import System.Process
---import System.IO
 #endif
 
-import System.IO
-import System.FilePath
-import System.Directory
-
---import Debug.Trace
-
-mainCalc :: IO ()
-mainCalc = do
-    args <- getArgs
-    doArgs args
-
 doArgs :: [String] -> IO ()
-doArgs [h] | h `elem` ["-l", "--license"] = doLicense
-doArgs [h] | h `elem` ["-h", "--help"] = doHelp
 doArgs [] = doREPL
 doArgs exprs = doCLI $ intercalate "; " exprs
 
-doLicense :: IO ()
-doLicense = putStrLn welcome
-
-doHelp :: IO ()
-doHelp = do
-    putStrLn welcome
-    putStrLn ""
-    putStrLn help
-
+-- command line interface: evaluate the expressions given on the command line
 doCLI :: String -> IO ()
 doCLI exprs = do
-    --state <- initialState
     state <- loadIni emptyState
     let e = parse exprs
-    print e
-    let ((conf, _, _), v) = eval state e
+    let ((conf, _), v) = eval state e
     case v of
         Bye _ -> return ()
-        _ -> putStrLn . (prompt "=" ++) . pp conf $ v
+        _ -> putStrLn . pp conf $ v
 
+-- REPL: interactive calculator
 doREPL :: IO ()
 doREPL = do
-#ifdef mingw32_HOST_OS
-    _ <- runCommand "title uCalc"
-    _ <- runCommand "color f0"
-#endif
-#ifdef linux_HOST_OS
-    nice 19
-#endif
-    putStrLn welcome
-    -- state <- initialState
+    initProcess
+    putStrLn shortHelp
     state <- loadIni emptyState
-    repl state Nop
+    repl state None
     where
-        readLine :: String -> IO String
-        readLine inputPrompt = do
-#ifdef linux_HOST_OS
-            maybeLine <- readline inputPrompt
-            case maybeLine of
-                Nothing     -> exitSuccess
-                Just line   -> if not $ null $ filter (not.isSpace) line then
-                                    do  addHistory line
-                                        return line
-                               else
-                                    do  return ""
-#endif
-#ifdef mingw32_HOST_OS
-            putStr inputPrompt
-            hFlush stdout
-            line <- getLine
-            return line
-#endif
         repl :: State -> Expr -> IO ()
         repl st prev = do
             putStrLn ""
             line <- readLine (prompt ":")
             st' <- loadIni st
             let e = parse line
-            let (st''@(conf, _, _), v) = eval st' e
-            let prev' = if v == Previous then prev else v
+            let (st''@(conf, _), v) = eval st' e
+            let prev' = case v of
+                            Previous -> prev
+                            _ -> v
             case v of
                 Bye _ -> return ()
                 _ -> do
-                        putStrLn . (prompt "=" ++) . pp conf $ prev'
-                        repl st'' prev'
+                    putStrLn . pp conf $ prev'
+                    repl st'' prev'
 
+-- some cosmetics for the windows console
+#ifdef mingw32_HOST_OS
+initProcess :: IO ()
+initProcess = do
+    -- _ <- runCommand "title uCalc"
+    -- _ <- runCommand "color f0"
+    callCommand "title uCalc"
+    callCommand "color f0"
+#endif
+
+#ifdef linux_HOST_OS
+initProcess :: IO ()
+initProcess = nice 19
+#endif
+
+-- on Linux we use libreadline to get a better user experience
+#ifdef linux_HOST_OS
+readLine :: String -> IO String
+readLine inputPrompt = do
+    hFlush stdout
+    maybeLine <- readline inputPrompt
+    hFlush stdout
+    case maybeLine of
+        Nothing     -> exitSuccess
+        Just line   -> if not $ null $ filter (not.isSpace) line then
+                            do  addHistory line
+                                return line
+                       else
+                            do  return ""
+#endif
+
+-- on Windows we use the default console edition capabilities
+#ifdef mingw32_HOST_OS
+readLine :: String -> IO String
+readLine inputPrompt = do
+    hFlush stdout
+    putStr inputPrompt
+    hFlush stdout
+    line <- getLine
+    return line
+#endif
+
+-- name of the configuration file
+-- the configuration file has got the name of the executable with the .ini extension
 iniName :: IO String
 iniName = do
     path <- getExecutablePath
-    return $ dropExtension path ++ ".ini"
+    return $ replaceExtension path ".ini"
 
-{-
-initialState :: IO State
-initialState = do
-    name <- iniName
-    iniFileFound <- doesFileExist name
-    if not iniFileFound
-        then
-            return emptyState
-        else
-            do
-                putStrLn $ "Loading " ++ name
-                h <- openFile name ReadMode
-                hSetEncoding h utf8
-                ini <- hGetContents h
-                let (st, v) = eval emptyState $ parse ini
-                case v of
-                    E err -> putStrLn $ "Error while loading " ++ name ++ ": " ++ err
-                    _ -> putStrLn $ name ++ " loaded."
-                return st
--}
-
+-- loadIni load the .ini file if it exists and if it has been modified
+-- since lst time it was loaded.
+-- It returns a new state in which the .ini file has been evaluated.
+-- The last modification time is stored in the state.
 loadIni :: State -> IO State
-loadIni st@(conf, _, _) = do
+loadIni st@(conf, _) = do
     name <- iniName
     iniFileFound <- doesFileExist name
     if not iniFileFound
@@ -177,13 +152,12 @@ loadIni st@(conf, _, _) = do
                             | otherwise -> return st
     where
         load fName t = do
-            putStrLn $ "Loading " ++ fName
+            putStrLn $ "Loading " ++ takeFileName fName
             h <- openFile fName ReadMode
             hSetEncoding h utf8
             ini <- hGetContents h
             let (st', v) = eval st $ parse ini
             case v of
-                E err -> putStrLn $ "Error while loading " ++ fName ++ ": " ++ err
+                E err -> putStrLn $ "Error while loading " ++ takeFileName fName ++ ": " ++ err
                 _ -> return ()
             return $ setMTime st' t
-

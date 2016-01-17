@@ -27,5 +27,7 @@ module Main(main) where
 
 import Interface
 
+import System.Environment
+
 main :: IO ()
-main = mainCalc
+main = getArgs >>= doArgs

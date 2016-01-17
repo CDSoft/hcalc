@@ -22,13 +22,15 @@ SRC = ucalc.hs
 TEST = ucalcTest.hs
 ARCHIVE = $(SRC) $(TEST) $(MODULES) Makefile
 
+#DEPENDENCIES = interpolatedstring-perl6
+
 ifeq "$(shell uname)" "Linux"
 
-# Compilation sous Linux
+# Compilation on Linux
 all: ucalc ucalc.exe ucalc.tgz
 test: ucalcTest
 WINE		= wine
-GCC_WIN		= $(shell ls /usr/bin/*mingw32*-gcc | grep -v w64 | sed 's/gcc$$//')
+GCC_WIN		= $(shell ls /usr/bin/i686-*mingw32*-gcc | head -1 | sed 's/gcc$$//')
 
 else
 
@@ -42,8 +44,8 @@ endif
 
 UPX = upx -9qq
 
-GHC_OPT = -O2 -Werror -Wall -fwarn-unused-do-bind
-GHC_OPT_TEST = -Werror -Wall -fwarn-unused-do-bind
+GHC_OPT 		= -O2 -Werror -Wall -fwarn-unused-do-bind
+GHC_OPT_TEST 	=     -Werror -Wall -fwarn-unused-do-bind
 
 BUILD			= build
 BUILD_LINUX		= $(BUILD)/linux
@@ -56,6 +58,12 @@ GHC_OPT_TEST_LINUX	= $(GHC_OPT_TEST) -outputdir $(BUILD_LINUX)/test -fhpc
 GHC_OPT_TEST_WIN	= $(GHC_OPT_TEST) -outputdir $(BUILD_WIN)/test
 
 .DELETE_ON_ERROR:
+
+#setup:
+#	cabal update
+#	cabal install $(DEPENDENCIES)
+#	$(WINE) cabal update
+#	$(WINE) cabal install $(DEPENDENCIES)
 
 clean:
 	-rm -rf ucalc ucalc.exe ucalcTest ucalcTest.exe $(BUILD) .hpc *.tix
@@ -77,18 +85,20 @@ ucalc.exe: $(SRC) $(MODULES) $(BUILD_WIN)/icon.o
 	-strip $@
 	-$(UPX) $@
 
-ucalcTest: $(TEST) $(MODULES) #ucalc
+ucalcTest: $(TEST) $(MODULES)
 	@mkdir -p $(BUILD_LINUX)/test
 	ghc $(GHC_OPT_TEST_LINUX) --make $(TEST) $(MODULES)
-	-rm -f $@.tix
-	$@ ucalc
+	-rm -f *.tix
+	$@
+	hpc combine --exclude=Main --union --output=$@.tix unit.tix interactive.tix
+	-rm -f unit.tix interactive.tix
 	hpc markup --exclude=Main --destdir=$(BUILD_LINUX)/test $@
 	hpc report --exclude=Main $@
 
-ucalcTest.exe: $(TEST) $(MODULES) #ucalc.exe
+ucalcTest.exe: $(TEST) $(MODULES)
 	@mkdir -p $(BUILD_WIN)/test
 	$(WINE) ghc $(GHC_OPT_TEST_WIN) --make $(TEST) $(MODULES)
-	$(WINE) $@ ucalc.exe
+	$(WINE) $@
 
 $(BUILD)/icon.png:
 	@mkdir -p $(dir $@)
