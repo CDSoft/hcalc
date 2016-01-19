@@ -9,40 +9,30 @@ import Interface
 
 import Data.Char
 import Data.Ratio
---import Data.List
+import Data.List
 import qualified Data.Map as Map
 import System.Environment
-import System.Exit
-import System.Process
-import System.Directory
-import System.FilePath
+--import System.Exit
+--import System.Process
+--import System.Directory
+--import System.FilePath
 import Control.Monad
-import Trace.Hpc.Reflect
 
 data UnitTest = Parse String Expr Expr State
               | Eval String Expr State
+              | REPL (FilePath, String) [(String, String)]
 
-data InteractiveTest = CLI [String] ExitCode String String
-                     | REPL [String] ExitCode String String
-                     | INI String
 main :: IO ()
 main = do
     exe <- getExecutablePath
     args <- getArgs
     case args of
-        [] -> do
-                doUnitTests
-                doInteractiveTests
-        "test":args' -> do
-                clearTix
-                doArgs args'
-                writeTix interactiveTix
+        [] -> doUnitTests
         _ -> error $ exe ++ " called with unexpected arguments"
 
 doUnitTests :: IO ()
 doUnitTests = do
     putStrLn "Starting unit tests"
-    clearTix
     forM_ unitTests (\test -> case test of
             Parse s e v st -> do
                 let e' = parse s
@@ -56,9 +46,27 @@ doUnitTests = do
                 when (v' /== v) $ error $ "Evaluation error: " ++ s ++ " should be evaluated as " ++ show v ++ " but is " ++ show v'
                 when (st' /= st) $ error $ "Evaluation error: " ++ s ++ " should lead to the state " ++ show st ++ " but leads to " ++ show st'
                 --putStrLn $ s ++ " => " ++ show v
+            REPL (name, ini) inputs_outputs -> do
+                let inputs = map fst inputs_outputs
+                let outputs = map snd inputs_outputs
+                let (welcome':outputs') = repl (name, ini) inputs
+                let welcome = shortHelp ++ "Loading "++ name
+                              ++ case eval emptyState (parse ini) of
+                                    (_, E msg) -> "\n! "++msg
+                                    _ -> ""
+                when (s welcome' /= s welcome) $ error $ "The welcome message should be " ++ welcome ++ " instead of " ++ welcome'
+                forM_ (zip3 inputs outputs outputs') (\(input, output, output') -> do
+                        when (s output' /= s output) $ error $ "REPL error: in the sequence " ++ intercalate "; " inputs ++ " the expression " ++ input ++ " should be evaluated as " ++ output ++ " instead of " ++ output'
+                    )
+                where
+                    s = filter (\c -> c /='\n' && not (isSpace c))
         )
-    writeTix "unit.tix"
-    putStrLn $ "Unit tests passed (" ++ show (length unitTests) ++ " tests)"
+    putStrLn $ "Unit tests passed (" ++ show (nbUnitTests unitTests) ++ " tests)"
+    where
+        nbUnitTests [] = 0
+        nbUnitTests (Parse _ _ _ _ : tests) = 1 + nbUnitTests tests
+        nbUnitTests (Eval _ _ _ : tests) = 1 + nbUnitTests tests
+        nbUnitTests (REPL _ xs : tests) = length xs + nbUnitTests tests
 
 (===) :: Expr -> Expr -> Bool
 (R x) === (R y)
@@ -836,206 +844,109 @@ unitTests =
     , Eval "help"                       (Put "help" $ unlines ["", shortHelp, "", longHelp]) emptyState
     , Eval "bye"                        (Bye "bye") emptyState
     , Eval "exit"                       (Bye "exit") emptyState
+    ] ++
+    -- REPL tests
+    [ REPL noINI [("bye", "")]
+    , REPL noINI [("exit", "")]
+    , REPL noINI [("help", shortHelp++longHelp)]
+    , REPL noINI [("license", license)]
+    , REPL noINI [("2*21", "= 42")]
+    , REPL noINI [("f(x) = 42*x", ""), ("f(101)", "= 4242")]
+    , REPL noINI [("2*21", "= 42"), ("bye", "")]
+    , REPL noINI [ ("-1",    "= -1")
+                 , ("hex",   "= -1 \n hex   -0x1")
+                 , ("hex8",  "= -1 \n hex8  0xff")
+                 , ("hex16", "= -1 \n hex16 0xffff")
+                 , ("hex32", "= -1 \n hex32 0xffffffff")
+                 , ("hex64", "= -1 \n hex64 0xffffffffffffffff")
+                 , ("reset", "= -1")
+                 , ("oct",   "= -1 \n oct   -0o1")
+                 , ("oct8",  "= -1 \n oct8  0o377")
+                 , ("oct16", "= -1 \n oct16 0o177777")
+                 , ("oct32", "= -1 \n oct32 0o37777777777")
+                 , ("oct64", "= -1 \n oct64 0o1777777777777777777777")
+                 , ("reset", "= -1")
+                 , ("bin",   "= -1 \n bin   -0b1")
+                 , ("bin8",  "= -1 \n bin8  0b11111111")
+                 , ("bin16", "= -1 \n bin16 0b1111111111111111")
+                 , ("bin32", "= -1 \n bin32 0b11111111111111111111111111111111")
+                 , ("bin64", "= -1 \n bin64 0b1111111111111111111111111111111111111111111111111111111111111111")
+                 , ("reset", "= -1")
+                 , ("dec",   "= -1 \n dec   -1")
+                 , ("dec8",  "= -1 \n dec8  255")
+                 , ("dec16", "= -1 \n dec16 65535")
+                 , ("dec32", "= -1 \n dec32 4294967295")
+                 , ("dec64", "= -1 \n dec64 18446744073709551615")
+                 , ("reset", "= -1")
+                 , ("+1",    "= 1")
+                 , ("hex",   "= 1 \n hex   0x1")
+                 , ("hex8",  "= 1 \n hex8  0x01")
+                 , ("hex16", "= 1 \n hex16 0x0001")
+                 , ("hex32", "= 1 \n hex32 0x00000001")
+                 , ("hex64", "= 1 \n hex64 0x0000000000000001")
+                 , ("reset", "= 1")
+                 , ("oct",   "= 1 \n oct   0o1")
+                 , ("oct8",  "= 1 \n oct8  0o001")
+                 , ("oct16", "= 1 \n oct16 0o000001")
+                 , ("oct32", "= 1 \n oct32 0o00000000001")
+                 , ("oct64", "= 1 \n oct64 0o0000000000000000000001")
+                 , ("reset", "= 1")
+                 , ("bin",   "= 1 \n bin   0b1")
+                 , ("bin8",  "= 1 \n bin8  0b00000001")
+                 , ("bin16", "= 1 \n bin16 0b0000000000000001")
+                 , ("bin32", "= 1 \n bin32 0b00000000000000000000000000000001")
+                 , ("bin64", "= 1 \n bin64 0b0000000000000000000000000000000000000000000000000000000000000001")
+                 , ("reset", "= 1")
+                 , ("dec",   "= 1 \n dec   1")
+                 , ("dec8",  "= 1 \n dec8  001")
+                 , ("dec16", "= 1 \n dec16 00001")
+                 , ("dec32", "= 1 \n dec32 0000000001")
+                 , ("dec64", "= 1 \n dec64 00000000000000000001")
+                 ]
+    , REPL noINI [ ("float32",              "")
+                 , ("0x40490FDB",           "= 1078530011 \n hex32   0x40490fdb \n flt32   3.1415927 <=> 0x40490fdb")
+                 ]
+    , REPL noINI [ ("float64",              "")
+                 , ("0x400921FB54442D18",   "= 4614256656552045848 \n hex64   0x400921fb54442d18 \n flt64   3.141592653589793 <=> 0x400921fb54442d18")
+                 ]
+    , REPL noINI [ ("1+2/3",    "= 5/3 \n ~       1.6666666666666667")
+                 , ("float32",  "= 5/3 \n ~flt32  1.6666666 <=> 0x3fd55555")
+                 , ("float64",  "= 5/3 \n ~flt64  1.6666666666666667 <=> 0x3ffaaaaaaaaaaaab")
+                 ]
+    , REPL noINI [ ("pi",       "= 3.141592653589793")
+                 , ("float32",  "= 3.141592653589793 \n flt32   3.1415927 <=> 0x40490fdb")
+                 , ("float64",  "= 3.141592653589793 \n flt64   3.141592653589793 <=> 0x400921fb54442d18")
+                 ]
+    , REPL noINI [ ("42==2*21", "= true")
+                 , ("42==3*21", "= false")
+                 ]
+    , REPL noINI [ ("\"Hello World!\"", "= \"Hello World!\"") ]
+    , REPL noINI [ ("  1  ",    "= 1")
+                 , ("  2  ",    "= 2")
+                 ]
+    , REPL noINI [ ("x",        "! 'x' is not defined") ]
+    , REPL ("hcalcTest.ini", "a = 4; b = 2; f(x, y) = x*10 + y; x = f(a, b);")
+                 [ ("x",        "= 42") ]
+    , REPL ("hcalcTest.ini", "a = 4; b = 2; f(x, y) = x*10 + y; x = f(a, b); error here!")
+                 [ ("x",        "! 'x' is not defined") ]
+
     ]
 
-doInteractiveTests :: IO ()
-doInteractiveTests = do
-    exe <- getExecutablePath
-    putStrLn "Starting interactive tests"
-    forM_ interactions (\test -> case test of
-            CLI args exitcode stdout stderr -> do
-                exists <- keepCurrentTix
-                (exitcode', stdout', stderr') <- readProcessWithExitCode exe ("test":args) ""
-                when (exitcode' /= exitcode) $ error $ exe ++ " " ++ unwords args ++ " exit code is " ++ show exitcode' ++ " instead of " ++ show exitcode
-                when (s stdout' /= s stdout) $ error $ exe ++ " " ++ unwords args ++ " prints " ++ stdout' ++ " instead of " ++ stdout
-                when (s stderr' /= s stderr) $ error $ exe ++ " " ++ unwords args ++ " prints " ++ stderr' ++ " instead of " ++ stderr
-                combineTix exists
-            REPL stdin exitcode stdout stderr -> do
-                exists <- keepCurrentTix
-                (exitcode', stdout', stderr') <- readProcessWithExitCode exe ["test"] (unlines stdin ++ "bye")
-                when (exitcode' /= exitcode) $ error $ exe ++ " < " ++ unwords stdin ++ " exit code is " ++ show exitcode' ++ " instead of " ++ show exitcode
-                when (s stdout' /= s stdout) $ error $ exe ++ " < " ++ unwords stdin ++ " prints " ++ stdout' ++ " instead of " ++ stdout
-                when (s stderr' /= s stderr) $ error $ exe ++ " < " ++ unwords stdin ++ " prints " ++ stderr' ++ " instead of " ++ stderr
-                combineTix exists
-            INI content -> do
-                let ini = replaceExtension exe ".ini"
-                exists <- doesFileExist ini
-                case content of
-                    "" -> when exists $ removeFile ini
-                    _ -> writeFile ini content
-        )
-    putStrLn $ "Interactive tests passed (" ++ show (length $ filter isTest interactions) ++ " tests)"
+noINI :: (FilePath, String)
+noINI = ("hcalcTest.ini", "")
 
-    where
-        s = filter (\c -> c /= '\n' && not (isSpace c))
-
-        isTest (INI _) = False
-        isTest _ = True
-
-        keepCurrentTix :: IO Bool
-        keepCurrentTix = do
-            exists <- doesFileExist interactiveTix
-            when exists $ renameFile interactiveTix currentTix
-            return exists
-
-        combineTix :: Bool -> IO ()
-        combineTix exists = when exists $ do
-            callProcess "hpc" ["combine", "--exclude=Main", "--union", "--output", nextTix, currentTix, interactiveTix]
-            removeFile currentTix
-            renameFile nextTix interactiveTix
-
-        nextTix :: FilePath
-        nextTix = "next.tix"
-
-        currentTix :: FilePath
-        currentTix = "current.tix"
-
-interactiveTix :: FilePath
-interactiveTix = "interactive.tix"
-
-writeTix :: FilePath -> IO ()
-writeTix name = do
-    tix <- examineTix
-    writeFile name (show tix)
-
-interactions :: [InteractiveTest]
-interactions =
-    [ INI "" -- start tests with no .ini file
-    , CLI ["help"] ExitSuccess (shortHelp++longHelp) ""
-    , CLI ["license"] ExitSuccess license ""
-    , CLI ["bye"] ExitSuccess "" ""
-    , CLI ["2*21"] ExitSuccess "=  42" ""
-    , CLI ["f(x)=42*x", "f(101)"] ExitSuccess "= 4242" ""
-    , REPL ["bye"] ExitSuccess (shortHelp++": bye") ""
-    , REPL ["1+1", "bye"] ExitSuccess (shortHelp++": 1+1\n= 2\n: bye") ""
-    , REPL ["hex", "-1", "reset", "hex8", "hex16", "hex32", "hex64", "bye"] ExitSuccess
-           (unlines [ shortHelp
-                    , ": hex"
-                    , ": -1", "= -1", "hex -0x1"
-                    , ": reset", "= -1"
-                    , ": hex8", "= -1", "hex8 0xff"
-                    , ": hex16", "= -1", "hex16 0xffff"
-                    , ": hex32", "= -1", "hex32 0xffffffff"
-                    , ": hex64", "= -1", "hex64 0xffffffffffffffff"
-                    , ": bye"
-                    ]) ""
-    , REPL ["oct", "-1", "reset", "oct8", "oct16", "oct32", "oct64", "bye"] ExitSuccess
-           (unlines [ shortHelp
-                    , ": oct"
-                    , ": -1", "= -1", "oct -0o1"
-                    , ": reset", "= -1"
-                    , ": oct8", "= -1", "oct8 0o377"
-                    , ": oct16", "= -1", "oct16 0o177777"
-                    , ": oct32", "= -1", "oct32 0o37777777777"
-                    , ": oct64", "= -1", "oct64 0o1777777777777777777777"
-                    , ": bye"
-                    ]) ""
-    , REPL ["bin", "-1", "reset", "bin8", "bin16", "bin32", "bin64", "bye"] ExitSuccess
-           (unlines [ shortHelp
-                    , ": bin"
-                    , ": -1", "= -1", "bin -0b1"
-                    , ": reset", "= -1"
-                    , ": bin8", "= -1", "bin8 0b11111111"
-                    , ": bin16", "= -1", "bin16 0b1111111111111111"
-                    , ": bin32", "= -1", "bin32 0b11111111111111111111111111111111"
-                    , ": bin64", "= -1", "bin64 0b1111111111111111111111111111111111111111111111111111111111111111"
-                    , ": bye"
-                    ]) ""
-    , REPL ["dec", "-1", "reset", "dec8", "dec16", "dec32", "dec64", "bye"] ExitSuccess
-           (unlines [ shortHelp
-                    , ": dec"
-                    , ": -1", "= -1", "dec -1"
-                    , ": reset", "= -1"
-                    , ": dec8", "= -1", "dec8 255"
-                    , ": dec16", "= -1", "dec16 65535"
-                    , ": dec32", "= -1", "dec32 4294967295"
-                    , ": dec64", "= -1", "dec64 18446744073709551615"
-                    , ": bye"
-                    ]) ""
-    , REPL ["hex", "1", "reset", "hex8", "hex16", "hex32", "hex64", "bye"] ExitSuccess
-           (unlines [ shortHelp
-                    , ": hex"
-                    , ": 1", "= 1", "hex 0x1"
-                    , ": reset", "= 1"
-                    , ": hex8", "= 1", "hex8 0x01"
-                    , ": hex16", "= 1", "hex16 0x0001"
-                    , ": hex32", "= 1", "hex32 0x00000001"
-                    , ": hex64", "= 1", "hex64 0x0000000000000001"
-                    , ": bye"
-                    ]) ""
-    , REPL ["oct", "1", "reset", "oct8", "oct16", "oct32", "oct64", "bye"] ExitSuccess
-           (unlines [ shortHelp
-                    , ": oct"
-                    , ": 1", "= 1", "oct 0o1"
-                    , ": reset", "= 1"
-                    , ": oct8", "= 1", "oct8 0o001"
-                    , ": oct16", "= 1", "oct16 0o000001"
-                    , ": oct32", "= 1", "oct32 0o00000000001"
-                    , ": oct64", "= 1", "oct64 0o0000000000000000000001"
-                    , ": bye"
-                    ]) ""
-    , REPL ["bin", "1", "reset", "bin8", "bin16", "bin32", "bin64", "bye"] ExitSuccess
-           (unlines [ shortHelp
-                    , ": bin"
-                    , ": 1", "= 1", "bin 0b1"
-                    , ": reset", "= 1"
-                    , ": bin8", "= 1", "bin8 0b00000001"
-                    , ": bin16", "= 1", "bin16 0b0000000000000001"
-                    , ": bin32", "= 1", "bin32 0b00000000000000000000000000000001"
-                    , ": bin64", "= 1", "bin64 0b0000000000000000000000000000000000000000000000000000000000000001"
-                    , ": bye"
-                    ]) ""
-    , REPL ["dec", "1", "reset", "dec8", "dec16", "dec32", "dec64", "bye"] ExitSuccess
-           (unlines [ shortHelp
-                    , ": dec"
-                    , ": 1", "= 1", "dec 1"
-                    , ": reset", "= 1"
-                    , ": dec8", "= 1", "dec8 001"
-                    , ": dec16", "= 1", "dec16 00001"
-                    , ": dec32", "= 1", "dec32 0000000001"
-                    , ": dec64", "= 1", "dec64 00000000000000000001"
-                    , ": bye"
-                    ]) ""
-    , REPL ["float32", "0x40490FDB", "", "float64", "0x400921FB54442D18"] ExitSuccess
-           (unlines [ shortHelp
-                    , ": float32", ": 0x40490FDB", "= 1078530011", "hex32   0x40490fdb", "flt32   3.1415927 <=> 0x40490fdb"
-                    , ":"
-                    , ": float64", ": 0x400921FB54442D18", "= 4614256656552045848", "hex64   0x400921fb54442d18", "flt64   3.141592653589793 <=> 0x400921fb54442d18"
-                    , ": bye"
-                    ]) ""
-    , REPL ["1+2/3", "float32", "float64"] ExitSuccess
-           (unlines [ shortHelp
-                    , ": 1+2/3", "= 5/3", "~ 1.6666666666666667"
-                    , ": float32", "= 5/3", "~flt32 1.6666666 <=> 0x3fd55555"
-                    , ": float64", "= 5/3", "~flt64  1.6666666666666667 <=> 0x3ffaaaaaaaaaaaab"
-                    , ": bye"
-                    ]) ""
-    , REPL ["pi", "float32", "float64"] ExitSuccess
-           (unlines [ shortHelp
-                    , ": pi", "= 3.141592653589793"
-                    , ": float32", "= 3.141592653589793", "flt32   3.1415927 <=> 0x40490fdb"
-                    , ": float64", "= 3.141592653589793", "flt64   3.141592653589793 <=> 0x400921fb54442d18"
-                    , ": bye"
-                    ]) ""
-    , REPL ["42==2*21", "42==3*21"] ExitSuccess (unlines [shortHelp, ": 42==2*21", "= true", ": 42==3*21", "= false", ": bye"]) ""
-    , REPL ["\"Hello World!\""] ExitSuccess (unlines [shortHelp, ": \"Hello World!\"", "= \"Hello World!\"", ": bye"]) ""
-    , REPL ["  1  ", "  ", "  2  "] ExitSuccess
-           (unlines [ shortHelp
-                    , ": 1", "= 1"
-                    , ": "
-                    , ": 2", "= 2"
-                    , ": bye"
-                    ]) ""
+{-
     , INI ""
     , REPL ["x"] ExitSuccess (unlines [shortHelp, ": x", "! 'x' is not defined", ": bye"]) ""
     , INI "a = 4; b = 2; f(x, y) = x*10 + y; x = f(a, b);"
-    , REPL ["x"] ExitSuccess (unlines [shortHelp, "Loading ucalcTest.ini", ": x", "= 42", ": bye"]) ""
+    , REPL ["x"] ExitSuccess (unlines [shortHelp, "Loading hcalcTest.ini", ": x", "= 42", ": bye"]) ""
     , INI "a = 4; b = 2; f(x, y) = x*10 + y; x = f(a, b); error here!"
     , REPL ["x"] ExitSuccess (unlines [shortHelp
-                                      , "Loading ucalcTest.ini"
-                                      , "Error while loading ucalcTest.ini: Error near here!"
+                                      , "Loading hcalcTest.ini"
+                                      , "Error while loading hcalcTest.ini: Error near here!"
                                       , ": x", "! 'x' is not defined", ": bye"]) ""
     , INI ""
     ]
 
--- TODO : test of .ini file reload
+-}
+

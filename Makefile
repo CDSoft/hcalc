@@ -1,42 +1,42 @@
-# Ultimate Calc
+# Handy Calc
 # Copyright (C) 2016 Christophe Delord
-# http://cdsoft.fr/ucalc
+# http://cdsoft.fr/hcalc
 #
-# This file is part of Ultimate Calc.
+# This file is part of Handy Calc.
 #
-# Ultimate Calc is free software: you can redistribute it and/or modify
+# Handy Calc is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published
 # by the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# Ultimate Calc is distributed in the hope that it will be useful,
+# Handy Calc is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with Ultimate Calc.  If not, see <http://www.gnu.org/licenses/>.
+# along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 
 MODULES = $(wildcard [A-Z]*.hs) $(wildcard *.c)
-SRC = ucalc.hs
-TEST = ucalcTest.hs
+SRC = hcalc.hs
+TEST = hcalcTest.hs
 ARCHIVE = $(SRC) $(TEST) $(MODULES) Makefile
 
-#DEPENDENCIES = interpolatedstring-perl6
+DEPENDENCIES = here
 
 ifeq "$(shell uname)" "Linux"
 
 # Compilation on Linux
-all: ucalc ucalc.exe ucalc.tgz
-test: ucalcTest
-WINE		= wine
+all: hcalc hcalc.exe hcalc.tgz
+test: hcalcTest
+WINE		= wine32
 GCC_WIN		= $(shell ls /usr/bin/i686-*mingw32*-gcc | head -1 | sed 's/gcc$$//')
 
 else
 
 # Compilation on Windows
-all: ucalc.exe
-test: ucalcTest.exe
+all: hcalc.exe
+test: hcalcTest.exe
 WINE		=
 GCC_WIN		=
 
@@ -59,43 +59,43 @@ GHC_OPT_TEST_WIN	= $(GHC_OPT_TEST) -outputdir $(BUILD_WIN)/test
 
 .DELETE_ON_ERROR:
 
-#setup:
-#	cabal update
-#	cabal install $(DEPENDENCIES)
-#	$(WINE) cabal update
-#	$(WINE) cabal install $(DEPENDENCIES)
+setup:
+	cabal update
+	cabal install $(DEPENDENCIES)
+	$(WINE) cabal update
+	$(WINE) cabal install $(DEPENDENCIES)
 
 clean:
-	-rm -rf ucalc ucalc.exe ucalcTest ucalcTest.exe $(BUILD) .hpc *.tix
+	-rm -rf hcalc hcalc.exe hcalcTest hcalcTest.exe $(BUILD) .hpc *.tix
 
 tests: test
 
-ucalc.tgz: $(ARCHIVE)
+hcalc.tgz: $(ARCHIVE)
 	tar czf $@ $^
 
-ucalc: $(SRC) $(MODULES)
+hcalc: $(SRC) $(MODULES)
 	@mkdir -p $(BUILD_LINUX)
 	ghc $(GHC_OPT_LINUX) --make $^
 	-strip $@
 	-$(UPX) $@
 
-ucalc.exe: $(SRC) $(MODULES) $(BUILD_WIN)/icon.o
+hcalc.exe: $(SRC) $(MODULES) $(BUILD_WIN)/icon.o
 	@mkdir -p $(BUILD_WIN)
-	$(WINE) ghc $(GHC_OPT_WIN) --make $^
+	$(WINE) ghc $(GHC_OPT_WIN) --make $(SRC) $(MODULES)
+	rm $@
+	$(WINE) ghc $(GHC_OPT_WIN) --make $(SRC) $(MODULES) $(BUILD_WIN)/icon.o
 	-strip $@
 	-$(UPX) $@
 
-ucalcTest: $(TEST) $(MODULES)
+hcalcTest: $(TEST) $(MODULES)
 	@mkdir -p $(BUILD_LINUX)/test
 	ghc $(GHC_OPT_TEST_LINUX) --make $(TEST) $(MODULES)
 	-rm -f *.tix
 	$@
-	hpc combine --exclude=Main --union --output=$@.tix unit.tix interactive.tix
-	-rm -f unit.tix interactive.tix
 	hpc markup --exclude=Main --destdir=$(BUILD_LINUX)/test $@
 	hpc report --exclude=Main $@
 
-ucalcTest.exe: $(TEST) $(MODULES)
+hcalcTest.exe: $(TEST) $(MODULES)
 	@mkdir -p $(BUILD_WIN)/test
 	$(WINE) ghc $(GHC_OPT_TEST_WIN) --make $(TEST) $(MODULES)
 	$(WINE) $@

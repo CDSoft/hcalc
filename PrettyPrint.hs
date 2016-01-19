@@ -1,21 +1,21 @@
-{- Ultimate Calc
+{- Handy Calc
 Copyright (C) 2016 Christophe Delord
-http://cdsoft.fr/ucalc
+http://cdsoft.fr/hcalc
 
-This file is part of Ultimate Calc.
+This file is part of Handy Calc.
 
-Ultimate Calc is free software: you can redistribute it and/or modify
+Handy Calc is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Ultimate Calc is distributed in the hope that it will be useful,
+Handy Calc is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Ultimate Calc.  If not, see <http://www.gnu.org/licenses/>.
+along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 -}
 
 {- The module PrettyPrint converts expressions to strings.
@@ -113,5 +113,7 @@ pp _ (Put _ s) = s
 
 pp _ None = ""
 
+--pp _ (Bye _) = ""
+
 pp _ (E err) = prompt "!" ++ err
-pp _ x = prompt "!" ++ "Cannot display the value of " ++ show x
+pp _ x = prompt "!" ++ "Cannot display the value of <" ++ show x ++ ">"

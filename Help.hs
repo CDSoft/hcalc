@@ -1,21 +1,21 @@
-{- Ultimate Calc
+{- Handy Calc
 Copyright (C) 2016 Christophe Delord
-http://cdsoft.fr/ucalc
+http://cdsoft.fr/hcalc
 
-This file is part of Ultimate Calc.
+This file is part of Handy Calc.
 
-Ultimate Calc is free software: you can redistribute it and/or modify
+Handy Calc is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Ultimate Calc is distributed in the hope that it will be useful,
+Handy Calc is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Ultimate Calc.  If not, see <http://www.gnu.org/licenses/>.
+along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 -}
 
 {- The module Help defines help and license messages
@@ -33,30 +33,30 @@ dates = [2016]
 
 license :: String
 license = unlines
-    [ "Ultimate Calculator"
+    [ "Handy Calc"
     , "(C) " ++ intercalate ", " (map show dates) ++ " Christophe Delord"
-    , "http://cdsoft.fr/ucalc"
+    , "http://cdsoft.fr/hcalc"
     , ""
-    , "Ultimate Calc is free software: you can redistribute it and/or modify"
+    , "Handy Calc is free software: you can redistribute it and/or modify"
     , "it under the terms of the GNU General Public License as published"
     , "by the Free Software Foundation, either version 3 of the License, or"
     , "(at your option) any later version."
     , ""
-    , "Ultimate Calc is distributed in the hope that it will be useful,"
+    , "Handy Calc is distributed in the hope that it will be useful,"
     , "but WITHOUT ANY WARRANTY; without even the implied warranty of"
     , "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
     , "GNU General Public License for more details."
     , ""
     , "You should have received a copy of the GNU General Public License"
-    , "along with Ultimate Calc.  If not, see <http://www.gnu.org/licenses/>."
+    , "along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>."
     , ""
-    , "Ultimate Calc is powered by Haskell."
+    , "Handy Calc is powered by Haskell."
     ]
 
 shortHelp :: String
 shortHelp = unlines
     [ "+---------------------------------------------------------------------+"
-    , "|            U C A L C            | " ++ v ++ " | cdsoft.fr/ucalc |"
+    , "|            H C A L C            | " ++ v ++ " | cdsoft.fr/hcalc |"
     , "|---------------------------------------------------------------------|"
     , "| Modes:                          | Numbers:                          |"
     , "|     hex oct bin float reset     |     binary: 0b...                 |"

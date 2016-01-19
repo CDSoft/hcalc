@@ -1,21 +1,21 @@
-{- Ultimate Calc
+{- Handy Calc
 Copyright (C) 2016 Christophe Delord
-http://cdsoft.fr/ucalc
+http://cdsoft.fr/hcalc
 
-This file is part of Ultimate Calc.
+This file is part of Handy Calc.
 
-Ultimate Calc is free software: you can redistribute it and/or modify
+Handy Calc is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Ultimate Calc is distributed in the hope that it will be useful,
+Handy Calc is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Ultimate Calc.  If not, see <http://www.gnu.org/licenses/>.
+along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 -}
 
 {- The module Expression represents and evaluates expressions.
@@ -27,14 +27,14 @@ module Expression
     ( Expr(..), Conf, State
     , eval
     , emptyState, emptyConf
-    , setMTime, dec, hex, oct, bin, float, size, mtime
+    , dec, hex, oct, bin, float, size
     ) where
 
 import Data.Ratio
 import Data.Bits
 import Data.Maybe
 import Text.Show.Functions()
-import Data.Time.Clock
+--import Data.Time.Clock
 import qualified Data.Map as Map
 
 import IEEE754
@@ -127,7 +127,6 @@ data Conf = Conf
     , oct :: Bool               -- octal display mode
     , bin :: Bool               -- binary display mode
     , float :: Bool             -- floating point display mode
-    , mtime :: Maybe UTCTime    -- date of the previously loaded configuration file
     }
     deriving (Show, Eq)
 
@@ -148,13 +147,9 @@ type State = (Conf, Env)
 instance Eq (a -> b) where
     _ == _ = False
 
--- The configuration shall belong to the Show class for test purpose.
-instance Show UTCTime where
-    show _ = "<mtime>"
-
 -- reset the display mode in the current state
 resetConf :: State -> State
-resetConf (conf, env) = (emptyConf{mtime=mtime conf}, env)
+resetConf (_, env) = (emptyConf, env)
 
 -- set the integer/float size
 setSize :: Int -> State -> State
@@ -179,10 +174,6 @@ setDec (conf, env) = (conf{dec=True}, env)
 -- set the IEEE 754 floating point display mode
 setFlt :: State -> State
 setFlt (conf, env) = (conf{float=True}, env)
-
--- set the last modification time of the configuration file
-setMTime :: State -> UTCTime -> State
-setMTime (conf, env) t = (conf{mtime=Just t}, env)
 
 -- Evaluate 2 expressions in sequence.
 -- The second is evaluated in the state produced by the first.
@@ -629,7 +620,6 @@ emptyConf :: Conf
 emptyConf = Conf { size = 0
                  , hex = False, dec = False, oct = False, bin = False
                  , float = False
-                 , mtime = Nothing
                  }
 
 -- default state = default configuration + empty environment
@@ -837,5 +827,7 @@ pp' (B False) = "false"
 pp' (S s) = s
 
 pp' None = ""
+
+pp' (E msg) = msg
 
 pp' x = "<"++show x++">"

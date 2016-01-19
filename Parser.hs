@@ -1,21 +1,21 @@
-{- Ultimate Calc
+{- Handy Calc
 Copyright (C) 2016 Christophe Delord
-http://cdsoft.fr/ucalc
+http://cdsoft.fr/hcalc
 
-This file is part of Ultimate Calc.
+This file is part of Handy Calc.
 
-Ultimate Calc is free software: you can redistribute it and/or modify
+Handy Calc is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-Ultimate Calc is distributed in the hope that it will be useful,
+Handy Calc is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Ultimate Calc.  If not, see <http://www.gnu.org/licenses/>.
+along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 -}
 
 {- The module Parser parses strings and produces expressions of type Expr
@@ -64,7 +64,6 @@ comment (c:s) | c `elem` "\r\n" = spaces s
                | otherwise = comment s
 comment [] = []
 
---seq1 :: (t1 -> t2) -> (t -> [(t1, t3)]) -> t -> [(t2, t3)]
 seq1 :: (t1->t) -> Parser t1 -> Parser t
 seq1 f p1 s = [ (f e1, s1) | (e1, s1) <- p1 s ]
 
@@ -84,7 +83,11 @@ seq6 :: (t1->t2->t3->t4->t5->t6->t) -> Parser t1 -> Parser t2 -> Parser t3 -> Pa
 seq6 f p1 p2 p3 p4 p5 p6 s = [ (f e1 e2 e3 e4 e5 e6, s6) | (e1, s1) <- p1 s, (e2, s2) <- p2 s1, (e3, s3) <- p3 s2, (e4, s4) <- p4 s3, (e5, s5) <- p5 s4, (e6, s6) <- p6 s5 ]
 
 (|||) :: Parser t -> Parser t -> Parser t
-p1 ||| p2 = \s -> p1 s ++ p2 s
+p1 ||| p2 = \s -> longuest (p1 s ++ p2 s)
+
+longuest :: [(a, String)] -> [(a, String)]
+longuest [] = []
+longuest xs = [minimumBy (\(_, s1) (_, s2) -> compare (length s1) (length s2)) xs]
 
 nothing :: t -> Parser t
 nothing x s = [(x, s)]
