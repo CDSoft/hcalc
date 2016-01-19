@@ -1,52 +1,44 @@
-{- Calculator in Haskell
+{- Handy Calc
+Copyright (C) 2016 Christophe Delord
+http://cdsoft.fr/hcalc
 
-The code constains all the non regression tests
-as well as the documentation.
+This file is part of Handy Calc.
 
-This is a exercice to demonstrate an incremental test driven process:
-- write a test case
-- write the code until it passes the test case
-- write another test case...
+Handy Calc is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-usage:
-calc -l displays the license
-calc -h displays some help
-calc -t runs the non regression tests
-calc expr computes expr and exit
-calc enters the CLI mode
+Handy Calc is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
+You should have received a copy of the GNU General Public License
+along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 -}
 
--- TODO : evaluation : env global et local
--- si l'env local est vide, on est en global => les définitions vont dans l'env global
--- si l'env local n'est pas vide, les définitions sont dans l'env local
-
--- TODO : strings et tuples
+{- The module Main contains all the non pure IO operations.
+-}
 
 {-# LANGUAGE CPP #-}
 
 module Main(main) where
 
+import Help
 import Interface
---import Expression
---import Parser
 import PrettyPrint
---import Help
+#ifdef mingw32_HOST_OS
+import qualified Version as V
+#endif
 
-import System.Environment
---import GHC.IO.Device
-
---import Data.List
 import Control.Monad
---import System.Environment
-import System.IO
-import System.FilePath
 import System.Directory
+import System.Environment
+import System.FilePath
+import System.IO
 
 #ifdef linux_HOST_OS
---import Data.Char
---import System.Console.Readline
---import System.Exit
 import System.Posix.Process
 #endif
 #ifdef mingw32_HOST_OS
@@ -58,8 +50,13 @@ main = do
     args <- getArgs
     ini <- getIni
     case args of
-        [] -> initConsole >> (interact' $ repl ini)
+        [] -> initConsole >> interact' (repl ini)
         _ -> putStrLn $ last $ repl ini args
+
+#ifdef linux_HOST_OS
+initConsole :: IO ()
+initConsole = nice 19
+#endif
 
 -- some cosmetics for the windows console
 #ifdef mingw32_HOST_OS
@@ -67,32 +64,36 @@ initConsole :: IO ()
 initConsole = do
     tty <- hIsTerminalDevice stdin
     when tty $ do
-        callCommand "title hCalc"
+        callCommand $ "title " ++ V.shortName
         callCommand "color f0"
 #endif
 
-#ifdef linux_HOST_OS
-initConsole :: IO ()
-initConsole = nice 19
-#endif
-
+-- read the configuration file.
+-- The name of the configuration file is the name of the executable
+-- with the extension .ini
 getIni :: IO (FilePath, String)
 getIni = do
     path <- getExecutablePath
     let name = replaceExtension path ".ini"
     found <- doesFileExist name
     if found
+        -- if it exists, just read it
         then do h <- openFile name ReadMode
                 hSetEncoding h utf8
                 ini <- hGetContents h
                 return (name, ini)
-        else return (name, "")
+        -- otherwise create a sample one
+        else do writeFile name defaultIni
+                return (name, defaultIni)
 
+-- interact' is very similar to interact but the input is split by lines
 interact' :: ([String] -> [String]) -> IO ()
 interact' f = do
     input <- getContents
     writeLines $ f $ lines input
 
+-- write the results of the calculator,
+-- as well as the prompt for the next input
 writeLines :: [String] -> IO ()
 writeLines outputs = forM_ outputs (\output -> do
         hFlush stdout
@@ -100,5 +101,3 @@ writeLines outputs = forM_ outputs (\output -> do
         putStr $ "\n"++prompt ":"
         hFlush stdout
     )
-
--- TODO: generate a default .ini file

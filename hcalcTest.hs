@@ -1,22 +1,43 @@
+{- Handy Calc
+Copyright (C) 2016 Christophe Delord
+http://cdsoft.fr/hcalc
+
+This file is part of Handy Calc.
+
+Handy Calc is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Handy Calc is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
+-}
+
+{- This module contains the unit tests of Handy Calc.
+Currently only the purely functional code is tested.
+The module Main is not formally tested but it seems to work ;-)
+-}
+
 module Main(main) where
 
-import Expression
-import Parser
-import IEEE754
 import ASCII
+import Expression
 import Help
+import IEEE754
 import Interface
+import Parser
 
+import Control.Monad
 import Data.Char
-import Data.Ratio
 import Data.List
 import qualified Data.Map as Map
+import Data.Ratio
 import System.Environment
---import System.Exit
---import System.Process
---import System.Directory
---import System.FilePath
-import Control.Monad
 
 data UnitTest = Parse String Expr Expr State
               | Eval String Expr State
@@ -40,12 +61,10 @@ doUnitTests = do
                 when (e' /= e) $ error $ "Parser error: " ++ s ++ " should be parsed as " ++ show e ++ " but is " ++ show e'
                 when (v' /== v) $ error $ "Evaluation error: " ++ s ++ " should be evaluated as " ++ show v ++ " but is " ++ show v'
                 when (st' /= st) $ error $ "Evaluation error: " ++ s ++ " should lead to the state " ++ show st ++ " but leads to " ++ show st'
-                --putStrLn $ s ++ " => " ++ show e ++ " => " ++ show v
             Eval s v st -> do
                 let (st', v') = eval emptyState $ parse s
                 when (v' /== v) $ error $ "Evaluation error: " ++ s ++ " should be evaluated as " ++ show v ++ " but is " ++ show v'
                 when (st' /= st) $ error $ "Evaluation error: " ++ s ++ " should lead to the state " ++ show st ++ " but leads to " ++ show st'
-                --putStrLn $ s ++ " => " ++ show v
             REPL (name, ini) inputs_outputs -> do
                 let inputs = map fst inputs_outputs
                 let outputs = map snd inputs_outputs
@@ -55,7 +74,7 @@ doUnitTests = do
                                     (_, E msg) -> "\n! "++msg
                                     _ -> ""
                 when (s welcome' /= s welcome) $ error $ "The welcome message should be " ++ welcome ++ " instead of " ++ welcome'
-                forM_ (zip3 inputs outputs outputs') (\(input, output, output') -> do
+                forM_ (zip3 inputs outputs outputs') (\(input, output, output') ->
                         when (s output' /= s output) $ error $ "REPL error: in the sequence " ++ intercalate "; " inputs ++ " the expression " ++ input ++ " should be evaluated as " ++ output ++ " instead of " ++ output'
                     )
                 where
@@ -64,8 +83,8 @@ doUnitTests = do
     putStrLn $ "Unit tests passed (" ++ show (nbUnitTests unitTests) ++ " tests)"
     where
         nbUnitTests [] = 0
-        nbUnitTests (Parse _ _ _ _ : tests) = 1 + nbUnitTests tests
-        nbUnitTests (Eval _ _ _ : tests) = 1 + nbUnitTests tests
+        nbUnitTests (Parse{} : tests) = 1 + nbUnitTests tests
+        nbUnitTests (Eval{} : tests) = 1 + nbUnitTests tests
         nbUnitTests (REPL _ xs : tests) = length xs + nbUnitTests tests
 
 (===) :: Expr -> Expr -> Bool
@@ -934,19 +953,3 @@ unitTests =
 
 noINI :: (FilePath, String)
 noINI = ("hcalcTest.ini", "")
-
-{-
-    , INI ""
-    , REPL ["x"] ExitSuccess (unlines [shortHelp, ": x", "! 'x' is not defined", ": bye"]) ""
-    , INI "a = 4; b = 2; f(x, y) = x*10 + y; x = f(a, b);"
-    , REPL ["x"] ExitSuccess (unlines [shortHelp, "Loading hcalcTest.ini", ": x", "= 42", ": bye"]) ""
-    , INI "a = 4; b = 2; f(x, y) = x*10 + y; x = f(a, b); error here!"
-    , REPL ["x"] ExitSuccess (unlines [shortHelp
-                                      , "Loading hcalcTest.ini"
-                                      , "Error while loading hcalcTest.ini: Error near here!"
-                                      , ": x", "! 'x' is not defined", ": bye"]) ""
-    , INI ""
-    ]
-
--}
-

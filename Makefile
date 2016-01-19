@@ -29,7 +29,7 @@ ifeq "$(shell uname)" "Linux"
 # Compilation on Linux
 all: hcalc hcalc.exe hcalc.tgz
 test: hcalcTest
-WINE		= wine32
+WINE		= wine
 GCC_WIN		= $(shell ls /usr/bin/i686-*mingw32*-gcc | head -1 | sed 's/gcc$$//')
 
 else
@@ -75,7 +75,7 @@ hcalc.tgz: $(ARCHIVE)
 
 hcalc: $(SRC) $(MODULES)
 	@mkdir -p $(BUILD_LINUX)
-	ghc $(GHC_OPT_LINUX) --make $^
+	ghc $(GHC_OPT_LINUX) --make $(SRC) $(MODULES)
 	-strip $@
 	-$(UPX) $@
 

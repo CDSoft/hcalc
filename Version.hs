@@ -1,4 +1,4 @@
-/* Handy Calc
+{- Handy Calc
 Copyright (C) 2016 Christophe Delord
 http://cdsoft.fr/hcalc
 
@@ -16,18 +16,26 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
-*/
+-}
 
-/* The module IEEE754 converts floating point numbers
- * from/to their IEEE754 representation.
- * It is coded in C and uses simple casts to make the conversion.
- */
+{- This module defines the current version
+-}
 
-#include <stdint.h>
+module Version(name, shortName, version, dates, tag) where
 
-uint64_t doubleToWord64 (double   d) { return *(uint64_t*)&d; }
-double   word64ToDouble (uint64_t u) { return *(double*)&u; }
-uint32_t floatToWord32  (float    f) { return *(uint32_t*)&f; }
-float    word32ToFloat  (uint32_t u) { return *(float*)&u; }
-double   floatToDouble  (float    f) { return f; }
-float    doubleToFloat  (double   d) { return d; }
+import Data.List
+
+name :: String
+name = "Handy Calc"
+
+shortName :: String
+shortName = "hCalc"
+
+version :: [Int]
+version = [0, 0, 1]
+
+dates :: [Int]
+dates = [2016]
+
+tag :: String
+tag = name ++ " " ++ intercalate "." (map show version)

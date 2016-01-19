@@ -30,16 +30,16 @@ module Expression
     , dec, hex, oct, bin, float, size
     ) where
 
-import Data.Ratio
 import Data.Bits
-import Data.Maybe
-import Text.Show.Functions()
---import Data.Time.Clock
 import qualified Data.Map as Map
+import Data.Maybe
+import Data.Ratio
+import Text.Show.Functions()
 
-import IEEE754
-import Help
 import ASCII
+import Help
+import IEEE754
+import qualified Version as V
 
 -- Type of expressions
 data Expr = E String            -- errors
@@ -700,6 +700,7 @@ builtin = Map.fromList $
               , funcBye "exit"
               , funcPut "help" $ unlines ["", shortHelp, "", longHelp]
               , funcPut "license" $ unlines ["", license]
+              , funcPut "version" $ unlines ["", V.tag]
               , funcPut "ascii" $ unlines ["", ascii]
               ]
               ++ [ constant "reset"             Reset ]

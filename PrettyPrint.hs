@@ -25,13 +25,12 @@ The configuration is used to display the value in various formats.
 module PrettyPrint(prompt, pp) where
 
 import Expression
+import IEEE754
 
 import Data.Char
 import Data.List
 import Data.Ratio
 import Numeric
-
-import IEEE754
 
 -- prompt makes a string that can be used as a prompt
 -- to get user input or to precise the type of a display.
@@ -112,8 +111,6 @@ pp _ (S s) = prompt "=" ++ show s
 pp _ (Put _ s) = s
 
 pp _ None = ""
-
---pp _ (Bye _) = ""
 
 pp _ (E err) = prompt "!" ++ err
 pp _ x = prompt "!" ++ "Cannot display the value of <" ++ show x ++ ">"

@@ -27,25 +27,9 @@ of the calculator.
 module Interface(repl) where
 
 import Expression
+import Help
 import Parser
 import PrettyPrint
-import Help
-
---import Data.List
---import System.Environment
---import System.IO
---import System.FilePath
---import System.Directory
-
-#ifdef linux_HOST_OS
---import Data.Char
---import System.Console.Readline
---import System.Exit
---import System.Posix.Process
-#endif
-#ifdef mingw32_HOST_OS
---import System.Process
-#endif
 
 -- REPL: interactive calculator
 repl :: (FilePath, String) -> [String] -> [String]
@@ -66,4 +50,3 @@ repl (name, ini) exprs = welcome : loop stIni None exprs
                 prev' = case x' of
                     Previous -> prev
                     _ -> x'
-
