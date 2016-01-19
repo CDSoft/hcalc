@@ -143,7 +143,7 @@ loadIni st@(conf, _) = do
     name <- iniName
     iniFileFound <- doesFileExist name
     if not iniFileFound
-        then return st
+        then return st -- TODO: generate a default .ini file
         else do
             t1 <- getModificationTime name
             case mtime conf of
@@ -161,3 +161,5 @@ loadIni st@(conf, _) = do
                 E err -> putStrLn $ "Error while loading " ++ takeFileName fName ++ ": " ++ err
                 _ -> return ()
             return $ setMTime st' t
+
+-- TODO: generate a default .ini file

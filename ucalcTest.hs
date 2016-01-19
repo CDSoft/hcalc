@@ -908,19 +908,117 @@ interactions =
     , CLI ["f(x)=42*x", "f(101)"] ExitSuccess "= 4242" ""
     , REPL ["bye"] ExitSuccess (shortHelp++": bye") ""
     , REPL ["1+1", "bye"] ExitSuccess (shortHelp++": 1+1\n= 2\n: bye") ""
-    , REPL ["hex", "-1", "reset", "hex8", "bye"] ExitSuccess
+    , REPL ["hex", "-1", "reset", "hex8", "hex16", "hex32", "hex64", "bye"] ExitSuccess
            (unlines [ shortHelp
                     , ": hex"
-                    , ": -1"
-                    , "= -1"
-                    , "hex -0x1"
-                    , ": reset"
-                    , "= -1"
-                    , ": hex8"
-                    , "= -1"
-                    , "hex8 0xff"
+                    , ": -1", "= -1", "hex -0x1"
+                    , ": reset", "= -1"
+                    , ": hex8", "= -1", "hex8 0xff"
+                    , ": hex16", "= -1", "hex16 0xffff"
+                    , ": hex32", "= -1", "hex32 0xffffffff"
+                    , ": hex64", "= -1", "hex64 0xffffffffffffffff"
                     , ": bye"
                     ]) ""
+    , REPL ["oct", "-1", "reset", "oct8", "oct16", "oct32", "oct64", "bye"] ExitSuccess
+           (unlines [ shortHelp
+                    , ": oct"
+                    , ": -1", "= -1", "oct -0o1"
+                    , ": reset", "= -1"
+                    , ": oct8", "= -1", "oct8 0o377"
+                    , ": oct16", "= -1", "oct16 0o177777"
+                    , ": oct32", "= -1", "oct32 0o37777777777"
+                    , ": oct64", "= -1", "oct64 0o1777777777777777777777"
+                    , ": bye"
+                    ]) ""
+    , REPL ["bin", "-1", "reset", "bin8", "bin16", "bin32", "bin64", "bye"] ExitSuccess
+           (unlines [ shortHelp
+                    , ": bin"
+                    , ": -1", "= -1", "bin -0b1"
+                    , ": reset", "= -1"
+                    , ": bin8", "= -1", "bin8 0b11111111"
+                    , ": bin16", "= -1", "bin16 0b1111111111111111"
+                    , ": bin32", "= -1", "bin32 0b11111111111111111111111111111111"
+                    , ": bin64", "= -1", "bin64 0b1111111111111111111111111111111111111111111111111111111111111111"
+                    , ": bye"
+                    ]) ""
+    , REPL ["dec", "-1", "reset", "dec8", "dec16", "dec32", "dec64", "bye"] ExitSuccess
+           (unlines [ shortHelp
+                    , ": dec"
+                    , ": -1", "= -1", "dec -1"
+                    , ": reset", "= -1"
+                    , ": dec8", "= -1", "dec8 255"
+                    , ": dec16", "= -1", "dec16 65535"
+                    , ": dec32", "= -1", "dec32 4294967295"
+                    , ": dec64", "= -1", "dec64 18446744073709551615"
+                    , ": bye"
+                    ]) ""
+    , REPL ["hex", "1", "reset", "hex8", "hex16", "hex32", "hex64", "bye"] ExitSuccess
+           (unlines [ shortHelp
+                    , ": hex"
+                    , ": 1", "= 1", "hex 0x1"
+                    , ": reset", "= 1"
+                    , ": hex8", "= 1", "hex8 0x01"
+                    , ": hex16", "= 1", "hex16 0x0001"
+                    , ": hex32", "= 1", "hex32 0x00000001"
+                    , ": hex64", "= 1", "hex64 0x0000000000000001"
+                    , ": bye"
+                    ]) ""
+    , REPL ["oct", "1", "reset", "oct8", "oct16", "oct32", "oct64", "bye"] ExitSuccess
+           (unlines [ shortHelp
+                    , ": oct"
+                    , ": 1", "= 1", "oct 0o1"
+                    , ": reset", "= 1"
+                    , ": oct8", "= 1", "oct8 0o001"
+                    , ": oct16", "= 1", "oct16 0o000001"
+                    , ": oct32", "= 1", "oct32 0o00000000001"
+                    , ": oct64", "= 1", "oct64 0o0000000000000000000001"
+                    , ": bye"
+                    ]) ""
+    , REPL ["bin", "1", "reset", "bin8", "bin16", "bin32", "bin64", "bye"] ExitSuccess
+           (unlines [ shortHelp
+                    , ": bin"
+                    , ": 1", "= 1", "bin 0b1"
+                    , ": reset", "= 1"
+                    , ": bin8", "= 1", "bin8 0b00000001"
+                    , ": bin16", "= 1", "bin16 0b0000000000000001"
+                    , ": bin32", "= 1", "bin32 0b00000000000000000000000000000001"
+                    , ": bin64", "= 1", "bin64 0b0000000000000000000000000000000000000000000000000000000000000001"
+                    , ": bye"
+                    ]) ""
+    , REPL ["dec", "1", "reset", "dec8", "dec16", "dec32", "dec64", "bye"] ExitSuccess
+           (unlines [ shortHelp
+                    , ": dec"
+                    , ": 1", "= 1", "dec 1"
+                    , ": reset", "= 1"
+                    , ": dec8", "= 1", "dec8 001"
+                    , ": dec16", "= 1", "dec16 00001"
+                    , ": dec32", "= 1", "dec32 0000000001"
+                    , ": dec64", "= 1", "dec64 00000000000000000001"
+                    , ": bye"
+                    ]) ""
+    , REPL ["float32", "0x40490FDB", "", "float64", "0x400921FB54442D18"] ExitSuccess
+           (unlines [ shortHelp
+                    , ": float32", ": 0x40490FDB", "= 1078530011", "hex32   0x40490fdb", "flt32   3.1415927 <=> 0x40490fdb"
+                    , ":"
+                    , ": float64", ": 0x400921FB54442D18", "= 4614256656552045848", "hex64   0x400921fb54442d18", "flt64   3.141592653589793 <=> 0x400921fb54442d18"
+                    , ": bye"
+                    ]) ""
+    , REPL ["1+2/3", "float32", "float64"] ExitSuccess
+           (unlines [ shortHelp
+                    , ": 1+2/3", "= 5/3", "~ 1.6666666666666667"
+                    , ": float32", "= 5/3", "~flt32 1.6666666 <=> 0x3fd55555"
+                    , ": float64", "= 5/3", "~flt64  1.6666666666666667 <=> 0x3ffaaaaaaaaaaaab"
+                    , ": bye"
+                    ]) ""
+    , REPL ["pi", "float32", "float64"] ExitSuccess
+           (unlines [ shortHelp
+                    , ": pi", "= 3.141592653589793"
+                    , ": float32", "= 3.141592653589793", "flt32   3.1415927 <=> 0x40490fdb"
+                    , ": float64", "= 3.141592653589793", "flt64   3.141592653589793 <=> 0x400921fb54442d18"
+                    , ": bye"
+                    ]) ""
+    , REPL ["42==2*21", "42==3*21"] ExitSuccess (unlines [shortHelp, ": 42==2*21", "= true", ": 42==3*21", "= false", ": bye"]) ""
+    , REPL ["\"Hello World!\""] ExitSuccess (unlines [shortHelp, ": \"Hello World!\"", "= \"Hello World!\"", ": bye"]) ""
     , REPL ["  1  ", "  ", "  2  "] ExitSuccess
            (unlines [ shortHelp
                     , ": 1", "= 1"
@@ -939,3 +1037,5 @@ interactions =
                                       , ": x", "! 'x' is not defined", ": bye"]) ""
     , INI ""
     ]
+
+-- TODO : test of .ini file reload
