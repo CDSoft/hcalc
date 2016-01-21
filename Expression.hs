@@ -698,6 +698,7 @@ builtin = Map.fromList $
 
               , funcBye "bye"
               , funcBye "exit"
+              , funcBye "quit"
               , funcPut "help" $ unlines ["", shortHelp, "", longHelp]
               , funcPut "license" $ unlines ["", license]
               , funcPut "version" $ unlines ["", V.tag]

@@ -27,7 +27,7 @@ DEPENDENCIES = here
 ifeq "$(shell uname)" "Linux"
 
 # Compilation on Linux
-all: hcalc hcalc.exe hcalc.tgz
+all: hcalc hcalc.exe
 test: hcalcTest
 WINE		= wine
 GCC_WIN		= $(shell ls /usr/bin/i686-*mingw32*-gcc | head -1 | sed 's/gcc$$//')
@@ -69,9 +69,6 @@ clean:
 	-rm -rf hcalc hcalc.exe hcalcTest hcalcTest.exe $(BUILD) .hpc *.tix
 
 tests: test
-
-hcalc.tgz: $(ARCHIVE)
-	tar czf $@ $^
 
 hcalc: $(SRC) $(MODULES)
 	@mkdir -p $(BUILD_LINUX)

@@ -3,8 +3,9 @@ hcalc
 hcalc.exe
 hcalcTest
 hcalcTest.exe
-hcalc.tgz
 .hpc
 *.tix
 experiments
 *.swp
+hcalc.ini
+dist

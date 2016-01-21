@@ -62,7 +62,7 @@ title = map toUpper $ intersperse ' ' V.shortName
 shortHelp :: String
 shortHelp = [iTrim|
 +---------------------------------------------------------------------+
-| ${center 31 title} | ${version} | cdsoft.fr/${ljust 10 shortNameLower} |
+| ${center 31 title} | ${center 15 version} | cdsoft.fr/${ljust 10 shortNameLower} |
 |---------------------------------------------------------------------|
 | Modes:                          | Numbers:                          |
 |     hex oct bin float reset     |     binary: 0b...                 |
@@ -77,12 +77,12 @@ shortHelp = [iTrim|
 | Builtin functions:              | Operators:                        |
 |     see help                    |     or xor and not                |
 |---------------------------------|     < <= > >= == !=               |
-| Commands: ? help license bye    |     cond?expr:expr                |
-|           ascii                 |     + - * / % ** | ^ & >> << ~    |
+| Commands: help license bye      |     cond?expr:expr                |
+|           ascii ...             |     + - * / % ** | ^ & >> << ~    |
 +---------------------------------------------------------------------+
 |]
     where
-        version = center 15 $ "v " ++ intercalate "." (map show V.version)
+        version = "v " ++ intercalate "." (map show V.version)
         center w s = replicate left ' ' ++ s ++ replicate right ' '
             where
                 left = (w - length s) `div` 2
@@ -215,7 +215,7 @@ Blocks                      expr1; ...; exprn
 Other commands              Description
 =========================== ===========================
 
-bye, exit                   quit
+bye, exit, quit             quit
 ascii                       print an ASCII table
 help                        print this help
 version                     print the version number
@@ -223,7 +223,7 @@ version                     print the version number
 Credits
 =======
 
-${V.name} ${V.tag}
+${V.tag}
 (C) ${intercalate ", " (map show V.dates)} Christophe Delord
 http://cdsoft.fr/${shortNameLower}
 
