@@ -579,7 +579,7 @@ unitTests =
     , Eval "inf"                        (R inf) emptyState
 
     , Eval "int(x)"                     (E "'x' is not defined") emptyState
-    , Eval "int(true)"                  (E "bad operand for int") emptyState
+    , Eval "int(true)"                  (E "bad operand for 'int'") emptyState
     , Eval "int(3)"                     (Z 3) emptyState
     , Eval "int(-3)"                    (Z $ -3) emptyState
     , Eval "int(13/4)"                  (Z 3) emptyState
@@ -593,21 +593,21 @@ unitTests =
     , Eval "int(-3.75)"                 (Z $ -4) emptyState
 
     , Eval "float(x)"                   (E "'x' is not defined") emptyState
-    , Eval "float(true)"                (E "bad operand for float") emptyState
+    , Eval "float(true)"                (E "bad operand for 'float'") emptyState
     , Eval "float(3)"                   (R 3) emptyState
     , Eval "float(3/2)"                 (R 1.5) emptyState
     , Eval "float(3.5)"                 (R 3.5) emptyState
 
     , Eval "rat(x)"                     (E "'x' is not defined") emptyState
-    , Eval "rat(true)"                  (E "bad operand for rat") emptyState
+    , Eval "rat(true)"                  (E "bad operand for 'rat'") emptyState
     , Eval "rat(3)"                     (Z 3) emptyState
     , Eval "rat(2/7)"                   (Q (2%7)) emptyState
     , Eval "rat(1.5)"                   (Q (3%2)) emptyState
 
     , Eval "rat(x, 0)"                  (E "'x' is not defined") emptyState
     , Eval "rat(0, x)"                  (E "'x' is not defined") emptyState
-    , Eval "rat(true, 0)"               (E "bad operands for rat") emptyState
-    , Eval "rat(0, true)"               (E "bad operands for rat") emptyState
+    , Eval "rat(true, 0)"               (E "bad operands for 'rat'") emptyState
+    , Eval "rat(0, true)"               (E "bad operands for 'rat'") emptyState
     , Eval "rat(3, 1)"                  (Z 3) emptyState
     , Eval "rat(3, 1/100)"              (Z 3) emptyState
     , Eval "rat(3, 0.100)"              (Z 3) emptyState
@@ -620,7 +620,7 @@ unitTests =
     , Eval "rat(pi, 0)"                 (Q (884279719003555 % 281474976710656)) emptyState
 
     , Eval "abs(x)"                     (E "'x' is not defined") emptyState
-    , Eval "abs(true)"                  (E "bad operand for abs") emptyState
+    , Eval "abs(true)"                  (E "bad operand for 'abs'") emptyState
     , Eval "abs(1)"                     (Z 1) emptyState
     , Eval "abs(-1)"                    (Z 1) emptyState
     , Eval "abs(1/2)"                   (Q $ 1%2) emptyState
@@ -701,8 +701,8 @@ unitTests =
 
     , Eval "min(x, 0)"                  (E "'x' is not defined") emptyState
     , Eval "min(0, x)"                  (E "'x' is not defined") emptyState
-    , Eval "min(true, 0)"               (E "bad operands for min") emptyState
-    , Eval "min(0, true)"               (E "bad operands for min") emptyState
+    , Eval "min(true, 0)"               (E "bad operands for 'min'") emptyState
+    , Eval "min(0, true)"               (E "bad operands for 'min'") emptyState
     , Eval "min(1, 2)"                  (Z 1) emptyState
     , Eval "min(2, 1)"                  (Z 1) emptyState
     , Eval "min(1, 2/3)"                (Q (2%3)) emptyState
@@ -771,8 +771,8 @@ unitTests =
 
     , Eval "atan(x, 0)"                 (E "'x' is not defined") emptyState
     , Eval "atan(0, x)"                 (E "'x' is not defined") emptyState
-    , Eval "atan(true, 0)"              (E "bad operands for atan") emptyState
-    , Eval "atan(0, true)"              (E "bad operands for atan") emptyState
+    , Eval "atan(true, 0)"              (E "bad operands for 'atan'") emptyState
+    , Eval "atan(0, true)"              (E "bad operands for 'atan'") emptyState
 
     , Eval "atan(sqrt(3), 3)"           (R (pi/6)) emptyState
     , Eval "atan(1, 1)"                 (R (pi/4)) emptyState
@@ -824,12 +824,12 @@ unitTests =
     , Eval "log(pi, pi**3)"             (R 3) emptyState
 
     , Eval "float2ieee(x)"              (E "'x' is not defined") emptyState
-    , Eval "float2ieee(true)"           (E "bad operand for float2ieee") emptyState
+    , Eval "float2ieee(true)"           (E "bad operand for 'float2ieee'") emptyState
     , Eval "float2ieee(24)"             (Z 0x41C00000) emptyState
     , Eval "float2ieee(1/2)"            (Z 0x3F000000) emptyState
     , Eval "float2ieee(pi)"             (Z 0x40490FDB) emptyState
     , Eval "ieee2float(x)"              (E "'x' is not defined") emptyState
-    , Eval "ieee2float(true)"           (E "bad operand for ieee2float") emptyState
+    , Eval "ieee2float(true)"           (E "bad operand for 'ieee2float'") emptyState
     , Eval "ieee2float(1078530011)"     (R $ floatToDouble $ doubleToFloat pi) emptyState
 
     , Eval "double2ieee(24)"            (Z 0x4038000000000000) emptyState
@@ -838,7 +838,7 @@ unitTests =
     , Eval "ieee2double(4614256656552045848)"   (R pi) emptyState
 
     , Eval "isfinite(x)"                (E "'x' is not defined") emptyState
-    , Eval "isfinite(true)"             (E "bad operand for isfinite") emptyState
+    , Eval "isfinite(true)"             (E "bad operand for 'isfinite'") emptyState
     , Eval "isfinite(42<<10)"           (B True) (emptyConf{hex=True}, m[])
     , Eval "isfinite(42<<10000)"        (B False) (emptyConf{hex=True}, m[])
     , Eval "isfinite((42<<10)/5)"       (B True) (emptyConf{hex=True}, m[])

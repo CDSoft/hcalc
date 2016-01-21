@@ -192,6 +192,109 @@ evalAll st (e:es) = (st2, e':es')
         (st1, e') = eval st e
         (st2, es') = evalAll st1 es
 
+-- Evaluate 2 expressions in sequence and coerce their types
+eval2' :: State -> Expr -> Expr -> (State, Expr, Expr)
+eval2' st e1 e2 = case eval2 st e1 e2 of
+    (_, E err, _) -> (st, E err, None)
+    (_, _, E err) -> (st, E err, None)
+    (st', Z x, Z y) -> (st', Z x, Z y)
+    (st', Z x, Q y) -> (st', Q $ fromInteger x, Q y)
+    (st', Z x, R y) -> (st', R $ fromInteger x, R y)
+    (st', Q x, Z y) -> (st', Q x, Q $ fromInteger y)
+    (st', Q x, Q y) -> (st', Q x, Q y)
+    (st', Q x, R y) -> (st', R $ fromRational x, R y)
+    (st', R x, Z y) -> (st', R x, R $ fromInteger y)
+    (st', R x, Q y) -> (st', R x, R $ fromRational y)
+    (st', R x, R y) -> (st', R x, R y)
+    (st', S x, y) -> (st', S x, S $ pp' y)
+    (st', x, S y) -> (st', S $ pp' x, S y)
+    (st', B x, B y) -> (st', B x, B y)
+    (_, x, y) -> (st, x, y)
+
+-- apply binary arithmetic operators on numbers and strings
+apply2Arith :: String
+            -> (Integer -> Integer -> Expr)
+            -> (Ratio Integer -> Ratio Integer -> Expr)
+            -> (Double -> Double -> Expr)
+            -> (String -> String -> Expr)
+            -> (State, Expr, Expr)
+            -> (State, Expr)
+apply2Arith op opZ opQ opR opS (st, x, y) = case (x, y) of
+    (E err, _) -> (st, E err)
+    (_, E err) -> (st, E err)
+    (Z x', Z y') -> (st, opZ x' y')
+    (Q x', Q y') -> (st, opQ x' y')
+    (R x', R y') -> (st, opR x' y')
+    (S x', S y') -> (st, opS x' y')
+    (_, _) -> (st, badOp2 op () ())
+
+-- apply unary arithmetic operators on numbers and strings
+apply1Arith :: String
+            -> (Integer -> Expr)
+            -> (Ratio Integer -> Expr)
+            -> (Double -> Expr)
+            -> (String -> Expr)
+            -> (State, Expr)
+            -> (State, Expr)
+apply1Arith op opZ opQ opR opS (st, x) = case x of
+    E err -> (st, E err)
+    Z x' -> (st, opZ x')
+    Q x' -> (st, opQ x')
+    R x' -> (st, opR x')
+    S x' -> (st, opS x')
+    _ -> (st, badOp1 op ())
+
+badOp2 :: String -> a -> a -> Expr
+badOp2 op _ _ = E $ "bad operands for '" ++ op ++ "'"
+
+badOp1 :: String -> a -> Expr
+badOp1 op _ = E $ "bad operand for '" ++ op ++ "'"
+
+-- apply binary bitwise operators on integers
+apply2Bit :: String
+          -> (Integer -> Integer -> Expr)
+          -> (State, Expr, Expr)
+          -> (State, Expr)
+apply2Bit op opZ (st, x, y) = case (x, y) of
+    (E err, _) -> (st, E err)
+    (_, E err) -> (st, E err)
+    (Z x', Z y') -> (setHex st, opZ x' y')
+    (_, _) -> (st, badOp2 op () ())
+
+-- apply unary bitwise operators on integers
+apply1Bit :: String
+          -> (Integer -> Expr)
+          -> (State, Expr)
+          -> (State, Expr)
+apply1Bit op opZ (st, x) = case x of
+    E err -> (st, E err)
+    Z x' -> (setHex st, opZ x')
+    _ -> (st, badOp1 op ())
+
+-- apply binary bitwise operators on booleans
+apply2Bool :: String
+           -> (Bool -> Bool -> Expr)
+           -> (State, Expr, Expr)
+           -> (State, Expr)
+apply2Bool op opB (st, x, y) = case (x, y) of
+    (E err, _) -> (st, E err)
+    (_, E err) -> (st, E err)
+    (B x', B y') -> (st, opB x' y')
+    (_, _) -> (st, badOp2 op () ())
+
+-- apply unary bitwise operators on booleans
+apply1Bool :: String
+           -> (Bool -> Expr)
+           -> (State, Expr)
+           -> (State, Expr)
+apply1Bool op opB (st, x) = case x of
+    E err -> (st, E err)
+    B x' -> (st, opB x')
+    _ -> (st, badOp1 op ())
+
+(#) :: (b -> Expr) -> (a -> a -> b) -> (a -> a -> Expr)
+(#) t f x y = t (f x y)
+
 -- Simplify a rational number.
 -- If the denominator is 1, the value is an integer
 sQ :: Ratio Integer -> Expr
@@ -254,229 +357,51 @@ eval st (Tern cond x y) = case eval st cond of
                             (_, _) -> (st, E "non boolean condition")
 
 -- boolean operations
-eval st (Or x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', B x', B y') -> (st', B (x'||y'))
-    (_, _, _) -> (st, E "bad operands for 'or'")
-eval st (Xor x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', B x', B y') -> (st', B (x'/=y'))
-    (_, _, _) -> (st, E "bad operands for 'xor'")
-eval st (And x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', B x', B y') -> (st', B (x'&&y'))
-    (_, _, _) -> (st, E "bad operands for 'and'")
-eval st (Not x) = case eval st x of
-    (_, E err) -> (st, E err)
-    (st', B x') -> (st', B (not x'))
-    (_, _) -> (st, E "bad operand for 'not'")
+eval st (Or x y)  = apply2Bool "or"  (B#(||))  $ eval2 st x y
+eval st (Xor x y) = apply2Bool "xor" (B#(/=))  $ eval2 st x y
+eval st (And x y) = apply2Bool "and" (B#(&&))  $ eval2 st x y
+eval st (Not x)   = apply1Bool "not" (B . not) $ eval st x
 
 -- comparison operations
-eval st (Le x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (st', B (x'<=y'))
-    (st', Z x', Q y') -> (st', B (fromInteger x'<=y'))
-    (st', Z x', R y') -> (st', B (fromInteger x'<=y'))
-    (st', Q x', Z y') -> (st', B (x'<=fromInteger y'))
-    (st', Q x', Q y') -> (st', B (x'<=y'))
-    (st', Q x', R y') -> (st', B (fromRational x'<=y'))
-    (st', R x', Z y') -> (st', B (x'<=fromInteger y'))
-    (st', R x', Q y') -> (st', B (x'<=fromRational y'))
-    (st', R x', R y') -> (st', B (x'<=y'))
-    (st', S x', S y') -> (st', B (x'<=y'))
-    (_, _, _) -> (st, E "bad operands for '<='")
-eval st (Lt x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (st', B (x'<y'))
-    (st', Z x', Q y') -> (st', B (fromInteger x'<y'))
-    (st', Z x', R y') -> (st', B (fromInteger x'<y'))
-    (st', Q x', Z y') -> (st', B (x'<fromInteger y'))
-    (st', Q x', Q y') -> (st', B (x'<y'))
-    (st', Q x', R y') -> (st', B (fromRational x'<y'))
-    (st', R x', Z y') -> (st', B (x'<fromInteger y'))
-    (st', R x', Q y') -> (st', B (x'<fromRational y'))
-    (st', R x', R y') -> (st', B (x'<y'))
-    (st', S x', S y') -> (st', B (x'<y'))
-    (_, _, _) -> (st, E "bad operands for '<'")
-eval st (Ge x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (st', B (x'>=y'))
-    (st', Z x', Q y') -> (st', B (fromInteger x'>=y'))
-    (st', Z x', R y') -> (st', B (fromInteger x'>=y'))
-    (st', Q x', Z y') -> (st', B (x'>=fromInteger y'))
-    (st', Q x', Q y') -> (st', B (x'>=y'))
-    (st', Q x', R y') -> (st', B (fromRational x'>=y'))
-    (st', R x', Z y') -> (st', B (x'>=fromInteger y'))
-    (st', R x', Q y') -> (st', B (x'>=fromRational y'))
-    (st', R x', R y') -> (st', B (x'>=y'))
-    (st', S x', S y') -> (st', B (x'>=y'))
-    (_, _, _) -> (st, E "bad operands for '>='")
-eval st (Gt x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (st', B (x'>y'))
-    (st', Z x', Q y') -> (st', B (fromInteger x'>y'))
-    (st', Z x', R y') -> (st', B (fromInteger x'>y'))
-    (st', Q x', Z y') -> (st', B (x'>fromInteger y'))
-    (st', Q x', Q y') -> (st', B (x'>y'))
-    (st', Q x', R y') -> (st', B (fromRational x'>y'))
-    (st', R x', Z y') -> (st', B (x'>fromInteger y'))
-    (st', R x', Q y') -> (st', B (x'>fromRational y'))
-    (st', R x', R y') -> (st', B (x'>y'))
-    (st', S x', S y') -> (st', B (x'>y'))
-    (_, _, _) -> (st, E "bad operands for '>'")
-eval st (Eq x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (st', B (x'==y'))
-    (st', Z x', Q y') -> (st', B (fromInteger x'==y'))
-    (st', Z x', R y') -> (st', B (fromInteger x'==y'))
-    (st', Q x', Z y') -> (st', B (x'==fromInteger y'))
-    (st', Q x', Q y') -> (st', B (x'==y'))
-    (st', Q x', R y') -> (st', B (fromRational x'==y'))
-    (st', R x', Z y') -> (st', B (x'==fromInteger y'))
-    (st', R x', Q y') -> (st', B (x'==fromRational y'))
-    (st', R x', R y') -> (st', B (x'==y'))
-    (st', S x', S y') -> (st', B (x'==y'))
-    (_, _, _) -> (st, E "bad operands for '=='")
-eval st (Ne x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (st', B (x'/=y'))
-    (st', Z x', Q y') -> (st', B (fromInteger x'/=y'))
-    (st', Z x', R y') -> (st', B (fromInteger x'/=y'))
-    (st', Q x', Z y') -> (st', B (x'/=fromInteger y'))
-    (st', Q x', Q y') -> (st', B (x'/=y'))
-    (st', Q x', R y') -> (st', B (fromRational x'/=y'))
-    (st', R x', Z y') -> (st', B (x'/=fromInteger y'))
-    (st', R x', Q y') -> (st', B (x'/=fromRational y'))
-    (st', R x', R y') -> (st', B (x'/=y'))
-    (st', S x', S y') -> (st', B (x'/=y'))
-    (_, _, _) -> (st, E "bad operands for '!='")
+eval st (Le x y) = apply2Arith "<=" (B#(<=)) (B#(<=)) (B#(<=)) (B#(<=)) $ eval2' st x y
+eval st (Lt x y) = apply2Arith "<"  (B#(<))  (B#(<))  (B#(<))  (B#(<))  $ eval2' st x y
+eval st (Ge x y) = apply2Arith ">=" (B#(>=)) (B#(>=)) (B#(>=)) (B#(>=)) $ eval2' st x y
+eval st (Gt x y) = apply2Arith ">"  (B#(>))  (B#(>))  (B#(>))  (B#(>))  $ eval2' st x y
+eval st (Eq x y) = apply2Arith "==" (B#(==)) (B#(==)) (B#(==)) (B#(==)) $ eval2' st x y
+eval st (Ne x y) = apply2Arith "!=" (B#(/=)) (B#(/=)) (B#(/=)) (B#(/=)) $ eval2' st x y
 
 -- bitwise operations
-eval st (BitOr x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (setHex st', Z (x'.|.y'))
-    (_, _, _) -> (st, E "bad operands for '|'")
-eval st (BitXor x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (setHex st', Z (x'`xor`y'))
-    (_, _, _) -> (st, E "bad operands for '^'")
-eval st (BitAnd x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (setHex st', Z (x'.&.y'))
-    (_, _, _) -> (st, E "bad operands for '&'")
-eval st (LShift x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (setHex st', Z (x' `shift` fromInteger y'))
-    (_, _, _) -> (st, E "bad operands for '<<'")
-eval st (RShift x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (setHex st', Z (x' `shift` negate (fromInteger y')))
-    (_, _, _) -> (st, E "bad operands for '>>'")
-eval st (BitNeg x) = case eval st x of
-    (_, E err) -> (st, E err)
-    (st', Z x') -> (setHex st', Z (complement x'))
-    (_, _) -> (st, E "bad operand for '~'")
+eval st (BitOr x y)  = apply2Bit "|"  (Z#(.|.)) $ eval2 st x y
+eval st (BitXor x y) = apply2Bit "^"  (Z#xor)   $ eval2 st x y
+eval st (BitAnd x y) = apply2Bit "&"  (Z#(.&.)) $ eval2 st x y
+eval st (LShift x y) = apply2Bit "<<" (Z#(\a b -> shift a (fromInteger b))) $ eval2 st x y
+eval st (RShift x y) = apply2Bit ">>" (Z#(\a b -> shift a (negate (fromInteger b)))) $ eval2 st x y
+eval st (BitNeg x)   = apply1Bit "~"  (Z . complement) $ eval st x
 
 -- arithmetic operations
-eval st (Add x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (st', Z (x'+y'))
-    (st', Z x', Q y') -> (st', sQ (fromInteger x'+y'))
-    (st', Z x', R y') -> (st', R (fromInteger x'+y'))
-    (st', Q x', Z y') -> (st', sQ (x'+fromInteger y'))
-    (st', Q x', Q y') -> (st', sQ (x'+y'))
-    (st', Q x', R y') -> (st', R (fromRational x'+y'))
-    (st', R x', Z y') -> (st', R (x'+fromInteger y'))
-    (st', R x', Q y') -> (st', R (x'+fromRational y'))
-    (st', R x', R y') -> (st', R (x'+y'))
-    (st', S x', y') -> (st', S (x' ++ pp' y'))
-    (st', x', S y') -> (st', S (pp' x' ++ y'))
-    (_, _, _) -> (st, E "bad operands for '+'")
-eval st (Sub x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (st', Z (x'-y'))
-    (st', Z x', Q y') -> (st', sQ (fromInteger x'-y'))
-    (st', Z x', R y') -> (st', R (fromInteger x'-y'))
-    (st', Q x', Z y') -> (st', sQ (x'-fromInteger y'))
-    (st', Q x', Q y') -> (st', sQ (x'-y'))
-    (st', Q x', R y') -> (st', R (fromRational x'-y'))
-    (st', R x', Z y') -> (st', R (x'-fromInteger y'))
-    (st', R x', Q y') -> (st', R (x'-fromRational y'))
-    (st', R x', R y') -> (st', R (x'-y'))
-    (_, _, _) -> (st, E "bad operands for '-'")
+eval st (Add x y) = apply2Arith "+" (Z#(+)) (sQ#(+)) (R#(+)) (S#(++))     $ eval2' st x y
+eval st (Sub x y) = apply2Arith "-" (Z#(-)) (sQ#(-)) (R#(-)) (badOp2 "-") $ eval2' st x y
 eval st (Mul x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
-    (st', Z x', Z y') -> (st', Z (x'*y'))
-    (st', Z x', Q y') -> (st', sQ (fromInteger x'*y'))
-    (st', Z x', R y') -> (st', R (fromInteger x'*y'))
-    (st', Q x', Z y') -> (st', sQ (x'*fromInteger y'))
-    (st', Q x', Q y') -> (st', sQ (x'*y'))
-    (st', Q x', R y') -> (st', R (fromRational x'*y'))
-    (st', R x', Z y') -> (st', R (x'*fromInteger y'))
-    (st', R x', Q y') -> (st', R (x'*fromRational y'))
-    (st', R x', R y') -> (st', R (x'*y'))
     (st', S x', Z y') -> (st', S (concat $ replicate (fromInteger y') x'))
     (st', Z x', S y') -> (st', S (concat $ replicate (fromInteger x') y'))
-    (_, _, _) -> (st, E "bad operands for '*'")
+    (st', x', y') -> apply2Arith "*" (Z#(*)) (sQ#(*)) (R#(*)) (badOp2 "*") $ eval2' st' x' y'
 eval st (Div x y) = case eval2 st x y of
-    (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
     (st', Z _, Z 0)   -> (st', E "Zero division")
     (st', Q _, Z 0)   -> (st', E "Zero division")
     (st', Z _, Q 0)   -> (st', E "Zero division")
     (st', Q _, Q 0)   -> (st', E "Zero division")
-    (st', Z x', Z y') -> (st', sQ (x'%y'))
-    (st', Z x', Q y') -> (st', sQ (fromInteger x'/y'))
-    (st', Z x', R y') -> (st', R (fromInteger x'/y'))
-    (st', Q x', Z y') -> (st', sQ (x'/fromInteger y'))
-    (st', Q x', Q y') -> (st', sQ (x'/y'))
-    (st', Q x', R y') -> (st', R (fromRational x'/y'))
-    (st', R x', Z y') -> (st', R (x'/fromInteger y'))
-    (st', R x', Q y') -> (st', R (x'/fromRational y'))
-    (st', R x', R y') -> (st', R (x'/y'))
-    (_, _, _) -> (st, E "bad operands for '/'")
+    (st', x', y') -> apply2Arith "/" (sQ#(%)) (sQ#(/)) (R#(/)) (badOp2 "/") $ eval2' st' x' y'
 eval st (Quot x y) = case eval2 st x y of
     (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
     (_, _, Z 0) -> (st, E "Zero division")
-    (st', Z x', Z y') -> (st', Z (x' `div` y'))
-    (_, _, _) -> (st, E "bad operands for '//'")
+    (st', x', y') -> apply2Arith "//" (Z#div) (badOp2 "//") (badOp2 "//") (badOp2 "//") $ (st', x', y') -- no coercition
 eval st (Mod x y) = case eval2 st x y of
     (_, E err, _) -> (st, E err)
-    (_, _, E err) -> (st, E err)
     (_, _, Z 0) -> (st, E "Zero division")
-    (st', Z x', Z y') -> (st', Z (x' `mod` y'))
-    (_, _, _) -> (st, E "bad operands for '%'")
+    (st', x', y') -> apply2Arith "%" (Z#mod) (badOp2 "%") (badOp2 "%") (badOp2 "%") $ (st', x', y') -- no coercition
 
-eval st (Pos x) = case eval st x of
-    (_, E err) -> (st, E err)
-    (st', Z x') -> (st', Z x')
-    (st', Q x') -> (st', Q x')
-    (st', R x') -> (st', R x')
-    (_, _) -> (st, E "bad operand for '+'")
-eval st (Neg x) = case eval st x of
-    (_, E err) -> (st, E err)
-    (st', Z x') -> (st', Z (negate x'))
-    (st', Q x') -> (st', Q (negate x'))
-    (st', R x') -> (st', R (negate x'))
-    (_, _) -> (st, E "bad operand for '-'")
+eval st (Pos x) = apply1Arith "+" (Z . id) (Q . id) (R . id) (badOp1 "+") $ eval st x
+eval st (Neg x) = apply1Arith "-" (Z . negate) (Q . negate) (R . negate) (badOp1 "-") $ eval st x
 
 eval st (Pow x y) = case eval2 st x y of
     (_, E err, _) -> (st, E err)
@@ -515,7 +440,7 @@ eval st (F_RR name f) = case evalBuiltinArgs 1 st of
     (st', [Z x]) -> (st', R $ f $ fromInteger x)
     (st', [Q x]) -> (st', R $ f $ fromRational x)
     (st', [R x]) -> (st', R $ f x)
-    (_, _) -> (st, E $ "bad operand for "++name)
+    (_, _) -> (st, badOp1 name ())
 
 -- functions :: R -> Z
 eval st (F_RZ name fZ fQ fR) = case evalBuiltinArgs 1 st of
@@ -523,7 +448,7 @@ eval st (F_RZ name fZ fQ fR) = case evalBuiltinArgs 1 st of
     (st', [Z x]) -> (st', Z $ fZ x)
     (st', [Q x]) -> (st', Z $ fQ x)
     (st', [R x]) -> (st', Z $ fR x)
-    (_, _) -> (st, E $ "bad operand for "++name)
+    (_, _) -> (st, badOp1 name ())
 
 -- functions :: R -> Q
 eval st (F_RQ name fZ fQ fR) = case evalBuiltinArgs 1 st of
@@ -531,7 +456,7 @@ eval st (F_RQ name fZ fQ fR) = case evalBuiltinArgs 1 st of
     (st', [Z x]) -> (st', sQ $ fZ x)
     (st', [Q x]) -> (st', sQ $ fQ x)
     (st', [R x]) -> (st', sQ $ fR x)
-    (_, _) -> (st, E $ "bad operand for "++name)
+    (_, _) -> (st, badOp1 name ())
 
 -- functions :: (R,R) -> Q
 eval st (F_RRQ name fZ fQ fR) = case evalBuiltinArgs 2 st of
@@ -546,7 +471,7 @@ eval st (F_RRQ name fZ fQ fR) = case evalBuiltinArgs 2 st of
     (st', [R x, Z y]) -> (st', sQ $ fR x (fromInteger y))
     (st', [R x, Q y]) -> (st', sQ $ fR x (fromRational y))
     (st', [R x, R y]) -> (st', sQ $ fR x y)
-    (_, _) -> (st, E $ "bad operands for "++name)
+    (_, _) -> (st, badOp2 name () ())
 
 -- functions :: a -> a
 eval st (F_AA name fZ fQ fR) = case evalBuiltinArgs 1 st of
@@ -554,7 +479,7 @@ eval st (F_AA name fZ fQ fR) = case evalBuiltinArgs 1 st of
     (st', [Z x]) -> (st', Z $ fZ x)
     (st', [Q x]) -> (st', Q $ fQ x)
     (st', [R x]) -> (st', R $ fR x)
-    (_, _) -> (st, E $ "bad operand for "++name)
+    (_, _) -> (st, badOp1 name ())
 
 -- functions :: (a,a) -> a
 eval st (F_AAA name fZ fQ fR) = case evalBuiltinArgs 2 st of
@@ -569,7 +494,7 @@ eval st (F_AAA name fZ fQ fR) = case evalBuiltinArgs 2 st of
     (st', [R x, Z y]) -> (st', R $ fR x (fromInteger y))
     (st', [R x, Q y]) -> (st', R $ fR x (fromRational y))
     (st', [R x, R y]) -> (st', R $ fR x y)
-    (_, _) -> (st, E $ "bad operands for "++name)
+    (_, _) -> (st, badOp2 name () ())
 
 -- functions :: (R,R) -> R
 eval st (F_RRR name f) = case evalBuiltinArgs 2 st of
@@ -584,13 +509,13 @@ eval st (F_RRR name f) = case evalBuiltinArgs 2 st of
     (st', [R x, Z y]) -> (st', R $ f x (fromInteger y))
     (st', [R x, Q y]) -> (st', R $ f x (fromRational y))
     (st', [R x, R y]) -> (st', R $ f x y)
-    (_, _) -> (st, E $ "bad operands for "++name)
+    (_, _) -> (st, badOp2 name () ())
 
 -- functions :: Z -> R
 eval st (F_ZR name f) = case evalBuiltinArgs 1 st of
     (_, [E err]) -> (st, E err)
     (st', [Z x]) -> (st', R $ f x)
-    (_, _) -> (st, E $ "bad operand for "++name)
+    (_, _) -> (st, badOp1 name ())
 
 -- functions :: R -> B
 eval st (F_RB name f) = case evalBuiltinArgs 1 st of
@@ -598,7 +523,7 @@ eval st (F_RB name f) = case evalBuiltinArgs 1 st of
     (st', [Z x]) -> (st', B $ f $ fromInteger x)
     (st', [Q x]) -> (st', B $ f $ fromRational x)
     (st', [R x]) -> (st', B $ f x)
-    (_, _) -> (st, E $ "bad operand for "++name)
+    (_, _) -> (st, badOp1 name ())
 
 -- commands for the interface
 -- display a string
