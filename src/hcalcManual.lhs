@@ -65,13 +65,18 @@ Download and installation
 \def{LINUX}{[hcalc](http://cdsoft.fr/hcalc/hcalc)}
 \def{WIN}{[hcalc.exe](http://cdsoft.fr/hcalc/hcalc.exe)}
 
+\def{PP}{[PP](http://cdsoft.fr/pp)}
+\def{Pandoc}{[Pandoc](http://pandoc.org/)}
+\def{Haskell}{[Haskell](https://www.haskell.org/)}
+
 The current version is [!VERSION](!URL)
 
 **Installation from sources on Linux or Windows:**
 
 - Prerequisites
-    - Haskell Platform installed
+    - !Haskell
     - Cygwin or MSYS/Mingw properly installed on Windows
+    - !PP and !Pandoc to generate the documentation (optional)
 - Download [!TAR](!URL)
 - Unpack !TAR
 - Run make
@@ -86,7 +91,8 @@ The current version is [!VERSION](!URL)
 
 **Notes:**
 
-- for a better user experience on Linux, it is recommended to use hcalc with `rlwrap` (e.g. `rlwrap hcalc`). `rlwrap` will give hcalc nice editing features.
+- For a better user experience on Linux, it is recommended to use Handy Calc with `rlwrap` (e.g. `rlwrap hcalc`). `rlwrap` will give hcalc nice editing features.
+- The binaries may or may not work on your specific OS version. Compiling the sources is the prefered way to get Handy Calc work.
 
 Screenshot
 ==========
@@ -102,7 +108,7 @@ User's manual
 
 \begin{code}
 
--- The examples given in the user manual are actually executed to check that hcalc produce the expected outputs.
+-- The examples given in the user's manual are actually executed to check that hcalc produce the expected outputs.
 
 {-# LANGUAGE  QuasiQuotes #-}
 
@@ -115,7 +121,7 @@ hCalcTests :: String
 hCalcTests = [i|
 \end{code}
 
-**TODO**: write a real user manual!
+**TODO**: write a real user's manual!
 
 `````````````````````````````````````````````````````````````````````
 \begin{code}
