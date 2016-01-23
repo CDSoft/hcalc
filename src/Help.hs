@@ -57,7 +57,7 @@ shortNameLower :: String
 shortNameLower = map toLower V.shortName
 
 title :: String
-title = map toUpper $ intersperse ' ' V.shortName
+title = map toUpper $ intersperse ' ' V.name
 
 shortHelp :: String
 shortHelp = [iTrim|

@@ -17,87 +17,88 @@
 # You should have received a copy of the GNU General Public License
 # along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 
-MODULES = $(wildcard [A-Z]*.hs) $(wildcard *.c)
-SRC = hcalc.hs
-TEST = hcalcTest.hs
-ARCHIVE = $(SRC) $(TEST) $(MODULES) Makefile
+MODULES	= $(wildcard src/[A-Z]*.hs) $(wildcard src/*.c)
+SRC 	= src/hcalc.hs
+TEST 	= src/hcalcTest.hs
+MANUAL 	= src/hcalcManual.lhs
+CSS		= src/hcalc.css
 
-DEPENDENCIES = here
+# Directory structure:
+# src: source files
+# doc: generated documentation
+# doc/test: test result reports
+# bin: binaries
+# build: intermediate file, test executables, ...
 
-ifeq "$(shell uname)" "Linux"
+UNAME   = $(shell uname)
+
+ifeq "$(UNAME)" "Linux"
 
 # Compilation on Linux
-all: hcalc hcalc.exe
-test: hcalcTest
-WINE		= wine
-GCC_WIN		= $(shell ls /usr/bin/i686-*mingw32*-gcc | head -1 | sed 's/gcc$$//')
+
+all: bin/hcalc bin/hcalc.exe
+test: doc/test/hcalcTest/hcalcTest.txt doc/test/hcalcManual/hcalcManual.txt
+doc: doc/hcalcManual.html
+
+GCC_WIN	= $(shell ls /usr/bin/i686-*mingw32*-gcc | head -1 | sed 's/gcc$$//')
+WINE    = wine
 
 else
 
 # Compilation on Windows
-all: hcalc.exe
-test: hcalcTest.exe
-WINE		=
-GCC_WIN		=
+
+all: bin/hcalc.exe
+test: doc/test/hcalcTest/hcalcTest.txt doc/test/hcalcManual/hcalcManual.txt
+doc: doc/hcalcManual.html
+
+GCC_WIN	=
+EXE		= .exe
 
 endif
 
-UPX = upx -9qq
-
-GHC_OPT 		= -O2 -Werror -Wall -fwarn-unused-do-bind
-GHC_OPT_TEST 	=     -Werror -Wall -fwarn-unused-do-bind
-
-BUILD			= build
-BUILD_LINUX		= $(BUILD)/linux
-BUILD_WIN		= $(BUILD)/win
-
-GHC_OPT_LINUX	= $(GHC_OPT) -outputdir $(BUILD_LINUX)
-GHC_OPT_WIN 	= $(GHC_OPT) -outputdir $(BUILD_WIN)
-
-GHC_OPT_TEST_LINUX	= $(GHC_OPT_TEST) -outputdir $(BUILD_LINUX)/test -fhpc
-GHC_OPT_TEST_WIN	= $(GHC_OPT_TEST) -outputdir $(BUILD_WIN)/test
-
 .DELETE_ON_ERROR:
+
+#####################################################################
+# Configuration
+#####################################################################
+
+DEPENDENCIES = here
 
 setup:
 	cabal update
 	cabal install $(DEPENDENCIES)
+ifeq "$(UNAME)" "Linux"
 	$(WINE) cabal update
 	$(WINE) cabal install $(DEPENDENCIES)
+endif
+
+#####################################################################
+# Compilation
+#####################################################################
+
+GHC_OPT = -O2 -Werror -Wall -fwarn-unused-do-bind
+UPX 	= upx -9qq
 
 clean:
-	-rm -rf hcalc hcalc.exe hcalcTest hcalcTest.exe $(BUILD) .hpc *.tix
+	-rm -rf bin doc build .hpc
 
-tests: test
-
-hcalc: $(SRC) $(MODULES)
-	@mkdir -p $(BUILD_LINUX)
-	ghc $(GHC_OPT_LINUX) --make $(SRC) $(MODULES)
+bin/hcalc: $(SRC) $(MODULES)
+	@mkdir -p $(dir $@)
+	@mkdir -p build/$(notdir $@)
+	ghc $(GHC_OPT) -outputdir build/$(notdir $@) -o $@ --make $(SRC) $(MODULES)
 	-strip $@
 	-$(UPX) $@
 
-hcalc.exe: $(SRC) $(MODULES) $(BUILD_WIN)/icon.o
-	@mkdir -p $(BUILD_WIN)
-	$(WINE) ghc $(GHC_OPT_WIN) --make $(SRC) $(MODULES)
+bin/hcalc.exe: $(SRC) $(MODULES) build/hcalc.exe/icon.o
+	@mkdir -p $(dir $@)
+	@mkdir -p build/$(notdir $@)
+	$(WINE) ghc $(GHC_OPT) -outputdir build/$(notdir $@) -o $@ --make $(SRC) $(MODULES)
 	rm $@
-	$(WINE) ghc $(GHC_OPT_WIN) --make $(SRC) $(MODULES) $(BUILD_WIN)/icon.o
+	$(WINE) ghc $(GHC_OPT) -outputdir build/$(notdir $@) -o $@ --make $(SRC) $(MODULES) build/$(notdir $@)/icon.o
 	-strip $@
 	-$(UPX) $@
 
-hcalcTest: $(TEST) $(MODULES)
-	@mkdir -p $(BUILD_LINUX)/test
-	ghc $(GHC_OPT_TEST_LINUX) --make $(TEST) $(MODULES)
-	-rm -f *.tix
-	$@
-	hpc markup --exclude=Main --destdir=$(BUILD_LINUX)/test $@
-	hpc report --exclude=Main $@
-
-hcalcTest.exe: $(TEST) $(MODULES)
-	@mkdir -p $(BUILD_WIN)/test
-	$(WINE) ghc $(GHC_OPT_TEST_WIN) --make $(TEST) $(MODULES)
-	$(WINE) $@
-
-$(BUILD)/icon.png:
+build/icon.png:
 	@mkdir -p $(dir $@)
 	convert -size 64x64 xc:white \
 		-fill blue -stroke blue -strokewidth 0 \
@@ -105,16 +106,59 @@ $(BUILD)/icon.png:
 		-draw "rectangle 8,28 55,35" \
 		$@
 
-$(BUILD)/icon.ico: $(BUILD)/icon.png
+build/icon.ico: build/icon.png
 	convert $< \
 		-bordercolor white -border 0 \
 		\( -clone 0 -resize 32x32 \) \
 		-delete 0 -alpha off -colors 2 \
 		$@
 
-$(BUILD_WIN)/icon.rc: $(BUILD)/icon.ico
+build/hcalc.exe/icon.rc: build/icon.ico
 	@mkdir -p $(dir $@)
 	echo "100 ICON \"$<\"" > $@
 
-$(BUILD_WIN)/icon.o: $(BUILD_WIN)/icon.rc
+build/hcalc.exe/icon.o: build/hcalc.exe/icon.rc
 	$(GCC_WIN)windres $< $@
+
+#####################################################################
+# Unit tests
+#####################################################################
+
+tests: test
+
+build/hcalcTest/hcalcTest$(EXE): $(TEST) $(MODULES)
+	@mkdir -p $(dir $@)
+	ghc $(GHC_OPT) -fhpc -outputdir $(dir $@) -o $@ --make $(TEST) $(MODULES)
+
+doc/test/hcalcTest/hcalcTest.txt: build/hcalcTest/hcalcTest$(EXE)
+	@mkdir -p $(dir $@)
+	@rm -f $(dir $<)/hcalcTest.tix
+	cd $(dir $<) && $(notdir $<)
+	hpc markup --exclude=Main --destdir=$(dir $@) $<
+	hpc report --exclude=Main $< | tee $@
+
+#####################################################################
+# Specification tests
+#####################################################################
+
+build/hcalcManual/hcalcManual$(EXE): $(MANUAL) $(MODULES)
+	@mkdir -p $(dir $@)
+	ghc $(GHC_OPT) -fhpc -outputdir $(dir $@) -o $@ --make $(MANUAL) $(MODULES)
+
+doc/test/hcalcManual/hcalcManual.txt: build/hcalcManual/hcalcManual$(EXE)
+	@mkdir -p $(dir $@)
+	@rm -f $(dir $<)/hcalcManual.tix
+	cd $(dir $<) && $(notdir $<)
+	hpc markup --exclude=Main --destdir=$(dir $@) $<
+	hpc report --exclude=Main $< | tee $@
+
+#####################################################################
+# Documentation
+#####################################################################
+
+doc/hcalcManual.html: $(MANUAL) $(CSS) bin/hcalc$(EXE)
+	@mkdir -p $(dir $@)
+	export PATH=bin:$$PATH; LANG=en pp $(MANUAL) | dpp | LANG=en pandoc -f markdown -t html5 -S -s --self-contained -N --toc -c $(CSS) -o $@
+
+$(CSS):
+	wget -O $@ http://fun.cdsoft.fr/fun.css
