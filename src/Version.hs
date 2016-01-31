@@ -21,8 +21,9 @@ along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 {- This module defines the current version
 -}
 
-module Version(name, shortName, version, dates, tag) where
+module Version(name, shortName, version, dates, tag, url) where
 
+import Data.Char
 import Data.List
 
 name :: String
@@ -32,10 +33,13 @@ shortName :: String
 shortName = "hCalc"
 
 version :: [Int]
-version = [0, 0, 2]
+version = [0, 0, 3]
 
 dates :: [Int]
 dates = [2016]
 
 tag :: String
 tag = name ++ " " ++ intercalate "." (map show version)
+
+url :: String
+url = "http://cdsoft.fr/" ++ map toLower shortName

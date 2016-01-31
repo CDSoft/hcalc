@@ -31,6 +31,7 @@ import Help
 import IEEE754
 import Interface
 import Parser
+import qualified Version as V
 
 import Control.Monad
 import Data.Char
@@ -466,6 +467,7 @@ unitTests =
     , Eval "1.5-1"                      (R 0.5) emptyState
     , Eval "1.5-1/2"                    (R 1.0) emptyState
     , Eval "1.5-2.75"                   (R (-1.25)) emptyState
+    , Eval "\"x\"-0"                    (E "bad operands for '-'") emptyState
 
     , Eval "x*0"                        (E "'x' is not defined") emptyState
     , Eval "0*x"                        (E "'x' is not defined") emptyState
@@ -482,6 +484,7 @@ unitTests =
     , Eval "2.5*3.5"                    (R 8.75) emptyState
     , Eval "\"ab\"*3"                   (S "ababab") emptyState
     , Eval "3*\"ab\""                   (S "ababab") emptyState
+    , Eval "\"x\"*0.0"                  (E "bad operands for '*'") emptyState
 
     , Eval "x/0"                        (E "'x' is not defined") emptyState
     , Eval "0/x"                        (E "'x' is not defined") emptyState
@@ -501,6 +504,7 @@ unitTests =
     , Eval "0.0/0"                      (R nan) emptyState
     , Eval "1.0/0"                      (R (1.0/0)) emptyState
     , Eval "(-1.0)/0"                   (R (-1.0/0)) emptyState
+    , Eval "\"x\"/1.0"                  (E "bad operands for '/'") emptyState
 
     , Eval "x//0"                       (E "'x' is not defined") emptyState
     , Eval "0//x"                       (E "'x' is not defined") emptyState
@@ -510,6 +514,12 @@ unitTests =
     , Eval "66//9"                      (Z 7) emptyState
     , Eval "(-66)//9"                   (Z (-8)) emptyState
     , Eval "0//9"                       (Z 0) emptyState
+    , Eval "\"x\"//1"                   (E "bad operands for '//'") emptyState
+    , Eval "1//(1/2)"                   (E "bad operands for '//'") emptyState
+    , Eval "1//(1.2)"                   (E "bad operands for '//'") emptyState
+    , Eval "(1/2)//(1/2)"               (E "bad operands for '//'") emptyState
+    , Eval "(1.2)//(1.2)"               (E "bad operands for '//'") emptyState
+    , Eval "\"x\"//\"y\""               (E "bad operands for '//'") emptyState
 
     , Eval "x%0"                        (E "'x' is not defined") emptyState
     , Eval "0%x"                        (E "'x' is not defined") emptyState
@@ -519,6 +529,12 @@ unitTests =
     , Eval "66%9"                       (Z 3) emptyState
     , Eval "(-66)%9"                    (Z 6) emptyState
     , Eval "0%9"                        (Z 0) emptyState
+    , Eval "\"x\"%1"                    (E "bad operands for '%'") emptyState
+    , Eval "1%(1/2)"                    (E "bad operands for '%'") emptyState
+    , Eval "1%(1.2)"                    (E "bad operands for '%'") emptyState
+    , Eval "(1/2)%(1/2)"                (E "bad operands for '%'") emptyState
+    , Eval "(1.2)%(1.2)"                (E "bad operands for '%'") emptyState
+    , Eval "\"x\"%\"y\""                (E "bad operands for '%'") emptyState
 
     , Eval "+x"                         (E "'x' is not defined") emptyState
     , Eval "+true"                      (E "bad operand for '+'") emptyState
@@ -528,6 +544,7 @@ unitTests =
     , Eval "+(-5/2)"                    (Q (-5%2)) emptyState
     , Eval "+5.5"                       (R 5.5) emptyState
     , Eval "+(-5.5)"                    (R (-5.5)) emptyState
+    , Eval "+\"x\""                     (E "bad operand for '+'") emptyState
 
     , Eval "-x"                         (E "'x' is not defined") emptyState
     , Eval "-true"                      (E "bad operand for '-'") emptyState
@@ -537,6 +554,7 @@ unitTests =
     , Eval "-(-5/2)"                    (Q (5%2)) emptyState
     , Eval "-5.5"                       (R (-5.5)) emptyState
     , Eval "-(-5.5)"                    (R 5.5) emptyState
+    , Eval "-\"x\""                     (E "bad operand for '-'") emptyState
 
     , Eval "~x"                         (E "'x' is not defined") emptyState
     , Eval "~true"                      (E "bad operand for '~'") emptyState
@@ -869,6 +887,7 @@ unitTests =
     , REPL noINI [("exit", "")]
     , REPL noINI [("help", shortHelp++longHelp)]
     , REPL noINI [("license", license)]
+    , REPL noINI [("version", V.tag)]
     , REPL noINI [("2*21", "= 42")]
     , REPL noINI [("f(x) = 42*x", ""), ("f(101)", "= 4242")]
     , REPL noINI [("2*21", "= 42"), ("bye", "")]
@@ -948,7 +967,22 @@ unitTests =
                  [ ("x",        "= 42") ]
     , REPL ("hcalcTest.ini", "a = 4; b = 2; f(x, y) = x*10 + y; x = f(a, b); error here!")
                  [ ("x",        "! 'x' is not defined") ]
-
+    , REPL ("hcalcTest.ini", defaultIni)
+                 [ ("fact(0)",  "= 1")
+                 , ("fact(1)",  "= 1")
+                 , ("fact(2)",  "= 2")
+                 , ("fact(3)",  "= 6")
+                 , ("fact(4)",  "= 24")
+                 , ("fact(10)", "= " ++ show (foldr (*) (1::Int) [1..10]))
+                 ]
+    , REPL ("hcalcTest.ini", defaultIni)
+                 [ ("fib(0)",   "= 1")
+                 , ("fib(1)",   "= 1")
+                 , ("fib(2)",   "= 2")
+                 , ("fib(3)",   "= 3")
+                 , ("fib(4)",   "= 5")
+                 , ("fib(10)",  "= " ++ let fibs = (1::Int):1:zipWith (+) fibs (tail fibs) in show (fibs!!10))
+                 ]
     ]
 
 noINI :: (FilePath, String)

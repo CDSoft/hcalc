@@ -208,7 +208,7 @@ eval2' st e1 e2 = case eval2 st e1 e2 of
     (st', R x, R y) -> (st', R x, R y)
     (st', S x, y) -> (st', S x, S $ pp' y)
     (st', x, S y) -> (st', S $ pp' x, S y)
-    (st', B x, B y) -> (st', B x, B y)
+    -- (st', B x, B y) -> (st', B x, B y)   -- unused coercion
     (_, x, y) -> (st, x, y)
 
 -- apply binary arithmetic operators on numbers and strings
@@ -394,13 +394,13 @@ eval st (Div x y) = case eval2 st x y of
 eval st (Quot x y) = case eval2 st x y of
     (_, E err, _) -> (st, E err)
     (_, _, Z 0) -> (st, E "Zero division")
-    (st', x', y') -> apply2Arith "//" (Z#div) (badOp2 "//") (badOp2 "//") (badOp2 "//") $ (st', x', y') -- no coercition
+    (st', x', y') -> apply2Arith "//" (Z#div) (badOp2 "//") (badOp2 "//") (badOp2 "//") (st', x', y') -- no coercion
 eval st (Mod x y) = case eval2 st x y of
     (_, E err, _) -> (st, E err)
     (_, _, Z 0) -> (st, E "Zero division")
-    (st', x', y') -> apply2Arith "%" (Z#mod) (badOp2 "%") (badOp2 "%") (badOp2 "%") $ (st', x', y') -- no coercition
+    (st', x', y') -> apply2Arith "%" (Z#mod) (badOp2 "%") (badOp2 "%") (badOp2 "%") (st', x', y') -- no coercion
 
-eval st (Pos x) = apply1Arith "+" (Z . id) (Q . id) (R . id) (badOp1 "+") $ eval st x
+eval st (Pos x) = apply1Arith "+" Z Q R (badOp1 "+") $ eval st x
 eval st (Neg x) = apply1Arith "-" (Z . negate) (Q . negate) (R . negate) (badOp1 "-") $ eval st x
 
 eval st (Pow x y) = case eval2 st x y of

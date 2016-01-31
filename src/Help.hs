@@ -29,13 +29,14 @@ import qualified Version as V
 
 import Data.Char
 import Data.List
+import Data.Maybe
 import Data.String.Here.Interpolated
 
 license :: String
 license = [iTrim|
 ${V.name}
 (C) ${intercalate ", " (map show V.dates)} Christophe Delord
-http://cdsoft.fr/${shortNameLower}
+${V.url}
 
 ${V.name} is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published
@@ -53,16 +54,10 @@ along with ${V.name}.  If not, see <http://www.gnu.org/licenses/>.
 ${V.name} is powered by Haskell.
 |]
 
-shortNameLower :: String
-shortNameLower = map toLower V.shortName
-
-title :: String
-title = map toUpper $ intersperse ' ' V.name
-
 shortHelp :: String
 shortHelp = [iTrim|
 +---------------------------------------------------------------------+
-| ${center 31 title} | ${center 15 version} | cdsoft.fr/${ljust 10 shortNameLower} |
+| ${center 31 title} | ${center 15 version} | ${center 15 url} |
 |---------------------------------------------------------------------|
 | Modes:                          | Numbers:                          |
 |     hex oct bin float reset     |     binary: 0b...                 |
@@ -82,12 +77,11 @@ shortHelp = [iTrim|
 +---------------------------------------------------------------------+
 |]
     where
+        title = map toUpper $ intersperse ' ' V.name
         version = "v " ++ intercalate "." (map show V.version)
-        center w s = replicate left ' ' ++ s ++ replicate right ' '
-            where
-                left = (w - length s) `div` 2
-                right = w - left - length s
-        ljust w s = s ++ replicate (length s - w) ' '
+        url = fromMaybe V.url $ stripPrefix "http://" V.url
+        spaces = repeat ' '
+        center w s = take w $ take ((w - length s) `div` 2) spaces ++ s ++ spaces
 
 longHelp :: String
 longHelp = [iTrim|
@@ -96,8 +90,8 @@ Constants                   Value
 
 nan                         Not a Number
 inf                         Infinite
-pi                          ${show (pi :: Double)}
-e                           ${show (exp 1 :: Double)}
+pi                          ${show (pi :: Float)}
+e                           ${show (exp 1 :: Float)}
 
 Operators / functions       Description
 =========================== ===============================================
@@ -225,7 +219,7 @@ Credits
 
 ${V.tag}
 (C) ${intercalate ", " (map show V.dates)} Christophe Delord
-http://cdsoft.fr/${shortNameLower}
+${V.url}
 
 |]
 
