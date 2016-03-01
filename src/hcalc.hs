@@ -90,10 +90,26 @@ getIni = do
 interact' :: ([String] -> [String]) -> IO ()
 interact' f = do
     input <- getContents
-    writeLines $ f $ lines input
+    let inputLines = lines input
+#ifdef linux_HOST_OS
+    writeLines inputLines (f inputLines)
+#else
+    writeLines (f inputLines)
+#endif
 
 -- write the results of the calculator,
 -- as well as the prompt for the next input
+#ifdef linux_HOST_OS
+writeLines :: [String] -> [String] -> IO ()
+writeLines inputs outputs = forM_ (zip ("":inputs) outputs) (\(input, output) -> do
+        tty <- hIsTerminalDevice stdin
+        unless tty $ hFlush stdout >> putStrLn input
+        hFlush stdout
+        putStrLn output
+        putStr $ "\n"++prompt ":"
+        hFlush stdout
+    )
+#else
 writeLines :: [String] -> IO ()
 writeLines outputs = forM_ outputs (\output -> do
         hFlush stdout
@@ -101,3 +117,4 @@ writeLines outputs = forM_ outputs (\output -> do
         putStr $ "\n"++prompt ":"
         hFlush stdout
     )
+#endif

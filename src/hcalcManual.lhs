@@ -23,7 +23,6 @@ You should have received a copy of the GNU General Public License
 along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-
 Introduction
 ============
 
@@ -91,7 +90,7 @@ The current version is [!VERSION](!URL)
 
 **Notes:**
 
-- For a better user experience on Linux, it is recommended to use Handy Calc with `rlwrap` (e.g. `rlwrap hcalc`). `rlwrap` will give hcalc nice editing features.
+- For a better user experience on Linux, it is recommended to use Handy Calc with `rlwrap` (e.g. `rlwrap hcalc`). `rlwrap` will give Handy Calc nice editing features.
 - The binaries may or may not work on your specific OS version. Compiling the sources is the prefered way to get Handy Calc work.
 
 Screenshot
@@ -102,6 +101,39 @@ Screenshot
 hcalc bye | grep -v ^Loading
 ~~~~~~~~
 ~~~~~~~~~~~~~~~~~~
+
+Command line usage
+==================
+
+Handy Calc can be used on the command line. Each argument is considered as an expression to be evaluated. Only the value of the last expression is printed.
+
+~~~~~~~~~~~~~~~~~~
+$ hcalc "x = 21" "y = 2" "x*y"
+\exec(hcalc "x = 21" "y = 2" "x*y")
+~~~~~~~~~~~~~~~~~~
+
+Interactive usage
+=================
+
+The main usage of Handy Calc is by interacting in a terminal.
+Expressions are entered with the keyboard, evaluated and the result is printed.
+The next section lists all the operators and functions provided by Handy Calc.
+
+A typical interactive looks like this:
+
+~~~~~~~~~~~~~~~
+$ hcalc
+\exec(hcalc help | head -20)
+
+: x = 21
+
+: y = 2
+
+: (x*y) ** 2
+\exec(hcalc x=21 y=2 "(x*y)**2")
+
+: bye
+~~~~~~~~~~~~~~~
 
 User's manual
 =============
@@ -138,8 +170,27 @@ flt32   -1.0 <=> 0xbf800000
 : float64
 =       -1.0
 flt64   -1.0 <=> 0xbff0000000000000
+
 \end{code}
 `````````````````````````````````````````````````````````````````````
+
+\def{ex}(
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+!1
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+\begin{code}
+: 2*3
+=       6
+\end{code}
+)
+
+un example :
+
+!ex[
+: 2*3
+=       6
+]
 
 \begin{code}
 
@@ -148,7 +199,7 @@ flt64   -1.0 <=> 0xbff0000000000000
 main :: IO ()
 main = case check hCalcTests of
     (_, 0, total) -> putStrLn ("All tests passed (" ++ show total ++ " tests)")
-    (d, n, total) -> putStrLn (unlines d) >> putStrLn ("Test failed: " ++ show n ++ " / " ++ show total) >> exitFailure
+    (d, n, total) -> putStrLn (unlines d) >> putStrLn ("Test failed: " ++ show n ++ " / " ++ show total) >> print hCalcTests >> exitFailure
 
 check :: String -> ([String], Int, Int)
 check test = (differences, errors, total)
@@ -181,9 +232,9 @@ check test = (differences, errors, total)
         diff' :: [String] -> [String] -> [String]
         diff' (x:xs) (y:ys)
             | trim x == trim y  = ("   " ++ y                                                      ) : diff' xs ys
-            | otherwise         = ("=> " ++ y ++ replicate (w - length y) ' ' ++ "   <=/=>   " ++ x) : diff' xs ys
-        diff' [] (y:ys)         = ("=> " ++ y ++ replicate (w - length y) ' ' ++ "   <=/=>   "     ) : diff' [] ys
-        diff' (x:xs) []         = ("=> "      ++ replicate  w             ' ' ++ "   <=/=>   " ++ x) : diff' xs []
+            | otherwise         = ("=>1" ++ y ++ replicate (w - length y) ' ' ++ "   <=/=>   " ++ x) : diff' xs ys
+        diff' [] (y:ys)         = ("=>2" ++ y ++ replicate (w - length y) ' ' ++ "   <=/=>   "     ) : diff' [] ys
+        diff' (x:xs) []         = ("=>3"      ++ replicate  w             ' ' ++ "   <=/=>   " ++ x) : diff' xs []
         diff' [] [] = []
 
         w = maximum (map length (inputs ++ concat outputs'))

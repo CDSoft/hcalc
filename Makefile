@@ -20,7 +20,7 @@
 MODULES	= $(wildcard src/[A-Z]*.hs) $(wildcard src/*.c)
 SRC 	= src/hcalc.hs
 TEST 	= src/hcalcTest.hs
-MANUAL 	= src/hcalcManual.lhs
+MANUAL 	= src/hcalcManual.md
 CSS		= src/hcalc.css
 
 # Directory structure:
@@ -37,7 +37,7 @@ ifeq "$(UNAME)" "Linux"
 # Compilation on Linux
 
 all: bin/hcalc bin/hcalc.exe
-test: doc/test/hcalcTest/hcalcTest.txt doc/test/hcalcManual/hcalcManual.txt
+test: doc/test/hcalcTest/hcalcTest.txt
 doc: doc/hcalcManual.html
 
 GCC_WIN	= $(shell ls /usr/bin/i686-*mingw32*-gcc | head -1 | sed 's/gcc$$//')
@@ -48,7 +48,7 @@ else
 # Compilation on Windows
 
 all: bin/hcalc.exe
-test: doc/test/hcalcTest/hcalcTest.txt doc/test/hcalcManual/hcalcManual.txt
+test: doc/test/hcalcTest/hcalcTest.txt
 doc: doc/hcalcManual.html
 
 GCC_WIN	=
@@ -138,27 +138,13 @@ doc/test/hcalcTest/hcalcTest.txt: build/hcalcTest/hcalcTest$(EXE)
 	hpc report --exclude=Main $< | tee $@
 
 #####################################################################
-# Specification tests
-#####################################################################
-
-build/hcalcManual/hcalcManual$(EXE): $(MANUAL) $(MODULES)
-	@mkdir -p $(dir $@)
-	ghc $(GHC_OPT) -fhpc -outputdir $(dir $@) -o $@ --make $(MANUAL) $(MODULES)
-
-doc/test/hcalcManual/hcalcManual.txt: build/hcalcManual/hcalcManual$(EXE)
-	@mkdir -p $(dir $@)
-	@rm -f $(dir $<)/hcalcManual.tix
-	cd $(dir $<) && $(notdir $<)
-	hpc markup --exclude=Main --destdir=$(dir $@) $<
-	hpc report --exclude=Main $< | tee $@
-
-#####################################################################
 # Documentation
 #####################################################################
 
 doc/hcalcManual.html: $(MANUAL) $(CSS) bin/hcalc$(EXE)
 	@mkdir -p $(dir $@)
 	export PATH=bin:$$PATH; LANG=en pp $(MANUAL) | dpp | LANG=en pandoc -f markdown -t html5 -S -s --self-contained -N --toc -c $(CSS) -o $@
+	#@sed -i 's#\\\(begin\|end\){code}##' $@
 
 $(CSS):
 	wget -O $@ http://fun.cdsoft.fr/fun.css
