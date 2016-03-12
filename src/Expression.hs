@@ -51,7 +51,7 @@ data Expr = E String            -- errors
 
           -- blocks
           | Seq Expr Expr               -- sequence of two expressions
-          | None                         -- empty expression
+          | None                        -- empty expression
 
           -- functions
           | F String [Expr]             -- function call: F name arguments
@@ -292,6 +292,7 @@ apply1Bool op opB (st, x) = case x of
     B x' -> (st, opB x')
     _ -> (st, badOp1 op ())
 
+-- apply a binary function (a->a->b) and returns an expression (Expr)
 (#) :: (b -> Expr) -> (a -> a -> b) -> (a -> a -> Expr)
 (#) t f x y = t (f x y)
 

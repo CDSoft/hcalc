@@ -34,9 +34,11 @@ UNAME   = $(shell uname)
 
 ifeq "$(UNAME)" "Linux"
 
+all: bin test doc
+
 # Compilation on Linux
 
-all: bin/hcalc bin/hcalc.exe
+bin: bin/hcalc bin/hcalc.exe
 test: doc/test/hcalcTest/hcalcTest.txt
 doc: doc/hcalcManual.html
 
@@ -47,7 +49,7 @@ else
 
 # Compilation on Windows
 
-all: bin/hcalc.exe
+bin: bin/hcalc.exe
 test: doc/test/hcalcTest/hcalcTest.txt
 doc: doc/hcalcManual.html
 
@@ -86,16 +88,16 @@ bin/hcalc: $(SRC) $(MODULES)
 	@mkdir -p $(dir $@)
 	@mkdir -p build/$(notdir $@)
 	ghc $(GHC_OPT) -outputdir build/$(notdir $@) -o $@ --make $(SRC) $(MODULES)
-	-strip $@
+	@-strip $@
 	-$(UPX) $@
 
 bin/hcalc.exe: $(SRC) $(MODULES) build/hcalc.exe/icon.o
 	@mkdir -p $(dir $@)
 	@mkdir -p build/$(notdir $@)
 	$(WINE) ghc $(GHC_OPT) -outputdir build/$(notdir $@) -o $@ --make $(SRC) $(MODULES)
-	rm $@
+	@rm $@
 	$(WINE) ghc $(GHC_OPT) -outputdir build/$(notdir $@) -o $@ --make $(SRC) $(MODULES) build/$(notdir $@)/icon.o
-	-strip $@
+	@-strip $@
 	-$(UPX) $@
 
 build/icon.png:
@@ -133,7 +135,7 @@ build/hcalcTest/hcalcTest$(EXE): $(TEST) $(MODULES)
 doc/test/hcalcTest/hcalcTest.txt: build/hcalcTest/hcalcTest$(EXE)
 	@mkdir -p $(dir $@)
 	@rm -f $(dir $<)/hcalcTest.tix
-	cd $(dir $<) && $(notdir $<)
+	@cd $(dir $<) && $(notdir $<)
 	hpc markup --exclude=Main --destdir=$(dir $@) $<
 	hpc report --exclude=Main $< | tee $@
 
@@ -144,7 +146,6 @@ doc/test/hcalcTest/hcalcTest.txt: build/hcalcTest/hcalcTest$(EXE)
 doc/hcalcManual.html: $(MANUAL) $(CSS) bin/hcalc$(EXE)
 	@mkdir -p $(dir $@)
 	export PATH=bin:$$PATH; LANG=en pp $(MANUAL) | dpp | LANG=en pandoc -f markdown -t html5 -S -s --self-contained -N --toc -c $(CSS) -o $@
-	#@sed -i 's#\\\(begin\|end\){code}##' $@
 
 $(CSS):
 	wget -O $@ http://fun.cdsoft.fr/fun.css

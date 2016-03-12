@@ -203,7 +203,7 @@ Logical not                 not x
 Logical and                 and
 Logical or                  or xor
 Ternary operator            x ? y : z
-Assignement                 x = y
+Assignment                  x = y
 Blocks                      expr1; ...; exprn
 
 Other commands              Description

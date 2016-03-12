@@ -33,7 +33,7 @@ shortName :: String
 shortName = "hCalc"
 
 version :: [Int]
-version = [0, 0, 3]
+version = [0, 0, 4]
 
 dates :: [Int]
 dates = [2016]

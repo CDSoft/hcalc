@@ -90,7 +90,7 @@ The current version is [!VERSION](!URL)
 
 **Notes:**
 
-- For a better user experience on Linux, it is recommended to use Handy Calc with `rlwrap` (e.g. `rlwrap hcalc`). `rlwrap` will give Handy Calc nice editing features.
+- For a better user experience on Linux, it is recommended to use Handy Calc with [`rlwrap`](http://utopia.knoware.nl/~hlub/rlwrap/rlwrap.man.html) (e.g. `rlwrap hcalc`). `rlwrap` will give Handy Calc nice editing features.
 - The binaries may or may not work on your specific OS version. Compiling the sources is the preferred way to get Handy Calc work.
 
 Screenshot
@@ -188,7 +188,7 @@ Some functions don't support rational numbers and will produce floating point nu
 
 Floating point numbers are single (32 bit) or double (64 bits) precision floating point numbers.
 
-They are represented internally by 64 bit numbers but can be converted to 32 bit numbers as well as their IEEE 754 repesentation.
+They are represented internally by 64 bit numbers but can be converted to 32 bit numbers as well as to their IEEE 754 repesentation.
 
 \hcalc(
 3.14
@@ -199,6 +199,7 @@ float32
 float64
 nan
 inf
+-inf
 )
 
 ### Automatic type conversion
@@ -209,7 +210,7 @@ Integers are prefered to rational numbers and rational numbers are prefered to f
 \hcalc(
 1+2/3
 1/3+2/3
-(2/3)*0.5
+(2/3) * 0.5
 )
 
 ### Display mode
@@ -224,11 +225,11 @@ The user can activate additional display modes by selecting:
 
 \hcalc(
 42424242
-dec8
-hex16
-oct32
-bin64
-reset
+dec8            # 8 bit decimal numbers
+hex16           # 16 bit hexadecimal numbers
+oct32           # 32 bit octal numbers
+bin64           # 64 bit binary numbers
+reset           # raw decimal value only
 )
 
 Handy Calc automatically activates some display modes under some circonstances:
@@ -237,8 +238,9 @@ Handy Calc automatically activates some display modes under some circonstances:
 - usage of a bitwise operator in an expression
 
 \hcalc(
-0b100
-1<<10
+4               # only the default display mode
+0b100           # this number activates the binary display mode
+1<<10           # this operator activates the hexadecimal display mode
 )
 
 ## Strings
@@ -278,7 +280,7 @@ x - 1
 x * 2
 x / 5
 x // 5                  # integral division
-x % 5                   # integral remainder (euclidian division)
+x % 5                   # integral remainder (Euclidean division)
 x ** 2
 )
 
@@ -286,7 +288,7 @@ x ** 2
 
 \hcalc(
 bin16
-~1                      # bit negation
+~1                      # bitwise complement
 1 | 4                   # bitwise or
 0b1100 ^ 0b0110         # bitwise exclusive or
 0b1100 & 0b0110         # bitwise and
@@ -301,6 +303,11 @@ not true
 true or false
 true xor false
 true and false
+)
+
+### Comparison operators
+
+\hcalc(
 12 < 13
 12 <= 13
 12 > 13
@@ -326,7 +333,7 @@ Logical not                 `not x`
 Logical and                 `and`
 Logical or                  `or` `xor`
 Ternary operator            `x ? y : z`
-Assignement                 `x = y`
+Assignment                  `x = y`
 Blocks                      `expr1; ...; exprn`
 
 ## Variables
