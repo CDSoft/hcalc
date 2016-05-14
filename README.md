@@ -1,3 +1,23 @@
+<!--
+Handy Calc
+Copyright (C) 2016 Christophe Delord
+http://cdsoft.fr/hcalc
+
+This file is part of Handy Calc.
+
+Handy Calc is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Handy Calc is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
+-->
 Introduction
 ============
 
@@ -240,6 +260,42 @@ By default only the raw value of the result is displayed. The user can activate 
 -   the IEEE 754 representation of floating point numbers (`float32`, `float64`)
 -   `reset` resets the display mode
 
+<!-- -->
+
+    : 42424242
+    =       42424242
+
+    : dec8            # 8 bit decimal numbers
+    =       42424242
+    dec8    178
+
+    : hex16           # 16 bit hexadecimal numbers
+    =       42424242
+    dec16   22450
+    hex16   0x57b2
+
+    : oct32           # 32 bit octal numbers
+    =       42424242
+    dec32   0042424242
+    hex32   0x028757b2
+    oct32   0o00241653662
+
+    : bin64           # 64 bit binary numbers
+    =       42424242
+    dec64   00000000000042424242
+    hex64   0x00000000028757b2
+    oct64   0o0000000000000241653662
+    bin64   0b0000000000000000000000000000000000000010100001110101011110110010
+
+    : reset           # raw decimal value only
+    =       42424242
+
+Handy Calc automatically activates some display modes under some circonstances:
+
+-   integer entered in a specific base
+-   usage of a bitwise operator in an expression
+
+<!-- -->
 
     : 4               # only the default display mode
     =       4

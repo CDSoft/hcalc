@@ -145,7 +145,6 @@ doc/test/hcalcTest/hcalcTest.txt: build/hcalcTest/hcalcTest$(EXE)
 
 README.md: $(MANUAL) bin/hcalc$(EXE)
 	export PATH=bin:$$PATH; LANG=en pp $(MANUAL) | LANG=en pandoc -f markdown -t markdown_github -o $@
-	@sed -i '/<!--/,/-->/d' $@
 
 doc/hcalcManual.html: $(MANUAL) $(CSS) bin/hcalc$(EXE)
 	@mkdir -p $(dir $@)
