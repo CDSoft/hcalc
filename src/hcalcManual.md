@@ -27,7 +27,7 @@ Introduction
 ============
 
 Handy Calc is a simple yet powerful calculator.
-Unlike most of the calculators, Handy Calc is based on a textual interface.
+Unlike most of other calculators, Handy Calc is based on a textual interface.
 It may seem a bit spartan and outdated but entering expressions with the keyboard is way easier than with a mouse.
 And you get nice editing features for free (edition, copy/paste, history, ...).
 
@@ -45,13 +45,14 @@ So Handy Calc is supposed to be better and safer than its predecessor ([Calculad
 
 If you like Handy Calc, please consider supporting my [FUN](http://fun.cdsoft.fr) project.
 
+You can also contribute to [Handy Calc on GitHub](http://github.com/CDSoft/hcalc).
+
 License
 =======
 
 ~~~~~~~~~~~~~~~~~~
-~~~~~~~~ sh
-hcalc license
-~~~~~~~~
+\exec(hcalc license)
+
 ~~~~~~~~~~~~~~~~~~
 
 Download and installation
@@ -97,9 +98,8 @@ Screenshot
 ==========
 
 ~~~~~~~~~~~~~~~~~~
-~~~~~~~~ sh
-hcalc bye | grep -v ^Loading
-~~~~~~~~
+\exec(hcalc bye | grep -v ^Loading)
+
 ~~~~~~~~~~~~~~~~~~
 
 Command line usage
@@ -111,6 +111,7 @@ Handy Calc can be used on the command line. Each argument is considered as an ex
 ~~~~~~~~~~~~~~~~~~~~
 $ hcalc \1
 \exec(hcalc \1)
+
 ~~~~~~~~~~~~~~~~~~~~
 }
 
@@ -128,7 +129,8 @@ A typical interactive session looks like this:
 \def{hcalc}{
 ````````````````````````````````````````
 $ hcalc
-~~~~~~~~~~~~~~~~~~~~ sh
+\sh
+~~~~~~~~~~~~~~~~~~~~
 cat << EOF | sed '/^$/d' | hcalc | sed '/Loading/d' | sed '1d'
 \1
 EOF
@@ -137,18 +139,20 @@ EOF
 ````````````````````````````````````````
 }
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 x = 21
 y = 2
 (x * y) ** 2
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 User's manual
 =============
 
 \def{hcalc}{
 ````````````````````````````````````````
-~~~~~~~~~~~~~~~~~~~~ sh
+\sh
+~~~~~~~~~~~~~~~~~~~~
 cat << EOF | sed '/^$/d' | hcalc | sed '1,/Loading/d' | sed '1d' | sed '$d' | sed '$d'
 \1
 EOF
@@ -163,26 +167,29 @@ EOF
 
 Integers can be decimal, hexadecimal, octal or binary numbers:
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 42
 0x24
 0o37
 0b1010
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Rational numbers
 
 Rational numbers can be used to make *exact* computations instead of using floating point numbers.
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1 + 2/3
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Some functions don't support rational numbers and will produce floating point numbers.
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1/2 + cos(0)
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Floating point numbers
 
@@ -190,7 +197,8 @@ Floating point numbers are single (32 bit) or double (64 bits) precision floatin
 
 They are represented internally by 64 bit numbers but can be converted to 32 bit numbers as well as to their IEEE 754 repesentation.
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 3.14
 1.23e-6
 e
@@ -200,18 +208,19 @@ float64
 nan
 inf
 -inf
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Automatic type conversion
 
 Number types are automatically converted in a way to preserve the best precision.
 Integers are prefered to rational numbers and rational numbers are prefered to floating point numbers.
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1+2/3
 1/3+2/3
 (2/3) * 0.5
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Display mode
 
@@ -223,25 +232,27 @@ The user can activate additional display modes by selecting:
 - the IEEE 754 representation of floating point numbers (`float32`, `float64`)
 - `reset` resets the display mode
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 42424242
 dec8            # 8 bit decimal numbers
 hex16           # 16 bit hexadecimal numbers
 oct32           # 32 bit octal numbers
 bin64           # 64 bit binary numbers
 reset           # raw decimal value only
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Handy Calc automatically activates some display modes under some circonstances:
 
 - integer entered in a specific base
 - usage of a bitwise operator in an expression
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 4               # only the default display mode
 0b100           # this number activates the binary display mode
 1<<10           # this operator activates the hexadecimal display mode
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Strings
 
@@ -249,29 +260,32 @@ Handy Calc has a limited support for strings.
 
 Strings can be concatenated, duplicated and produced by converting numbers:
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "abc" + "def"
 "abc" * 3
 "pi = " + pi + "; e = " ++ e
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Booleans
 
 Boolean values can be used in conditional and boolean expressions.
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 true
 false
 true and false
 1+1 == 2
 1+1==2 ? "ok" : "bug"
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Operators
 
 ### Arithmetic operators
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 x = 12
 -x
 +x
@@ -282,11 +296,12 @@ x / 5
 x // 5                  # integral division
 x % 5                   # integral remainder (Euclidean division)
 x ** 2
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Bitwise operators
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 bin16
 ~1                      # bitwise complement
 1 | 4                   # bitwise or
@@ -294,27 +309,29 @@ bin16
 0b1100 & 0b0110         # bitwise and
 1 << 10                 # left shift
 1024 >> 1               # right shift
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Boolean operators
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 not true
 true or false
 true xor false
 true and false
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Comparison operators
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 12 < 13
 12 <= 13
 12 > 13
 12 >= 13
 12 == 13
 12 != 13
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Operator precedence
 
@@ -340,55 +357,61 @@ Blocks                      `expr1; ...; exprn`
 
 Handy Calc can define and reuse variables.
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 x = 1
 y = 2
 x+y
 y = 3
 x+y
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Functions
 
 Handy Calc can also define functions.
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 f(x) = 2 * x
 f(5)
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Functions can also be defined with multiple statements and be recursive.
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 fib(n) = (f1=fib(n-1); f2=fib(n-2); n<2 ? 1 : f1+f2)
 fib(1)
 fib(10)
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can see in the previous example that the evaluation is lazy!
 Thanks to lazyness, functions can also be mutually recursive.
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 isEven(n) = n == 0 ? true : isOdd(n-1)
 isOdd(n) = n == 0 ? false : isEven(n-1)
 isEven(10)
 isOdd(10)
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Builtin functions
 
 ### Type conversion
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 int(pi)                     # Integral part
 float(2/3)                  # Conversion to floating point numbers
 rat(pi)                     # Rational approximation
 rat(pi, 1e-2)               # Rational approximation with a given precision
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Math
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 x = pi; y = e; b = 3
 
 abs(x)                      # absolute value of x
@@ -427,39 +450,42 @@ ln(x)                       # logarithm of x in base e
 log10(x)                    # logarithm of x in base 10
 log2(x)                     # logarithm of x in base 2
 log(b, x)                   # logarithm of x in base b
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### IEEE 754 representation
 
 #### 32 bit numbers
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 x = pi; n = 0x402df854
 
 float32
 float2ieee(x)               # IEEE 754 representation of x (32 bits)
 ieee2float(n)               # 32 bit float value of the IEEE 754 integer n
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #### 64 bit numbers
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 x = pi; n = 0x4005bf0a8b145769
 
 float64
 double2ieee(x)              # IEEE 754 representation of x (64 bits)
 ieee2double(n)              # 64 bit float value of the IEEE 754 integer n
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Specific values
 
-\hcalc(
+\hcalc
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 x = pi
 
 isfinite(x)                 # true if x is finite
 isinf(x)                    # true if x is infinite
 isnan(x)                    # true if x is not a number
-)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Other commands
 

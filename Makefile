@@ -40,7 +40,7 @@ all: bin test doc
 
 bin: bin/hcalc bin/hcalc.exe
 test: doc/test/hcalcTest/hcalcTest.txt
-doc: doc/hcalcManual.html
+doc: doc/hcalcManual.html README.md
 
 GCC_WIN	= $(shell ls /usr/bin/i686-*mingw32*-gcc | head -1 | sed 's/gcc$$//')
 WINE    = wine
@@ -78,7 +78,7 @@ endif
 # Compilation
 #####################################################################
 
-GHC_OPT = -O2 -Werror -Wall -fwarn-unused-do-bind
+GHC_OPT = -O3 -Werror -Wall -fwarn-unused-do-bind
 UPX 	= upx -9qq
 
 clean:
@@ -143,9 +143,13 @@ doc/test/hcalcTest/hcalcTest.txt: build/hcalcTest/hcalcTest$(EXE)
 # Documentation
 #####################################################################
 
+README.md: $(MANUAL) bin/hcalc$(EXE)
+	export PATH=bin:$$PATH; LANG=en pp $(MANUAL) | LANG=en pandoc -f markdown -t markdown_github -o $@
+	@sed -i '/<!--/,/-->/d' $@
+
 doc/hcalcManual.html: $(MANUAL) $(CSS) bin/hcalc$(EXE)
 	@mkdir -p $(dir $@)
-	export PATH=bin:$$PATH; LANG=en pp $(MANUAL) | dpp | LANG=en pandoc -f markdown -t html5 -S -s --self-contained -N --toc -c $(CSS) -o $@
+	export PATH=bin:$$PATH; LANG=en pp $(MANUAL) | LANG=en pandoc -f markdown -t html5 -S -s --self-contained -N --toc -c $(CSS) -o $@
 
 $(CSS):
 	wget -O $@ http://fun.cdsoft.fr/fun.css
