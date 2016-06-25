@@ -144,8 +144,10 @@ type State = (Conf, Env)
 -- So functions inside expression have to be comparable as well.
 -- They are always considered as different (they are only intermediate
 -- expression, only the final expression is checked by the test).
+-- The comparison of function can also be undefined has it should
+-- never happen.
 instance Eq (a -> b) where
-    _ == _ = False
+    _ == _ = undefined
 
 -- reset the display mode in the current state
 resetConf :: State -> State
