@@ -28,7 +28,8 @@ Introduction
 
 Handy Calc is a simple yet powerful calculator.
 Unlike most of other calculators, Handy Calc is based on a textual interface.
-It may seem a bit spartan and outdated but entering expressions with the keyboard is way easier than with a mouse.
+It may seem a bit spartan and outdated but entering expressions with the keyboard
+is way easier than with a mouse.
 And you get nice editing features for free (edition, copy/paste, history, ...).
 
 Handy Calc is also an application example for the [FUN](http://fun.cdsoft.fr) project.
@@ -41,7 +42,8 @@ Its development process and methods are based on:
 - unit testing to ease evolutions and non regression checks
 - code coverage to measure the completeness of the tests
 
-So Handy Calc is supposed to be better and safer than its predecessor ([Calculadoira](http://cdsoft.fr/calculadoira)).
+So Handy Calc is supposed to be better and safer than its predecessor
+([Calculadoira](http://cdsoft.fr/calculadoira)).
 
 If you like Handy Calc, please consider supporting my [FUN](http://fun.cdsoft.fr) project.
 
@@ -52,7 +54,6 @@ License
 
 ~~~~~~~~~~~~~~~~~~
 \exec(hcalc license)
-
 ~~~~~~~~~~~~~~~~~~
 
 Download and installation
@@ -91,27 +92,31 @@ The current version is [!VERSION](!URL)
 
 **Notes:**
 
-- For a better user experience on Linux, it is recommended to use Handy Calc with [`rlwrap`](http://utopia.knoware.nl/~hlub/rlwrap/rlwrap.man.html) (e.g. `rlwrap hcalc`). `rlwrap` will give Handy Calc nice editing features.
-- The binaries may or may not work on your specific OS version. Compiling the sources is the preferred way to get Handy Calc work.
+- For a better user experience on Linux, it is recommended to use Handy Calc
+  with [`rlwrap`](http://utopia.knoware.nl/~hlub/rlwrap/rlwrap.man.html)
+  (e.g. `rlwrap hcalc`).
+  `rlwrap` will give Handy Calc nice editing features.
+- The binaries may or may not work on your specific OS version.
+  Compiling the sources is the preferred way to get Handy Calc work.
 
 Screenshot
 ==========
 
 ~~~~~~~~~~~~~~~~~~
 \exec(hcalc bye | grep -v ^Loading)
-
 ~~~~~~~~~~~~~~~~~~
 
 Command line usage
 ==================
 
-Handy Calc can be used on the command line. Each argument is considered as an expression to be evaluated. Only the value of the last expression is printed.
+Handy Calc can be used on the command line.
+Each argument is considered as an expression to be evaluated.
+Only the value of the last expression is printed.
 
 \def{hcalc}{
 ~~~~~~~~~~~~~~~~~~~~
 $ hcalc \1
 \exec(hcalc \1)
-
 ~~~~~~~~~~~~~~~~~~~~
 }
 
@@ -177,7 +182,8 @@ Integers can be decimal, hexadecimal, octal or binary numbers:
 
 ### Rational numbers
 
-Rational numbers can be used to make *exact* computations instead of using floating point numbers.
+Rational numbers can be used to make *exact* computations instead of
+using floating point numbers.
 
 \hcalc
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -193,9 +199,11 @@ Some functions don't support rational numbers and will produce floating point nu
 
 ### Floating point numbers
 
-Floating point numbers are single (32 bit) or double (64 bits) precision floating point numbers.
+Floating point numbers are single (32 bit) or double (64 bits) precision
+floating point numbers.
 
-They are represented internally by 64 bit numbers but can be converted to 32 bit numbers as well as to their IEEE 754 repesentation.
+They are represented internally by 64 bit numbers but can be converted to 32 bit
+numbers as well as to their IEEE 754 representation.
 
 \hcalc
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -213,7 +221,8 @@ inf
 ### Automatic type conversion
 
 Number types are automatically converted in a way to preserve the best precision.
-Integers are prefered to rational numbers and rational numbers are prefered to floating point numbers.
+Integers are prefered to rational numbers and rational numbers are prefered
+to floating point numbers.
 
 \hcalc
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -203,7 +203,7 @@ Some functions don't support rational numbers and will produce floating point nu
 
 Floating point numbers are single (32 bit) or double (64 bits) precision floating point numbers.
 
-They are represented internally by 64 bit numbers but can be converted to 32 bit numbers as well as to their IEEE 754 repesentation.
+They are represented internally by 64 bit numbers but can be converted to 32 bit numbers as well as to their IEEE 754 representation.
 
     : 3.14
     =       3.14
