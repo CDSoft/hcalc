@@ -134,8 +134,11 @@ build/hcalcTest/hcalcTest$(EXE): $(TEST) $(MODULES)
 
 doc/test/hcalcTest/hcalcTest.txt: build/hcalcTest/hcalcTest$(EXE)
 	@mkdir -p $(dir $@)
-	@rm -f $(dir $<)/hcalcTest.tix
+	@rm -f $(dir $<)/*.tix
 	@cd $(dir $<) && $(notdir $<)
+ifneq "$(EXE)" ""
+	@mv $(dir $<)/hcalcTest$(EXE).tix $(dir $<)/hcalcTest.tix 2>/dev/null
+endif
 	hpc markup --exclude=Main --destdir=$(dir $@) $<
 	hpc report --exclude=Main $< | tee $@
 
