@@ -54,8 +54,8 @@ data Expr = E String            -- errors
           | None                        -- empty expression
 
           -- functions
-          | F String [Expr]             -- function call: F name arguments
-          | Def String [String] Expr    -- function definition: Def name arguments value
+          | F String [Expr]                 -- function call: F name arguments
+          | Def String [String] Stack Expr  -- function definition: Def name arguments closure value
 
           -- ternary operator
           | Tern Expr Expr Expr         -- Tern condition value_if_true value_if_false
@@ -130,15 +130,18 @@ data Conf = Conf
     }
     deriving (Show, Eq)
 
--- the environment is a map containing the global definitions
--- and the current local definitions
+-- the global environment (Heap) is a map containing the global definitions
 -- The key contains the name and the arity of the function to
 -- allow functions with variable number of arguments.
 -- Constants are function with zero arguments.
-type Env = Map.Map (String,Int) Expr
+type Heap = Map.Map (String, Int) Expr
 
--- a state is made of a configuration and an environment
-type State = (Conf, Env)
+-- the local environment (Stack) is an associative array containing the
+-- local definitions. It is also used as closures.
+type Stack = [((String, Int), Expr)]
+
+-- a state is made of a configuration, the heap, the current closure and the local stack
+type State = (Conf, Heap, Stack, Stack)
 
 -- Expression shall be comparable for test purpose.
 -- So functions inside expression have to be comparable as well.
@@ -151,31 +154,31 @@ instance Eq (a -> b) where
 
 -- reset the display mode in the current state
 resetConf :: State -> State
-resetConf (_, env) = (emptyConf, env)
+resetConf (_, heap, closure, stack) = (emptyConf, heap, closure, stack)
 
 -- set the integer/float size
 setSize :: Int -> State -> State
-setSize n (conf, env) = (conf{size=n}, env)
+setSize n (conf, heap, closure, stack) = (conf{size=n}, heap, closure, stack)
 
 -- set the hexadecimal display mode
 setHex :: State -> State
-setHex (conf, env) = (conf{hex=True}, env)
+setHex (conf, heap, closure, stack) = (conf{hex=True}, heap, closure, stack)
 
 -- set the octal display mode
 setOct :: State -> State
-setOct (conf, env) = (conf{oct=True}, env)
+setOct (conf, heap, closure, stack) = (conf{oct=True}, heap, closure, stack)
 
 -- set the binary display mode
 setBin :: State -> State
-setBin (conf, env) = (conf{bin=True}, env)
+setBin (conf, heap, closure, stack) = (conf{bin=True}, heap, closure, stack)
 
 -- set the decimal display mode
 setDec :: State -> State
-setDec (conf, env) = (conf{dec=True}, env)
+setDec (conf, heap, closure, stack) = (conf{dec=True}, heap, closure, stack)
 
 -- set the IEEE 754 floating point display mode
 setFlt :: State -> State
-setFlt (conf, env) = (conf{float=True}, env)
+setFlt (conf, heap, closure, stack) = (conf{float=True}, heap, closure, stack)
 
 -- Evaluate 2 expressions in sequence.
 -- The second is evaluated in the state produced by the first.
@@ -319,23 +322,22 @@ eval st (S x) = (st, S x)
 
 -- New definition: the definition is added to the current environment
 -- A definition has no value, it returns None.
-eval (conf, env) def@(Def name args _) = ((conf, Map.insert (name, length args) def env), None)
+eval (conf, heap, closure, stack) (Def name args _ f) = ((conf, heap, closure, ((name, length args), Def name args (stack++closure) f) : stack), None)
 
 -- Function application
-eval st@(_conf, env) (F func xs) = case getDef st func arity of
+eval st@(_conf, heap, closure, stack) (F func xs) = case getDef st func arity of
         -- if the function definition with the correct arity exists
         -- it is evaluated by pushing arguments on the environment
         -- and evaluating the definition in this new environment
-        Just (Def _name formalArgs y) -> ((conf'', env), y')
+        Just (Def _name formalArgs closure' y) -> ((conf'', heap, closure, stack), y')
             where
-                args = Map.fromList $ zip (map (\a -> (a,0)) formalArgs) realArgs
-                env' = Map.union args env
-                ((conf'', _env''), y') = eval (conf', env') y
+                args = zip (map (\a -> (a, 0)) formalArgs) realArgs
+                ((conf'', _, _, _), y') = eval (conf', heap, closure', args) y
         -- if the symbol is just a constant it is evaluated in the same
         -- environment (no arguments)
-        Just y -> ((conf'', env), y')
+        Just y -> ((conf'', heap, closure, stack), y')
             where
-                ((conf'', _env''), y') = eval (conf', env) y
+                ((conf'', _, _, _), y') = eval (conf', heap, [], []) y
         -- if the symbol is not defined it is evaluated as an error.
         Nothing
             | arity == 0 -> (st, E $ "'" ++ func ++ "'" ++ " is not defined")
@@ -344,7 +346,7 @@ eval st@(_conf, env) (F func xs) = case getDef st func arity of
         -- arity = number of arguments
         arity = length xs
         -- realArgs is the values of the arguments
-        ((conf', _), realArgs) = evalAll st xs
+        ((conf', _, _, _), realArgs) = evalAll st xs
 
 -- The value of a sequence is the value of the second expression
 eval st (Seq a b) = (st', b') where (st', _, b') = eval2 st a b
@@ -534,14 +536,24 @@ eval st (Put name f) = (st, Put name f)
 -- exit the calculator
 eval st (Bye name) = (st, Bye name)
 
+-- lookup a definition in the local or global environnment
+lookup' :: (String, Int) -> State -> Maybe Expr
+lookup' (name, arity) (_, heap, closure, stack) =
+    let global = Map.lookup (name, arity) heap
+        local = lookup (name, arity) (stack ++ closure)
+    in case (global, local) of
+        (_, Just _) -> local
+        (Just _, _) -> global
+        _ -> Nothing
+
 -- evaluate the arguments of a builtin function
 evalBuiltinArgs :: Int -> State -> (State, [Expr])
-evalBuiltinArgs n st@(_, env) = evalAll st exprs
+evalBuiltinArgs n state = evalAll state exprs
     where
         -- args = names of the formal arguments
         args = builtinArgs n
         -- exprs = expressions associated to the formal arguments in the current environment
-        exprs = map (\arg -> fromMaybe (E "unexpected error: invalid formal argument") $ Map.lookup (arg,0) env) args
+        exprs = map (\arg -> fromMaybe (E "unexpected error: invalid formal argument") $ lookup' (arg, 0) state) args
 
 -- default (minimal) configuration
 emptyConf :: Conf
@@ -552,7 +564,7 @@ emptyConf = Conf { size = 0
 
 -- default state = default configuration + empty environment
 emptyState :: State
-emptyState = (emptyConf, Map.empty)
+emptyState = (emptyConf, Map.empty, [], [])
 
 -- accepted bit sizes for integral values
 bitSizes :: [Int]
@@ -563,7 +575,7 @@ floatSizes :: [Int]
 floatSizes = [32, 64]
 
 -- builtin constants and functions
-builtin :: Env
+builtin :: Heap
 builtin = Map.fromList $
               [ constant "true"     $ B True
               , constant "false"    $ B False
@@ -652,7 +664,7 @@ builtinArgTag = '@'
 
 -- make a builtin function definition for the builtin environment.
 builtinFunction :: String -> Int -> Expr -> ((String, Int), Expr)
-builtinFunction name arity f = ((name, arity), Def name (builtinArgs arity) f)
+builtinFunction name arity f = ((name, arity), Def name (builtinArgs arity) [] f)
 
 -- list of formal argument names for builtin functions
 builtinArgs :: Int -> [String]
@@ -736,9 +748,9 @@ mantissa x = x / (2.0 ** fromIntegral (exponent x))
 -- The definition is searched in the current environment
 -- and then in the builtin environment
 getDef :: State -> String -> Int -> Maybe Expr
-getDef (_, env) name arity = case Map.lookup (name, arity) env of
-                                Nothing -> Map.lookup (name, arity) builtin
-                                x -> x
+getDef state name arity = case lookup' (name, arity) state of
+                            Nothing -> Map.lookup (name, arity) builtin
+                            x -> x
 
 -- pp' converts an already evaluated expression to a string
 pp' :: Expr -> String

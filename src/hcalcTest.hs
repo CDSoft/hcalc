@@ -120,11 +120,11 @@ unitTests =
     , Parse "# ..."     None                                        None emptyState
     , Parse "#\n#...\n" None                                        None emptyState
     , Parse "42"        (Z 42)                                      (Z 42) emptyState
-    , Parse "0x42"      (Seq (SetHex Nothing) (Z 0x42))             (Z 0x42) (emptyConf{hex=True}, m[])
+    , Parse "0x42"      (Seq (SetHex Nothing) (Z 0x42))             (Z 0x42) (emptyConf{hex=True}, m[], [], [])
     , Parse "0x"        (E "Error near x")                          (E "Error near x") emptyState
-    , Parse "0o42"      (Seq (SetOct Nothing) (Z 0o42))             (Z 0o42) (emptyConf{oct=True}, m[])
+    , Parse "0o42"      (Seq (SetOct Nothing) (Z 0o42))             (Z 0o42) (emptyConf{oct=True}, m[], [], [])
     , Parse "0o"        (E "Error near o")                          (E "Error near o") emptyState
-    , Parse "0b110"     (Seq (SetBin Nothing) (Z 6))                (Z 6) (emptyConf{bin=True}, m[])
+    , Parse "0b110"     (Seq (SetBin Nothing) (Z 6))                (Z 6) (emptyConf{bin=True}, m[], [], [])
     , Parse "0b"        (E "Error near b")                          (E "Error near b") emptyState
     , Parse "42/6"      (Div (Z 42) (Z 6))                          (Z 7) emptyState
     , Parse "42/12"     (Div (Z 42) (Z 12))                         (Q (7%2)) emptyState
@@ -138,9 +138,9 @@ unitTests =
     , Parse "func"      (F "func" [])                               (E "'func' is not defined") emptyState
     , Parse "func(x)"   (F "func" [F "x" []])                       (E "'func'/1 is not defined") emptyState
     , Parse "func(x,1)" (F "func" [F "x" [], Z 1])                  (E "'func'/2 is not defined") emptyState
-    , Parse "x=y"       (Def "x" [] (F "y" []))                     None (emptyConf, m[(("x",0), Def "x" [] (F "y" []))])
-    , Parse "f(x)=y"    (Def "f" ["x"] (F "y" []))                  None (emptyConf, m[(("f",1), Def "f" ["x"] (F "y" []))])
-    , Parse "f(x,y)=z"  (Def "f" ["x", "y"] (F "z" []))             None (emptyConf, m[(("f",2), Def "f" ["x","y"] (F "z" []))])
+    , Parse "x=y"       (Def "x" [] [] (F "y" []))                  None (emptyConf, m[], [], [(("x",0), Def "x" [] [] (F "y" []))])
+    , Parse "f(x)=y"    (Def "f" ["x"] [] (F "y" []))               None (emptyConf, m[], [], [(("f",1), Def "f" ["x"] [] (F "y" []))])
+    , Parse "f(x,y)=z"  (Def "f" ["x", "y"] [] (F "z" []))          None (emptyConf, m[], [], [(("f",2), Def "f" ["x","y"] [] (F "z" []))])
     , Parse ""          None                                        None emptyState
     , Parse "1"         (Z 1)                                       (Z 1) emptyState
     , Parse "1;"        (Z 1)                                       (Z 1) emptyState
@@ -151,7 +151,7 @@ unitTests =
     , Parse "c?t:f"     (Tern (F "c" []) (F "t" []) (F "f" []))     (E "'c' is not defined") emptyState
     ] ++
     -- evaluation
-    [ Eval "f(x,y)=10*x+y; f(2,3)"      (Z 23) (emptyConf, m[(("f",2), Def "f" ["x","y"] (Add (Mul (Z 10) (F "x" [])) (F "y" [])))])
+    [ Eval "f(x,y)=10*x+y; f(2,3)"      (Z 23) (emptyConf, m[], [], [(("f",2), Def "f" ["x","y"] [] (Add (Mul (Z 10) (F "x" [])) (F "y" [])))])
 
     , Eval "true?1:0"                   (Z 1) emptyState
     , Eval "false?1:0"                  (Z 0) emptyState
@@ -397,38 +397,38 @@ unitTests =
     , Eval "0|x"                        (E "'x' is not defined") emptyState
     , Eval "true|0"                     (E "bad operands for '|'") emptyState
     , Eval "0|true"                     (E "bad operands for '|'") emptyState
-    , Eval "3|5"                        (Z 7) (emptyConf{hex=True}, m[])
+    , Eval "3|5"                        (Z 7) (emptyConf{hex=True}, m[], [], [])
 
     , Eval "x^0"                        (E "'x' is not defined") emptyState
     , Eval "0^x"                        (E "'x' is not defined") emptyState
     , Eval "true^0"                     (E "bad operands for '^'") emptyState
     , Eval "0^true"                     (E "bad operands for '^'") emptyState
-    , Eval "3^5"                        (Z 6) (emptyConf{hex=True}, m[])
+    , Eval "3^5"                        (Z 6) (emptyConf{hex=True}, m[], [], [])
 
     , Eval "x&0"                        (E "'x' is not defined") emptyState
     , Eval "0&x"                        (E "'x' is not defined") emptyState
     , Eval "true&0"                     (E "bad operands for '&'") emptyState
     , Eval "0&true"                     (E "bad operands for '&'") emptyState
-    , Eval "3&5"                        (Z 1) (emptyConf{hex=True}, m[])
+    , Eval "3&5"                        (Z 1) (emptyConf{hex=True}, m[], [], [])
 
     , Eval "x<<0"                       (E "'x' is not defined") emptyState
     , Eval "0<<x"                       (E "'x' is not defined") emptyState
     , Eval "true<<0"                    (E "bad operands for '<<'") emptyState
     , Eval "0<<true"                    (E "bad operands for '<<'") emptyState
-    , Eval "3<<5"                       (Z (3*2^(5::Integer))) (emptyConf{hex=True}, m[])
-    , Eval "3<<0"                       (Z 3) (emptyConf{hex=True}, m[])
-    , Eval "3<<(-1)"                    (Z 1) (emptyConf{hex=True}, m[])
-    , Eval "3<<(-2)"                    (Z 0) (emptyConf{hex=True}, m[])
+    , Eval "3<<5"                       (Z (3*2^(5::Integer))) (emptyConf{hex=True}, m[], [], [])
+    , Eval "3<<0"                       (Z 3) (emptyConf{hex=True}, m[], [], [])
+    , Eval "3<<(-1)"                    (Z 1) (emptyConf{hex=True}, m[], [], [])
+    , Eval "3<<(-2)"                    (Z 0) (emptyConf{hex=True}, m[], [], [])
 
     , Eval "x>>0"                       (E "'x' is not defined") emptyState
     , Eval "0>>x"                       (E "'x' is not defined") emptyState
     , Eval "true>>0"                    (E "bad operands for '>>'") emptyState
     , Eval "0>>true"                    (E "bad operands for '>>'") emptyState
-    , Eval "3>>5"                       (Z 0) (emptyConf{hex=True}, m[])
-    , Eval "3>>2"                       (Z 0) (emptyConf{hex=True}, m[])
-    , Eval "3>>1"                       (Z 1) (emptyConf{hex=True}, m[])
-    , Eval "3>>0"                       (Z 3) (emptyConf{hex=True}, m[])
-    , Eval "3>>(-2)"                    (Z (3*2^(2::Integer))) (emptyConf{hex=True}, m[])
+    , Eval "3>>5"                       (Z 0) (emptyConf{hex=True}, m[], [], [])
+    , Eval "3>>2"                       (Z 0) (emptyConf{hex=True}, m[], [], [])
+    , Eval "3>>1"                       (Z 1) (emptyConf{hex=True}, m[], [], [])
+    , Eval "3>>0"                       (Z 3) (emptyConf{hex=True}, m[], [], [])
+    , Eval "3>>(-2)"                    (Z (3*2^(2::Integer))) (emptyConf{hex=True}, m[], [], [])
 
     , Eval "x+0"                        (E "'x' is not defined") emptyState
     , Eval "0+x"                        (E "'x' is not defined") emptyState
@@ -452,7 +452,7 @@ unitTests =
     , Eval "\"x\"+\"y\""                (S "xy") emptyState
     , Eval "\"x\"+true"                 (S "xtrue") emptyState
     , Eval "\"x\"+false"                (S "xfalse") emptyState
-    , Eval "\"x\"+(x=y)"                (S "x") (emptyConf, m[(("x",0), Def "x" [] (F "y" []))])
+    , Eval "\"x\"+(x=y)"                (S "x") (emptyConf, m[], [], [(("x",0), Def "x" [] [] (F "y" []))])
 
     , Eval "x-0"                        (E "'x' is not defined") emptyState
     , Eval "0-x"                        (E "'x' is not defined") emptyState
@@ -558,7 +558,7 @@ unitTests =
 
     , Eval "~x"                         (E "'x' is not defined") emptyState
     , Eval "~true"                      (E "bad operand for '~'") emptyState
-    , Eval "~5"                         (Z (-6)) (emptyConf{hex=True}, m[])
+    , Eval "~5"                         (Z (-6)) (emptyConf{hex=True}, m[], [], [])
 
     , Eval "x**0"                       (E "'x' is not defined") emptyState
     , Eval "0**x"                       (E "'x' is not defined") emptyState
@@ -576,17 +576,17 @@ unitTests =
     ] ++
     -- Configuration
     [ Eval "hex32; oct32; bin32; dec32; float32; reset"     Previous emptyState
-    , Eval "hex"                        Previous (emptyConf{hex=True}, m[])
-    , Eval "oct"                        Previous (emptyConf{oct=True}, m[])
-    , Eval "bin"                        Previous (emptyConf{bin=True}, m[])
-    , Eval "dec"                        Previous (emptyConf{dec=True}, m[])
-    , Eval "float"                      Previous (emptyConf{float=True}, m[])
-    , Eval "hex8"                       Previous (emptyConf{hex=True, size=8}, m[])
-    , Eval "oct16"                      Previous (emptyConf{oct=True, size=16}, m[])
-    , Eval "bin32"                      Previous (emptyConf{bin=True, size=32}, m[])
-    , Eval "dec64"                      Previous (emptyConf{dec=True, size=64}, m[])
-    , Eval "float32"                    Previous (emptyConf{float=True, size=32}, m[])
-    , Eval "float64"                    Previous (emptyConf{float=True, size=64}, m[])
+    , Eval "hex"                        Previous (emptyConf{hex=True}, m[], [], [])
+    , Eval "oct"                        Previous (emptyConf{oct=True}, m[], [], [])
+    , Eval "bin"                        Previous (emptyConf{bin=True}, m[], [], [])
+    , Eval "dec"                        Previous (emptyConf{dec=True}, m[], [], [])
+    , Eval "float"                      Previous (emptyConf{float=True}, m[], [], [])
+    , Eval "hex8"                       Previous (emptyConf{hex=True, size=8}, m[], [], [])
+    , Eval "oct16"                      Previous (emptyConf{oct=True, size=16}, m[], [], [])
+    , Eval "bin32"                      Previous (emptyConf{bin=True, size=32}, m[], [], [])
+    , Eval "dec64"                      Previous (emptyConf{dec=True, size=64}, m[], [], [])
+    , Eval "float32"                    Previous (emptyConf{float=True, size=32}, m[], [], [])
+    , Eval "float64"                    Previous (emptyConf{float=True, size=64}, m[], [], [])
     ] ++
     -- builtin definitions
     [ Eval "true"                       (B True) emptyState
@@ -857,10 +857,10 @@ unitTests =
 
     , Eval "isfinite(x)"                (E "'x' is not defined") emptyState
     , Eval "isfinite(true)"             (E "bad operand for 'isfinite'") emptyState
-    , Eval "isfinite(42<<10)"           (B True) (emptyConf{hex=True}, m[])
-    , Eval "isfinite(42<<10000)"        (B False) (emptyConf{hex=True}, m[])
-    , Eval "isfinite((42<<10)/5)"       (B True) (emptyConf{hex=True}, m[])
-    , Eval "isfinite((42<<10000)/5)"    (B False) (emptyConf{hex=True}, m[])
+    , Eval "isfinite(42<<10)"           (B True) (emptyConf{hex=True}, m[], [], [])
+    , Eval "isfinite(42<<10000)"        (B False) (emptyConf{hex=True}, m[], [], [])
+    , Eval "isfinite((42<<10)/5)"       (B True) (emptyConf{hex=True}, m[], [], [])
+    , Eval "isfinite((42<<10000)/5)"    (B False) (emptyConf{hex=True}, m[], [], [])
     , Eval "isfinite(pi)"               (B True) emptyState
     , Eval "isfinite(inf)"              (B False) emptyState
     , Eval "isfinite(-inf)"             (B False) emptyState
@@ -890,6 +890,24 @@ unitTests =
     , REPL noINI [("version", V.tag)]
     , REPL noINI [("2*21", "= 42")]
     , REPL noINI [("f(x) = 42*x", ""), ("f(101)", "= 4242")]
+    , REPL noINI [ ("f(x) = (y=x; y)",  "")     -- local scope and closure
+                 , ("f(0)",             "= 0")
+                 , ("a=2; b=a; b",      "= 2")
+                 ]
+    , REPL noINI [ ("y = 1",    "")             -- local scope and closure
+                 , ("f(y) = y", "")
+                 , ("y",        "= 1")
+                 , ("f(3)",     "= 3")
+                 , ("y",        "= 1")
+                 ]
+    , REPL noINI [ ("y = 1",        "")         -- local scope and closure
+                 , ("f(x) = y",     "")
+                 , ("g(y) = f(0)",  "")
+                 , ("f(9)",         "= 1")
+                 , ("g(7)",         "= 1")
+                 , ("y",            "= 1")
+                 , ("x",            "! 'x' is not defined")
+                 ]
     , REPL noINI [("2*21", "= 42"), ("bye", "")]
     , REPL noINI [ ("-1",    "= -1")
                  , ("hex",   "= -1 \n hex   -0x1")

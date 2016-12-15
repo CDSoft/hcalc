@@ -26,6 +26,8 @@ of the calculator.
 
 module Interface(repl) where
 
+import qualified Data.Map as Map
+
 import Expression
 import Help
 import Parser
@@ -33,20 +35,31 @@ import PrettyPrint
 
 -- REPL: interactive calculator
 repl :: (FilePath, String) -> [String] -> [String]
-repl (name, ini) exprs = welcome : loop stIni None exprs
+repl (name, ini) exprs = welcome : loop (nextIterationState stIni) None exprs
     where
-        (stIni@(confIni, _), vIni) = eval emptyState $ parse ini
+
+        (stIni@(confIni, _, _, _), vIni) = eval emptyState $ parse ini
+
         welcome = shortHelp
                   ++ "\nLoading "++name
                   ++ case vIni of
                         err@(E _) -> "\n" ++ pp confIni err
                         _ -> ""
+
+        loop :: State -> Expr -> [String] -> [String]
         loop _ _ [] = []
         loop st prev (x:xs) = case x' of
                 Bye _ -> []
-                _ -> pp conf' prev' : loop st' prev' xs
+                _ -> pp conf' prev' : loop (nextIterationState st') prev' xs
             where
-                (st'@(conf', _), x') = eval st $ parse x
+                (st'@(conf', _, _, _), x') = eval st $ parse x
                 prev' = case x' of
                     Previous -> prev
                     _ -> x'
+
+        -- In the interactive loop, the definitions stored in the local stack
+        -- must be saved to the heap to be available in subsequent iterations.
+        nextIterationState :: State -> State
+        nextIterationState (conf, heap, _, stack) = (conf, heap', [], [])
+            where
+                heap' = Map.union (Map.fromList stack) heap

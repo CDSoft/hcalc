@@ -106,9 +106,9 @@ stats =
 --      |  expr
 stat :: Parser Expr
 stat =
-    seq6 (\f _ xs _ _ y -> Def f xs y)
+    seq6 (\f _ xs _ _ y -> Def f xs [] y)
          ident (tok "(" ()) idents (tok ")" ()) (tok "=" ()) expr
-    ||| seq3 (\f _ y -> Def f [] y)
+    ||| seq3 (\f _ y -> Def f [] [] y)
              ident (tok "=" ()) expr
     ||| expr
 

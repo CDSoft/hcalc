@@ -63,7 +63,7 @@ License
 Download and installation
 =========================
 
-The current version is [Handy Calc 1.0.0](http://cdsoft.fr/hcalc/HandyCalc-1.0.0.tgz)
+The current version is [Handy Calc 1.0.1](http://cdsoft.fr/hcalc/HandyCalc-1.0.1.tgz)
 
 **Installation from sources on Linux or Windows:**
 
@@ -71,8 +71,8 @@ The current version is [Handy Calc 1.0.0](http://cdsoft.fr/hcalc/HandyCalc-1.0.0
     -   [Haskell](https://www.haskell.org/)
     -   Cygwin or MSYS/Mingw properly installed on Windows
     -   [PP](http://cdsoft.fr/pp) and [Pandoc](http://pandoc.org/) to generate the documentation (optional)
--   Download [HandyCalc-1.0.0.tgz](http://cdsoft.fr/hcalc/HandyCalc-1.0.0.tgz)
--   Unpack HandyCalc-1.0.0.tgz
+-   Download [HandyCalc-1.0.1.tgz](http://cdsoft.fr/hcalc/HandyCalc-1.0.1.tgz)
+-   Unpack HandyCalc-1.0.1.tgz
 -   Run make
     -   `make bin` generates the binary executable in `bin`
     -   `make doc` generates the documentation in `doc`
@@ -92,7 +92,7 @@ Screenshot
 ==========
 
     +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |     v 1.0.0     | cdsoft.fr/hcalc |
+    |       H A N D Y   C A L C       |     v 1.0.1     | cdsoft.fr/hcalc |
     |---------------------------------------------------------------------|
     | Modes:                          | Numbers:                          |
     |     hex oct bin float reset     |     binary: 0b...                 |
@@ -128,7 +128,7 @@ A typical interactive session looks like this:
 
     $ hcalc
     +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |     v 1.0.0     | cdsoft.fr/hcalc |
+    |       H A N D Y   C A L C       |     v 1.0.1     | cdsoft.fr/hcalc |
     |---------------------------------------------------------------------|
     | Modes:                          | Numbers:                          |
     |     hex oct bin float reset     |     binary: 0b...                 |
@@ -501,7 +501,7 @@ Handy Calc can also define functions.
     : f(5)
     =       10
 
-Functions can also be defined with multiple statements and be recursive.
+Functions can be defined with multiple statements and be recursive.
 
     : fib(n) = (f1=fib(n-1); f2=fib(n-2); n<2 ? 1 : f1+f2)
 
@@ -713,7 +713,7 @@ Online help
     : help
 
     +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |     v 1.0.0     | cdsoft.fr/hcalc |
+    |       H A N D Y   C A L C       |     v 1.0.1     | cdsoft.fr/hcalc |
     |---------------------------------------------------------------------|
     | Modes:                          | Numbers:                          |
     |     hex oct bin float reset     |     binary: 0b...                 |
@@ -864,7 +864,7 @@ Online help
     Credits
     =======
 
-    Handy Calc 1.0.0
+    Handy Calc 1.0.1
     (C) 2016 Christophe Delord
     http://cdsoft.fr/hcalc
 

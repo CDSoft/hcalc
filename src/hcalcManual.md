@@ -385,7 +385,7 @@ f(x) = 2 * x
 f(5)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Functions can also be defined with multiple statements and be recursive.
+Functions can be defined with multiple statements and be recursive.
 
 \hcalc
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
