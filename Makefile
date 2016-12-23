@@ -31,6 +31,8 @@ CSS		= src/hcalc.css
 # build: intermediate file, test executables, ...
 
 UNAME   = $(shell uname)
+WINEGHC = $(shell wine ghc --version 2>/dev/null || false)
+GCCVERSION = $(shell gcc --version | head -1 | sed 's/.* \([0-9][0-9]*\).*/\1/')
 
 ifeq "$(UNAME)" "Linux"
 
@@ -38,12 +40,15 @@ all: bin test doc
 
 # Compilation on Linux
 
-bin: bin/hcalc bin/hcalc.exe
+bin: bin/hcalc
 test: doc/test/hcalcTest/hcalcTest.txt
 doc: doc/hcalcManual.html README.md
 
-GCC_WIN	= $(shell ls /usr/bin/i686-*mingw32*-gcc | head -1 | sed 's/gcc$$//')
+ifneq "$(WINEGHC)" ""
+bin: bin/hcalc.exe
+GCC_WIN	= $(shell ls /usr/bin/i686-*mingw*-gcc | head -1 | sed 's/gcc$$//')
 WINE    = wine
+endif
 
 else
 
@@ -69,7 +74,7 @@ DEPENDENCIES = here
 setup:
 	cabal update
 	cabal install $(DEPENDENCIES)
-ifeq "$(UNAME)" "Linux"
+ifneq "$(WINEGHC)" ""
 	$(WINE) cabal update
 	$(WINE) cabal install $(DEPENDENCIES)
 endif
@@ -79,7 +84,11 @@ endif
 #####################################################################
 
 GHC_OPT = -O3 -Werror -Wall -fwarn-unused-do-bind
-UPX 	= upx -9qq
+
+# On Ubuntu 16.10, ghc 8.0.1 fails compiling hCalc with gcc 6 without -no-pie
+ifeq "$(GCCVERSION)" "6"
+GHC_OPT_LINUX = -optl-no-pie
+endif
 
 clean:
 	-rm -rf bin doc build .hpc
@@ -87,9 +96,8 @@ clean:
 bin/hcalc: $(SRC) $(MODULES)
 	@mkdir -p $(dir $@)
 	@mkdir -p build/$(notdir $@)
-	ghc $(GHC_OPT) -outputdir build/$(notdir $@) -o $@ --make $(SRC) $(MODULES)
+	ghc $(GHC_OPT) $(GHC_OPT_LINUX) -outputdir build/$(notdir $@) -o $@ --make $(SRC) $(MODULES)
 	@-strip $@
-	-$(UPX) $@
 
 bin/hcalc.exe: $(SRC) $(MODULES) build/hcalc.exe/icon.o
 	@mkdir -p $(dir $@)
@@ -98,7 +106,6 @@ bin/hcalc.exe: $(SRC) $(MODULES) build/hcalc.exe/icon.o
 	@rm $@
 	$(WINE) ghc $(GHC_OPT) -outputdir build/$(notdir $@) -o $@ --make $(SRC) $(MODULES) build/$(notdir $@)/icon.o
 	@-strip $@
-	-$(UPX) $@
 
 build/icon.png:
 	@mkdir -p $(dir $@)
