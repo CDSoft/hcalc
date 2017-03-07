@@ -63,9 +63,6 @@ Download and installation
 \def{URL}{http://cdsoft.fr/hcalc/!TAR}
 \def{VERSION}{\exec{hcalc version}}
 
-\def{LINUX}{[hcalc](http://cdsoft.fr/hcalc/hcalc)}
-\def{WIN}{[hcalc.exe](http://cdsoft.fr/hcalc/hcalc.exe)}
-
 \def{PP}{[PP](http://cdsoft.fr/pp)}
 \def{Pandoc}{[Pandoc](http://pandoc.org/)}
 \def{Haskell}{[Haskell](https://www.haskell.org/)}
@@ -87,17 +84,20 @@ The current version is [!VERSION](!URL)
 
 **Binaries:**
 
-- Precompiled 32 bit binary for Windows: !WIN
-- Precompiled 64 bit binary for Linux: !LINUX
+The binaries are not provided anymore. Use the source Luke!
 
 **Notes:**
 
-- For a better user experience on Linux, it is recommended to use Handy Calc
-  with [`rlwrap`](http://utopia.knoware.nl/~hlub/rlwrap/rlwrap.man.html)
-  (e.g. `rlwrap hcalc`).
-  `rlwrap` will give Handy Calc nice editing features.
-- The binaries may or may not work on your specific OS version.
-  Compiling the sources is the preferred way to get Handy Calc work.
+For a better user experience on Linux, it is recommended to use Handy Calc
+with [`rlwrap`](http://utopia.knoware.nl/~hlub/rlwrap/rlwrap.man.html)
+(e.g. `rlwrap hcalc`).
+`rlwrap` will give Handy Calc nice editing features.
+
+I use a keyboard shortcut to start Handy Calc in a terminal:
+
+~~~~~ .bash
+urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
+~~~~~
 
 Screenshot
 ==========

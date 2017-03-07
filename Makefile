@@ -30,38 +30,14 @@ CSS		= src/hcalc.css
 # bin: binaries
 # build: intermediate file, test executables, ...
 
-UNAME   = $(shell uname)
-WINEGHC = $(shell wine ghc --version 2>/dev/null || false)
-GCCVERSION = $(shell gcc --version | head -1 | sed 's/.* \([0-9][0-9]*\)\..*/\1/')
-
-ifeq "$(UNAME)" "Linux"
+UNAME   := $(shell uname)
+GCCVERSION := $(shell gcc --version | head -1 | sed 's/.* \([0-9][0-9]*\)\..*/\1/')
 
 all: bin test doc
 
-# Compilation on Linux
-
 bin: bin/hcalc
-test: doc/test/hcalcTest/hcalcTest.txt
+test: doc/test/hcalcTest.txt
 doc: doc/hcalcManual.html README.md
-
-ifneq "$(WINEGHC)" ""
-bin: bin/hcalc.exe
-GCC_WIN	= $(shell ls /usr/bin/i686-*mingw*-gcc | head -1 | sed 's/gcc$$//')
-WINE    = wine
-endif
-
-else
-
-# Compilation on Windows
-
-bin: bin/hcalc.exe
-test: doc/test/hcalcTest/hcalcTest.txt
-doc: doc/hcalcManual.html
-
-GCC_WIN	=
-EXE		= .exe
-
-endif
 
 .DELETE_ON_ERROR:
 
@@ -74,10 +50,6 @@ DEPENDENCIES = here
 setup:
 	cabal update
 	cabal install $(DEPENDENCIES)
-ifneq "$(WINEGHC)" ""
-	$(WINE) cabal update
-	$(WINE) cabal install $(DEPENDENCIES)
-endif
 
 #####################################################################
 # Compilation
@@ -86,25 +58,26 @@ endif
 GHC_OPT = -O3 -Werror -Wall -fwarn-unused-do-bind
 
 # On Ubuntu 16.10, ghc 8.0.1 fails compiling hCalc with gcc 6 without -no-pie
+ifeq "$(UNAME)" "Windows"
 ifeq "$(GCCVERSION)" "6"
 GHC_OPT_LINUX = -optl-no-pie
+endif
 endif
 
 clean:
 	-rm -rf bin doc build .hpc
 
+ifeq "$(UNAME)" "Windows"
+bin/hcalc: build/icon.o
+endif
 bin/hcalc: $(SRC) $(MODULES)
 	@mkdir -p $(dir $@)
-	@mkdir -p build/$(notdir $@)
-	ghc $(GHC_OPT) $(GHC_OPT_LINUX) -outputdir build/$(notdir $@) -o $@ --make $(SRC) $(MODULES)
-	@-strip $@
-
-bin/hcalc.exe: $(SRC) $(MODULES) build/hcalc.exe/icon.o
-	@mkdir -p $(dir $@)
-	@mkdir -p build/$(notdir $@)
-	$(WINE) ghc $(GHC_OPT) -outputdir build/$(notdir $@) -o $@ --make $(SRC) $(MODULES)
+	@mkdir -p build
+	ghc $(GHC_OPT) $(GHC_OPT_LINUX) -outputdir build -o $@ --make $(SRC) $(MODULES)
+ifeq "$(UNAME)" "Windows"
 	@rm $@
-	$(WINE) ghc $(GHC_OPT) -outputdir build/$(notdir $@) -o $@ --make $(SRC) $(MODULES) build/$(notdir $@)/icon.o
+	$(WINE) ghc $(GHC_OPT) -outputdir build -o $@ --make $(SRC) $(MODULES) build/icon.o
+endif
 	@-strip $@
 
 build/icon.png:
@@ -122,12 +95,12 @@ build/icon.ico: build/icon.png
 		-delete 0 -alpha off -colors 2 \
 		$@
 
-build/hcalc.exe/icon.rc: build/icon.ico
+build/icon.rc: build/icon.ico
 	@mkdir -p $(dir $@)
 	echo "100 ICON \"$<\"" > $@
 
-build/hcalc.exe/icon.o: build/hcalc.exe/icon.rc
-	$(GCC_WIN)windres $< $@
+build/icon.o: build/icon.rc
+	windres $< $@
 
 #####################################################################
 # Unit tests
@@ -135,16 +108,16 @@ build/hcalc.exe/icon.o: build/hcalc.exe/icon.rc
 
 tests: test
 
-build/hcalcTest/hcalcTest$(EXE): $(TEST) $(MODULES)
+build/test/hcalcTest: $(TEST) $(MODULES)
 	@mkdir -p $(dir $@)
 	ghc $(GHC_OPT) -fhpc -outputdir $(dir $@) -o $@ --make $(TEST) $(MODULES)
 
-doc/test/hcalcTest/hcalcTest.txt: build/hcalcTest/hcalcTest$(EXE)
+doc/test/hcalcTest.txt: build/test/hcalcTest
 	@mkdir -p $(dir $@)
 	@rm -f $(dir $<)/*.tix
-	@cd $(dir $<) && $(notdir $<)
-ifneq "$(EXE)" ""
-	@mv $(dir $<)/hcalcTest$(EXE).tix $(dir $<)/hcalcTest.tix 2>/dev/null
+	@cd $(dir $<) && ./$(notdir $<)
+ifeq "$(UNAME)" "Windows"
+	@mv $(dir $<)/hcalcTest.exe.tix $(dir $<)/hcalcTest.tix 2>/dev/null
 endif
 	hpc markup --exclude=Main --destdir=$(dir $@) $<
 	hpc report --exclude=Main $< | tee $@
@@ -153,10 +126,10 @@ endif
 # Documentation
 #####################################################################
 
-README.md: $(MANUAL) bin/hcalc$(EXE)
+README.md: $(MANUAL) bin/hcalc
 	export PATH=bin:$$PATH; LANG=en pp $(MANUAL) | LANG=en pandoc -f markdown -t markdown_github -o $@
 
-doc/hcalcManual.html: $(MANUAL) $(CSS) bin/hcalc$(EXE)
+doc/hcalcManual.html: $(MANUAL) $(CSS) bin/hcalc
 	@mkdir -p $(dir $@)
 	export PATH=bin:$$PATH; LANG=en pp $(MANUAL) | LANG=en pandoc -f markdown -t html5 -S -s --self-contained -N --toc -c $(CSS) -o $@
 

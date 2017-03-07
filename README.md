@@ -80,13 +80,17 @@ The current version is [Handy Calc 1.0.1](http://cdsoft.fr/hcalc/HandyCalc-1.0.1
 
 **Binaries:**
 
--   Precompiled 32 bit binary for Windows: [hcalc.exe](http://cdsoft.fr/hcalc/hcalc.exe)
--   Precompiled 64 bit binary for Linux: [hcalc](http://cdsoft.fr/hcalc/hcalc)
+The binaries are not provided anymore. Use the source Luke!
 
 **Notes:**
 
--   For a better user experience on Linux, it is recommended to use Handy Calc with [`rlwrap`](http://utopia.knoware.nl/~hlub/rlwrap/rlwrap.man.html) (e.g. `rlwrap hcalc`). `rlwrap` will give Handy Calc nice editing features.
--   The binaries may or may not work on your specific OS version. Compiling the sources is the preferred way to get Handy Calc work.
+For a better user experience on Linux, it is recommended to use Handy Calc with [`rlwrap`](http://utopia.knoware.nl/~hlub/rlwrap/rlwrap.man.html) (e.g. `rlwrap hcalc`). `rlwrap` will give Handy Calc nice editing features.
+
+I use a keyboard shortcut to start Handy Calc in a terminal:
+
+``` .bash
+urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
+```
 
 Screenshot
 ==========
