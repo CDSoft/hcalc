@@ -53,15 +53,15 @@ License
 =======
 
 ~~~~~~~~~~~~~~~~~~
-\exec(hcalc license)
+\exec(bin/hcalc license)
 ~~~~~~~~~~~~~~~~~~
 
 Download and installation
 =========================
 
-\def{TAR}{\exec{hcalc version | sed 's/ //' | sed 's/ /-/'}.tgz}
+\def{TAR}{\exec{bin/hcalc version | sed 's/ //' | sed 's/ /-/'}.tgz}
 \def{URL}{http://cdsoft.fr/hcalc/!TAR}
-\def{VERSION}{\exec{hcalc version}}
+\def{VERSION}{\exec{bin/hcalc version}}
 
 \def{PP}{[PP](http://cdsoft.fr/pp)}
 \def{Pandoc}{[Pandoc](http://pandoc.org/)}
@@ -103,7 +103,7 @@ Screenshot
 ==========
 
 ~~~~~~~~~~~~~~~~~~
-\exec(hcalc bye | grep -v ^Loading)
+\exec(bin/hcalc bye | grep -v ^Loading)
 ~~~~~~~~~~~~~~~~~~
 
 Command line usage
@@ -116,7 +116,7 @@ Only the value of the last expression is printed.
 \def{hcalc}{
 ~~~~~~~~~~~~~~~~~~~~
 $ hcalc \1
-\exec(hcalc \1)
+\exec(bin/hcalc \1)
 ~~~~~~~~~~~~~~~~~~~~
 }
 
@@ -136,7 +136,7 @@ A typical interactive session looks like this:
 $ hcalc
 \sh
 ~~~~~~~~~~~~~~~~~~~~
-cat << EOF | sed '/^$/d' | hcalc | sed '/Loading/d' | sed '1d'
+cat << EOF | sed '/^$/d' | bin/hcalc | sed '/Loading/d' | sed '1d'
 \1
 EOF
 ~~~~~~~~~~~~~~~~~~~~
@@ -158,7 +158,7 @@ User's manual
 ````````````````````````````````````````
 \sh
 ~~~~~~~~~~~~~~~~~~~~
-cat << EOF | sed '/^$/d' | hcalc | sed '1,/Loading/d' | sed '1d' | sed '$d' | sed '$d'
+cat << EOF | sed '/^$/d' | bin/hcalc | sed '1,/Loading/d' | sed '1d' | sed '$d' | sed '$d'
 \1
 EOF
 ~~~~~~~~~~~~~~~~~~~~

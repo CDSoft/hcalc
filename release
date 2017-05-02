@@ -21,14 +21,14 @@
 
 echo "Creating tag and archive for `echo $(hcalc version)`"
 
-if ! hcalc version > /dev/null
+if ! bin/hcalc version > /dev/null
 then
     echo "Can not get Handy Calc current version"
     exit 1
 fi
 
-tag=$(hcalc version | sed 's/ /_/' | sed 's/ /-/' | grep '-')
-arc=$(hcalc version | sed 's/ //' | sed 's/ /-/' | grep '-')
+tag=$(bin/hcalc version | sed 's/ /_/' | sed 's/ /-/' | grep '-')
+arc=$(bin/hcalc version | sed 's/ //' | sed 's/ /-/' | grep '-')
 
 if git tag $tag
 then
