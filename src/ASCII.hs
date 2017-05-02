@@ -89,7 +89,7 @@ ascii = unlines $ [ sep1
             where
                 s = [digit (i`div`16), digit (i`mod`16)]
                 digit d | d <= 9    = chr (ord '0' + d)
-                        | otherwise = chr (ord 'A' + d)
+                        | otherwise = chr (ord 'A' + d - 10)
         line1 i j = "| " ++ dec i ++ " | " ++ hex i ++ " | " ++ name i 33 ++ " | "
                          ++ dec j ++ " | " ++ hex j ++ " | " ++ name j  9 ++ " |"
         line2 i j k l = "| " ++ dec i ++ " | " ++ hex i ++ " |  " ++ name i 1 ++ "  | "
