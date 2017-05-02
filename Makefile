@@ -47,22 +47,22 @@ doc: doc/hcalcManual.html README.md
 
 DEPENDENCIES = here
 
+# On Linux, ghc 8.0.1 fails compiling hCalc with gcc 6 without -no-pie
+ifeq "$(UNAME)" "Linux"
+ifeq "$(GCCVERSION)" "6"
+GHC_OPT_LINUX = -optl-no-pie
+endif
+endif
+
 setup:
 	cabal update
-	cabal install $(DEPENDENCIES)
+	cabal install $(DEPENDENCIES) --ghc-options="$(GHC_OPT_LINUX)"
 
 #####################################################################
 # Compilation
 #####################################################################
 
 GHC_OPT = -O3 -Werror -Wall -fwarn-unused-do-bind
-
-# On Ubuntu 16.10, ghc 8.0.1 fails compiling hCalc with gcc 6 without -no-pie
-ifeq "$(UNAME)" "Windows"
-ifeq "$(GCCVERSION)" "6"
-GHC_OPT_LINUX = -optl-no-pie
-endif
-endif
 
 clean:
 	-rm -rf bin doc build .hpc
