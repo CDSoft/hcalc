@@ -1,6 +1,6 @@
 <!--
 Handy Calc
-Copyright (C) 2016 Christophe Delord
+Copyright (C) 2016, 2017 Christophe Delord
 http://cdsoft.fr/hcalc
 
 This file is part of Handy Calc.
@@ -42,7 +42,7 @@ License
 =======
 
     Handy Calc
-    (C) 2016 Christophe Delord
+    (C) 2016, 2017 Christophe Delord
     http://cdsoft.fr/hcalc
 
     Handy Calc is free software: you can redistribute it and/or modify
@@ -869,7 +869,7 @@ Online help
     =======
 
     Handy Calc 1.0.1
-    (C) 2016 Christophe Delord
+    (C) 2016, 2017 Christophe Delord
     http://cdsoft.fr/hcalc
 
 
