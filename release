@@ -19,7 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 
-echo "Creating tag and archive for `echo $(hcalc version)`"
+echo "Creating tag and archive for `echo $(bin/hcalc version)`"
 
 if ! bin/hcalc version > /dev/null
 then
