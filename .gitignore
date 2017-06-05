@@ -1,12 +1,6 @@
-build
-hcalc
-hcalc.exe
-hcalcTest
-hcalcTest.exe
-.hpc
-*.tix
-experiments
 *.swp
-hcalc.ini
+*.tix
+.stack-work
+experiments
 dist
-doc
+doc/hcalcManual.html

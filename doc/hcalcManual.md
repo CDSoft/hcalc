@@ -1,6 +1,6 @@
 % Handy Calc Manual
 % Christophe Delord
-% \MDATE
+% \mdate
 
 <!--
 Handy Calc
@@ -53,32 +53,34 @@ License
 =======
 
 ~~~~~~~~~~~~~~~~~~
-\exec(bin/hcalc license)
+\exec(hcalc license)
 ~~~~~~~~~~~~~~~~~~
 
 Download and installation
 =========================
 
-\def{TAR}{\exec{bin/hcalc version | sed 's/ //' | sed 's/ /-/'}.tgz}
+\def{TAR}{\exec{hcalc version | sed 's/ //' | sed 's/ /-/'}.tgz}
 \def{URL}{http://cdsoft.fr/hcalc/!TAR}
-\def{VERSION}{\exec{bin/hcalc version}}
+\def{VERSION}{\exec{hcalc version}}
 
 \def{PP}{[PP](http://cdsoft.fr/pp)}
 \def{Pandoc}{[Pandoc](http://pandoc.org/)}
 \def{Haskell}{[Haskell](https://www.haskell.org/)}
+\def{Stack}{[The Haskell Tool Stack](https://docs.haskellstack.org/en/latest/README/)}
 
 The current version is [!VERSION](!URL)
 
 **Installation from sources on Linux or Windows:**
 
 - Prerequisites
-    - !Haskell
+    - !Stack
     - Cygwin or MSYS/Mingw properly installed on Windows
     - !PP and !Pandoc to generate the documentation (optional)
 - Download [!TAR](!URL)
 - Unpack !TAR
 - Run make
-    - `make bin` generates the binary executable in `bin`
+    - `make` compiles `hcalc`
+    - `make install` installs `hcalc` in `~/.local/bin`
     - `make doc` generates the documentation in `doc`
     - `make test` runs the non regression tests
 
@@ -103,7 +105,7 @@ Screenshot
 ==========
 
 ~~~~~~~~~~~~~~~~~~
-\exec(bin/hcalc bye | grep -v ^Loading)
+\exec(hcalc bye | grep -v ^Loading)
 ~~~~~~~~~~~~~~~~~~
 
 Command line usage
@@ -116,7 +118,7 @@ Only the value of the last expression is printed.
 \def{hcalc}{
 ~~~~~~~~~~~~~~~~~~~~
 $ hcalc \1
-\exec(bin/hcalc \1)
+\exec(hcalc \1)
 ~~~~~~~~~~~~~~~~~~~~
 }
 
@@ -136,7 +138,7 @@ A typical interactive session looks like this:
 $ hcalc
 \sh
 ~~~~~~~~~~~~~~~~~~~~
-cat << EOF | sed '/^$/d' | bin/hcalc | sed '/Loading/d' | sed '1d'
+cat << EOF | sed '/^$/d' | hcalc | sed '/Loading/d' | sed '1d'
 \1
 EOF
 ~~~~~~~~~~~~~~~~~~~~
@@ -158,7 +160,7 @@ User's manual
 ````````````````````````````````````````
 \sh
 ~~~~~~~~~~~~~~~~~~~~
-cat << EOF | sed '/^$/d' | bin/hcalc | sed '1,/Loading/d' | sed '1d' | sed '$d' | sed '$d'
+cat << EOF | sed '/^$/d' | hcalc | sed '1,/Loading/d' | sed '1d' | sed '$d' | sed '$d'
 \1
 EOF
 ~~~~~~~~~~~~~~~~~~~~
