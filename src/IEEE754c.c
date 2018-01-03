@@ -1,5 +1,5 @@
 /* Handy Calc
-Copyright (C) 2016, 2017 Christophe Delord
+Copyright (C) 2016, 2017, 2018 Christophe Delord
 http://cdsoft.fr/hcalc
 
 This file is part of Handy Calc.

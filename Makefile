@@ -1,5 +1,5 @@
 # Handy Calc
-# Copyright (C) 2016, 2017 Christophe Delord
+# Copyright (C) 2016, 2017, 2018 Christophe Delord
 # http://cdsoft.fr/hcalc
 #
 # This file is part of Handy Calc.
@@ -52,8 +52,8 @@ clean:
 .DELETE_ON_ERROR:
 
 README.md: $(MANUAL) $(HCALC)
-	export PATH=$(dir $(HCALC)):$$PATH; LANG=en pp $(MANUAL) | LANG=en pandoc -f markdown -t markdown_github -o $@
+	export PATH=$(dir $(HCALC)):$$PATH; LANG=en pp $(MANUAL) | LANG=en pandoc -f markdown -t gfm -o $@
 
 doc/hcalcManual.html: $(MANUAL) $(CSS) $(HCALC)
 	@mkdir -p $(dir $@)
-	export PATH=$(dir $(HCALC)):$$PATH; LANG=en pp $(MANUAL) | LANG=en pandoc -f markdown -t html -S -s --self-contained -N --toc -c $(CSS) -o $@
+	export PATH=$(dir $(HCALC)):$$PATH; LANG=en pp $(MANUAL) | LANG=en pandoc -f markdown -t html -s --self-contained -N --toc -c $(CSS) -o $@

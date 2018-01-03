@@ -1,5 +1,5 @@
 name:                hcalc
-version:             1.0.4
+version:             1.0.5
 synopsis:            Handy Calc is a simple yet powerful calculator.
 description:         Handy Calc is a simple yet powerful calculator.
 homepage:            https://github.com/CDSoft/hcalc#readme
@@ -7,7 +7,7 @@ license:             GPL-3
 license-file:        LICENSE
 author:              Christophe Delord
 maintainer:          cdsoft.fr
-copyright:           2016, 2017 Christophe Delord
+copyright:           2016, 2017, 2018 Christophe Delord
 category:            Calculator
 build-type:          Simple
 extra-source-files:  README.md
