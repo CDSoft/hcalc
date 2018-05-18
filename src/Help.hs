@@ -1,6 +1,6 @@
 {- Handy Calc
 Copyright (C) 2016, 2017, 2018 Christophe Delord
-http://cdsoft.fr/hcalc
+https://cdsoft.fr/hcalc
 
 This file is part of Handy Calc.
 
@@ -79,7 +79,7 @@ shortHelp = [iTrim|
     where
         title = map toUpper $ intersperse ' ' V.name
         version = "v " ++ intercalate "." (map show V.version)
-        url = fromMaybe V.url $ stripPrefix "http://" V.url
+        url = fromMaybe V.url $ stripPrefix "https://" V.url
         spaces = repeat ' '
         center w s = take w $ take ((w - length s) `div` 2) spaces ++ s ++ spaces
 

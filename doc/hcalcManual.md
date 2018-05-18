@@ -5,7 +5,7 @@
 <!--
 Handy Calc
 Copyright (C) 2016, 2017, 2018 Christophe Delord
-http://cdsoft.fr/hcalc
+https://cdsoft.fr/hcalc
 
 This file is part of Handy Calc.
 
@@ -32,7 +32,7 @@ It may seem a bit spartan and outdated but entering expressions with the keyboar
 is way easier than with a mouse.
 And you get nice editing features for free (edition, copy/paste, history, ...).
 
-Handy Calc is also an application example for the [FUN](http://fun.cdsoft.fr) project.
+Handy Calc is also an application example for the [FUN](https://fun.cdsoft.fr) project.
 Its development process and methods are based on:
 
 - Haskell
@@ -43,9 +43,9 @@ Its development process and methods are based on:
 - code coverage to measure the completeness of the tests
 
 So Handy Calc is supposed to be better and safer than its predecessor
-([Calculadoira](http://cdsoft.fr/calculadoira)).
+([Calculadoira](https://cdsoft.fr/calculadoira)).
 
-If you like Handy Calc, please consider supporting my [FUN](http://fun.cdsoft.fr) project.
+If you like Handy Calc, please consider supporting my [FUN](https://fun.cdsoft.fr) project.
 
 You can also contribute to [Handy Calc on GitHub](http://github.com/CDSoft/hcalc).
 
@@ -60,10 +60,10 @@ Download and installation
 =========================
 
 !def{TAR}{!exec{hcalc version | sed 's/ //' | sed 's/ /-/'}.tgz}
-!def{URL}{http://cdsoft.fr/hcalc/!TAR}
+!def{URL}{https://cdsoft.fr/hcalc/!TAR}
 !def{VERSION}{!exec{hcalc version}}
 
-!def{PP}{[PP](http://cdsoft.fr/pp)}
+!def{PP}{[PP](https://cdsoft.fr/pp)}
 !def{Pandoc}{[Pandoc](http://pandoc.org/)}
 !def{Haskell}{[Haskell](https://www.haskell.org/)}
 !def{Stack}{[The Haskell Tool Stack](https://docs.haskellstack.org/en/latest/README/)}

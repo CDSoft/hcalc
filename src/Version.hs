@@ -1,6 +1,6 @@
 {- Handy Calc
 Copyright (C) 2016, 2017, 2018 Christophe Delord
-http://cdsoft.fr/hcalc
+https://cdsoft.fr/hcalc
 
 This file is part of Handy Calc.
 
@@ -42,4 +42,4 @@ tag :: String
 tag = name ++ " " ++ intercalate "." (map show version)
 
 url :: String
-url = "http://cdsoft.fr/" ++ map toLower shortName
+url = "https://cdsoft.fr/" ++ map toLower shortName
