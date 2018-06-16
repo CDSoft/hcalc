@@ -1,0 +1,56 @@
+name:                hcalc
+version:             1.0.6
+github:              "CDSoft/hcalc"
+license:             GPL-3
+author:              "Christophe Delord"
+maintainer:          "cdsoft.fr"
+copyright:           "2016, 2017, 2018 Christophe Delord"
+
+extra-source-files:
+- README.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/CDSoft/hcalc#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+  c-sources:   src/IEEE754c.c
+  dependencies:
+  - here
+  - containers
+
+executables:
+  hcalc:
+    main:                hcalc.hs
+    source-dirs:         app
+    ghc-options:
+    - -O3
+    - -Werror
+    - -Wall
+    - -fwarn-unused-do-bind
+    dependencies:
+    - hcalc
+    - directory
+    - filepath
+    - unix
+
+tests:
+  hcalc-test:
+    main:                hcalcTest.hs
+    source-dirs:         test
+    ghc-options:
+    - -Werror
+    - -Wall
+    - -fwarn-unused-do-bind
+    dependencies:
+    - hcalc
+    - containers
