@@ -44,9 +44,9 @@ best (e:es) = get e es
     where
         -- nothing left -> this is the best candidate
         get e1@(_, "") _ = e1
-        get _ ((e2@(_, "")):_) = e2
+        get _ (e2@(_, ""):_) = e2
         -- take the candidate that has parsed the longest string
-        get e1@(_, l1) ((e2@(_, l2)):es') = get (if length l2 < length l1 then e2 else e1) es'
+        get e1@(_, l1) (e2@(_, l2):es') = get (if length l2 < length l1 then e2 else e1) es'
         -- no more candidates
         get e1 [] = e1
 best [] = error "best must be called with a non empty list"

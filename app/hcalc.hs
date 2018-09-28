@@ -28,14 +28,12 @@ module Main(main) where
 import Help
 import Interface
 import PrettyPrint
-#ifdef mingw32_HOST_OS
 import qualified Version as V
-#endif
 
 import Control.Monad
+import Data.Char
 import System.Directory
 import System.Environment
-import System.FilePath
 import System.IO
 
 #ifdef linux_HOST_OS
@@ -73,8 +71,7 @@ initConsole = do
 -- with the extension .ini
 getIni :: IO (FilePath, String)
 getIni = do
-    path <- getExecutablePath
-    let name = replaceExtension path ".ini"
+    name <- getXdgDirectory XdgConfig $ map toLower V.shortName ++ ".ini"
     found <- doesFileExist name
     if found
         -- if it exists, just read it

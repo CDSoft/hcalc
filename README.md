@@ -71,7 +71,7 @@ GitHub](http://github.com/CDSoft/hcalc).
 # Download and installation
 
 The current version is [Handy
-Calc 1.0.6](https://cdsoft.fr/hcalc/HandyCalc-1.0.6.tgz)
+Calc 1.0.7](https://cdsoft.fr/hcalc/HandyCalc-1.0.7.tgz)
 
 **Installation from sources on Linux or Windows:**
 
@@ -82,8 +82,8 @@ Calc 1.0.6](https://cdsoft.fr/hcalc/HandyCalc-1.0.6.tgz)
       - [PP](https://cdsoft.fr/pp) and [Pandoc](http://pandoc.org/) to
         generate the documentation (optional)
   - Download
-    [HandyCalc-1.0.6.tgz](https://cdsoft.fr/hcalc/HandyCalc-1.0.6.tgz)
-  - Unpack HandyCalc-1.0.6.tgz
+    [HandyCalc-1.0.7.tgz](https://cdsoft.fr/hcalc/HandyCalc-1.0.7.tgz)
+  - Unpack HandyCalc-1.0.7.tgz
   - Run make
       - `make` compiles `hcalc`
       - `make install` installs `hcalc` in `~/.local/bin`
@@ -111,7 +111,7 @@ urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
 # Screenshot
 
     +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |     v 1.0.6     | cdsoft.fr/hcalc |
+    |       H A N D Y   C A L C       |     v 1.0.7     | cdsoft.fr/hcalc |
     |---------------------------------------------------------------------|
     | Modes:                          | Numbers:                          |
     |     hex oct bin float reset     |     binary: 0b...                 |
@@ -151,7 +151,7 @@ A typical interactive session looks like this:
 ``` 
 $ hcalc
 +---------------------------------------------------------------------+
-|       H A N D Y   C A L C       |     v 1.0.6     | cdsoft.fr/hcalc |
+|       H A N D Y   C A L C       |     v 1.0.7     | cdsoft.fr/hcalc |
 |---------------------------------------------------------------------|
 | Modes:                          | Numbers:                          |
 |     hex oct bin float reset     |     binary: 0b...                 |
@@ -739,7 +739,7 @@ to lazyness, functions can also be mutually recursive.
 : help
 
 +---------------------------------------------------------------------+
-|       H A N D Y   C A L C       |     v 1.0.6     | cdsoft.fr/hcalc |
+|       H A N D Y   C A L C       |     v 1.0.7     | cdsoft.fr/hcalc |
 |---------------------------------------------------------------------|
 | Modes:                          | Numbers:                          |
 |     hex oct bin float reset     |     binary: 0b...                 |
@@ -890,7 +890,7 @@ version                     print the version number
 Credits
 =======
 
-Handy Calc 1.0.6
+Handy Calc 1.0.7
 (C) 2016, 2017, 2018 Christophe Delord
 https://cdsoft.fr/hcalc
 
