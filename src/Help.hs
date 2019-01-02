@@ -1,5 +1,5 @@
 {- Handy Calc
-Copyright (C) 2016, 2017, 2018 Christophe Delord
+Copyright (C) 2016-2019 Christophe Delord
 https://cdsoft.fr/hcalc
 
 This file is part of Handy Calc.
@@ -32,10 +32,26 @@ import Data.List
 import Data.Maybe
 import Data.String.Here.Interpolated
 
+dates :: String
+dates = intercalate ", " (compress V.dates)
+    where
+        compress :: [Int] -> [String]
+        compress (d:ds) = compress' ds (d, d)
+        compress [] = error "Invalid date list"
+        compress' :: [Int] -> (Int, Int) -> [String]
+        compress' (d:ds) i@(d1, d2)
+            | d == d2+1     = compress' ds (d1, d)
+            | otherwise     = showInterv i : compress' ds (d, d)
+        compress' [] i = [showInterv i]
+        showInterv :: (Int, Int) -> String
+        showInterv (d1, d2)
+            | d1 == d2      = show d1
+            | otherwise     = show d1 ++ "-" ++ show d2
+
 license :: String
 license = [iTrim|
 ${V.name}
-(C) ${intercalate ", " (map show V.dates)} Christophe Delord
+(C) ${dates} Christophe Delord
 ${V.url}
 
 ${V.name} is free software: you can redistribute it and/or modify
@@ -218,7 +234,7 @@ Credits
 =======
 
 ${V.tag}
-(C) ${intercalate ", " (map show V.dates)} Christophe Delord
+(C) ${dates} Christophe Delord
 ${V.url}
 
 |]

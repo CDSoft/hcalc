@@ -1,6 +1,6 @@
 <!--
 Handy Calc
-Copyright (C) 2016, 2017, 2018 Christophe Delord
+Copyright (C) 2016-2019 Christophe Delord
 https://cdsoft.fr/hcalc
 
 This file is part of Handy Calc.
@@ -50,7 +50,7 @@ GitHub](http://github.com/CDSoft/hcalc).
 # License
 
     Handy Calc
-    (C) 2016, 2017, 2018 Christophe Delord
+    (C) 2016-2019 Christophe Delord
     https://cdsoft.fr/hcalc
     
     Handy Calc is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ GitHub](http://github.com/CDSoft/hcalc).
 # Download and installation
 
 The current version is [Handy
-Calc 1.0.7](https://cdsoft.fr/hcalc/HandyCalc-1.0.7.tgz)
+Calc 1.0.8](https://cdsoft.fr/hcalc/HandyCalc-1.0.8.tgz)
 
 **Installation from sources on Linux or Windows:**
 
@@ -82,8 +82,8 @@ Calc 1.0.7](https://cdsoft.fr/hcalc/HandyCalc-1.0.7.tgz)
       - [PP](https://cdsoft.fr/pp) and [Pandoc](http://pandoc.org/) to
         generate the documentation (optional)
   - Download
-    [HandyCalc-1.0.7.tgz](https://cdsoft.fr/hcalc/HandyCalc-1.0.7.tgz)
-  - Unpack HandyCalc-1.0.7.tgz
+    [HandyCalc-1.0.8.tgz](https://cdsoft.fr/hcalc/HandyCalc-1.0.8.tgz)
+  - Unpack HandyCalc-1.0.8.tgz
   - Run make
       - `make` compiles `hcalc`
       - `make install` installs `hcalc` in `~/.local/bin`
@@ -98,8 +98,9 @@ The binaries are not provided anymore. Use the source Luke\!
 
 For a better user experience on Linux, it is recommended to use Handy
 Calc with
-[`rlwrap`](http://utopia.knoware.nl/~hlub/rlwrap/rlwrap.man.html) (e.g.
-`rlwrap hcalc`). `rlwrap` will give Handy Calc nice editing features.
+[`rlwrap`](http://utopia.knoware.nl/~hlub/rlwrap/rlwrap.man.html)
+(e.g. `rlwrap hcalc`). `rlwrap` will give Handy Calc nice editing
+features.
 
 I use a keyboard shortcut to start Handy Calc in a
     terminal:
@@ -111,7 +112,7 @@ urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
 # Screenshot
 
     +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |     v 1.0.7     | cdsoft.fr/hcalc |
+    |       H A N D Y   C A L C       |     v 1.0.8     | cdsoft.fr/hcalc |
     |---------------------------------------------------------------------|
     | Modes:                          | Numbers:                          |
     |     hex oct bin float reset     |     binary: 0b...                 |
@@ -151,7 +152,7 @@ A typical interactive session looks like this:
 ``` 
 $ hcalc
 +---------------------------------------------------------------------+
-|       H A N D Y   C A L C       |     v 1.0.7     | cdsoft.fr/hcalc |
+|       H A N D Y   C A L C       |     v 1.0.8     | cdsoft.fr/hcalc |
 |---------------------------------------------------------------------|
 | Modes:                          | Numbers:                          |
 |     hex oct bin float reset     |     binary: 0b...                 |
@@ -739,7 +740,7 @@ to lazyness, functions can also be mutually recursive.
 : help
 
 +---------------------------------------------------------------------+
-|       H A N D Y   C A L C       |     v 1.0.7     | cdsoft.fr/hcalc |
+|       H A N D Y   C A L C       |     v 1.0.8     | cdsoft.fr/hcalc |
 |---------------------------------------------------------------------|
 | Modes:                          | Numbers:                          |
 |     hex oct bin float reset     |     binary: 0b...                 |
@@ -890,8 +891,8 @@ version                     print the version number
 Credits
 =======
 
-Handy Calc 1.0.7
-(C) 2016, 2017, 2018 Christophe Delord
+Handy Calc 1.0.8
+(C) 2016-2019 Christophe Delord
 https://cdsoft.fr/hcalc
 
 ```
