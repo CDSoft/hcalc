@@ -1,6 +1,6 @@
 % Handy Calc Manual
 % Christophe Delord
-% !mdate
+% {{mdate}}
 
 <!--
 Handy Calc
@@ -52,32 +52,27 @@ You can also contribute to [Handy Calc on GitHub](http://github.com/CDSoft/hcalc
 License
 =======
 
-~~~~~~~~~~~~~~~~~~
-!exec(hcalc license)
+~~~~~~~~~~~~~~~~~~ {cmd=bash}
+hcalc license
 ~~~~~~~~~~~~~~~~~~
 
 Download and installation
 =========================
 
-!def{TAR}{!exec{hcalc version | sed 's/ //' | sed 's/ /-/'}.tgz}
-!def{URL}{https://cdsoft.fr/hcalc/!TAR}
-!def{VERSION}{!exec{hcalc version}}
+[ABP]: https://cdsoft.fr/abp
+[Pandoc]: http://pandoc.org/
+[Haskell]: https://www.haskell.org/
+[The Haskell Tool Stack]: https://docs.haskellstack.org/en/latest/README/
 
-!def{PP}{[PP](https://cdsoft.fr/pp)}
-!def{Pandoc}{[Pandoc](http://pandoc.org/)}
-!def{Haskell}{[Haskell](https://www.haskell.org/)}
-!def{Stack}{[The Haskell Tool Stack](https://docs.haskellstack.org/en/latest/README/)}
-
-The current version is [!VERSION](!URL)
+The current version is [{{version}}]({{hcalc_url}})
 
 **Installation from sources on Linux or Windows:**
 
 - Prerequisites
-    - !Stack
+    - [The Haskell Tool Stack]
     - Cygwin or MSYS/Mingw properly installed on Windows
-    - !PP and !Pandoc to generate the documentation (optional)
-- Download [!TAR](!URL)
-- Unpack !TAR
+    - [ABP] and [Pandoc] to generate the documentation (optional)
+- Download and unpack [{{hcalc_tar}}]({{hcalc_url}})
 - Run make
     - `make` compiles `hcalc`
     - `make install` installs `hcalc` in `~/.local/bin`
@@ -104,8 +99,8 @@ urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
 Screenshot
 ==========
 
-~~~~~~~~~~~~~~~~~~
-!exec(hcalc bye | grep -v ^Loading)
+~~~~~~~~~~~~~~~~~~ {.bash cmd=bash}
+hcalc bye | grep -v ^Loading
 ~~~~~~~~~~~~~~~~~~
 
 Command line usage
@@ -115,14 +110,11 @@ Handy Calc can be used on the command line.
 Each argument is considered as an expression to be evaluated.
 Only the value of the last expression is printed.
 
-!def{hcalc}{
-~~~~~~~~~~~~~~~~~~~~
-$ hcalc !1
-!exec(hcalc !1)
-~~~~~~~~~~~~~~~~~~~~
-}
+~~~ {.bash cmd=bash}
+echo '$ hcalc "x = 21" "y = 2" "x * y"'
 
-!hcalc("x = 21" "y = 2" "x * y")
+hcalc "x = 21" "y = 2" "x * y"
+~~~
 
 Interactive usage
 =================
@@ -133,40 +125,23 @@ The next section lists all the operators and functions provided by Handy Calc.
 
 A typical interactive session looks like this:
 
-!def{hcalc}{
-````````````````````````````````````````
-$ hcalc
-!sh
-~~~~~~~~~~~~~~~~~~~~
-cat << EOF | sed '/^$/d' | hcalc | sed '/Loading/d' | sed '1d'
-!1
-EOF
-~~~~~~~~~~~~~~~~~~~~
+``` meta
+- hcalc: cat % | sed '/^$/d' | hcalc | sed '/Loading/d' | sed '1d'
+```
 
-````````````````````````````````````````
-}
-
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 x = 21
 y = 2
 (x * y) ** 2
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 User's manual
 =============
 
-!def{hcalc}{
-````````````````````````````````````````
-!sh
-~~~~~~~~~~~~~~~~~~~~
-cat << EOF | sed '/^$/d' | hcalc | sed '1,/Loading/d' | sed '1d' | sed '$d' | sed '$d'
-!1
-EOF
-~~~~~~~~~~~~~~~~~~~~
-
-````````````````````````````````````````
-}
+``` meta
+- hcalc: cat % | sed '/^$/d' | hcalc | sed '1,/Loading/d' | sed '1d' | sed '$d' | sed '$d'
+```
 
 ## Numbers
 
@@ -174,12 +149,12 @@ EOF
 
 Integers can be decimal, hexadecimal, octal or binary numbers:
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 42
 0x24
 0o37
 0b1010
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Rational numbers
@@ -187,16 +162,16 @@ Integers can be decimal, hexadecimal, octal or binary numbers:
 Rational numbers can be used to make *exact* computations instead of
 using floating point numbers.
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 1 + 2/3
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Some functions don't support rational numbers and will produce floating point numbers.
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 1/2 + cos(0)
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Floating point numbers
@@ -207,8 +182,7 @@ floating point numbers.
 They are represented internally by 64 bit numbers but can be converted to 32 bit
 numbers as well as to their IEEE 754 representation.
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 3.14
 1.23e-6
 e
@@ -218,6 +192,7 @@ float64
 nan
 inf
 -inf
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Automatic type conversion
@@ -226,11 +201,11 @@ Number types are automatically converted in a way to preserve the best precision
 Integers are prefered to rational numbers and rational numbers are prefered
 to floating point numbers.
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 1+2/3
 1/3+2/3
 (2/3) * 0.5
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Display mode
@@ -243,14 +218,14 @@ The user can activate additional display modes by selecting:
 - the IEEE 754 representation of floating point numbers (`float32`, `float64`)
 - `reset` resets the display mode
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 42424242
 dec8            # 8 bit decimal numbers
 hex16           # 16 bit hexadecimal numbers
 oct32           # 32 bit octal numbers
 bin64           # 64 bit binary numbers
 reset           # raw decimal value only
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Handy Calc automatically activates some display modes under some circonstances:
@@ -258,11 +233,11 @@ Handy Calc automatically activates some display modes under some circonstances:
 - integer entered in a specific base
 - usage of a bitwise operator in an expression
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 4               # only the default display mode
 0b100           # this number activates the binary display mode
 1<<10           # this operator activates the hexadecimal display mode
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Strings
@@ -271,32 +246,31 @@ Handy Calc has a limited support for strings.
 
 Strings can be concatenated, duplicated and produced by converting numbers:
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 "abc" + "def"
 "abc" * 3
 "pi = " + pi + "; e = " ++ e
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Booleans
 
 Boolean values can be used in conditional and boolean expressions.
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 true
 false
 true and false
 1+1 == 2
 1+1==2 ? "ok" : "bug"
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Operators
 
 ### Arithmetic operators
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 x = 12
 -x
 +x
@@ -307,12 +281,12 @@ x / 5
 x // 5                  # integral division
 x % 5                   # integral remainder (Euclidean division)
 x ** 2
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Bitwise operators
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 bin16
 ~1                      # bitwise complement
 1 | 4                   # bitwise or
@@ -320,28 +294,29 @@ bin16
 0b1100 & 0b0110         # bitwise and
 1 << 10                 # left shift
 1024 >> 1               # right shift
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Boolean operators
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 not true
 true or false
 true xor false
 true and false
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Comparison operators
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 12 < 13
 12 <= 13
 12 > 13
 12 >= 13
 12 == 13
 12 != 13
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Operator precedence
@@ -368,61 +343,60 @@ Blocks                      `expr1; ...; exprn`
 
 Handy Calc can define and reuse variables.
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 x = 1
 y = 2
 x+y
 y = 3
 x+y
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Functions
 
 Handy Calc can also define functions.
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 f(x) = 2 * x
 f(5)
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Functions can be defined with multiple statements and be recursive.
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 fib(n) = (f1=fib(n-1); f2=fib(n-2); n<2 ? 1 : f1+f2)
 fib(1)
 fib(10)
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can see in the previous example that the evaluation is lazy!
 Thanks to lazyness, functions can also be mutually recursive.
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 isEven(n) = n == 0 ? true : isOdd(n-1)
 isOdd(n) = n == 0 ? false : isEven(n-1)
 isEven(10)
 isOdd(10)
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Builtin functions
 
 ### Type conversion
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 int(pi)                     # Integral part
 float(2/3)                  # Conversion to floating point numbers
 rat(pi)                     # Rational approximation
 rat(pi, 1e-2)               # Rational approximation with a given precision
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Math
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 x = pi; y = e; b = 3
 
 abs(x)                      # absolute value of x
@@ -461,41 +435,42 @@ ln(x)                       # logarithm of x in base e
 log10(x)                    # logarithm of x in base 10
 log2(x)                     # logarithm of x in base 2
 log(b, x)                   # logarithm of x in base b
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### IEEE 754 representation
 
 #### 32 bit numbers
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 x = pi; n = 0x402df854
 
 float32
 float2ieee(x)               # IEEE 754 representation of x (32 bits)
 ieee2float(n)               # 32 bit float value of the IEEE 754 integer n
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #### 64 bit numbers
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 x = pi; n = 0x4005bf0a8b145769
 
 float64
 double2ieee(x)              # IEEE 754 representation of x (64 bits)
 ieee2double(n)              # 64 bit float value of the IEEE 754 integer n
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Specific values
 
-!hcalc
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 x = pi
 
 isfinite(x)                 # true if x is finite
 isinf(x)                    # true if x is infinite
 isnan(x)                    # true if x is not a number
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Other commands
@@ -510,4 +485,7 @@ version                     print the version number
 Online help
 ===========
 
-!hcalc(help)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
+help
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

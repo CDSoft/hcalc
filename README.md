@@ -49,29 +49,33 @@ GitHub](http://github.com/CDSoft/hcalc).
 
 # License
 
-    Handy Calc
-    (C) 2016-2019 Christophe Delord
-    https://cdsoft.fr/hcalc
-    
-    Handy Calc is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-    
-    Handy Calc is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-    
-    You should have received a copy of the GNU General Public License
-    along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
-    
-    Handy Calc is powered by Haskell.
+``` 
+
+Handy Calc
+(C) 2016-2019 Christophe Delord
+https://cdsoft.fr/hcalc
+
+Handy Calc is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Handy Calc is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
+
+Handy Calc is powered by Haskell.
+
+```
 
 # Download and installation
 
-The current version is [Handy
-Calc 1.0.8](https://cdsoft.fr/hcalc/HandyCalc-1.0.8.tgz)
+The current version is [ Handy
+Calc 1.0.9](https://cdsoft.fr/hcalc/HandyCalc-1.0.9.tgz)
 
 **Installation from sources on Linux or Windows:**
 
@@ -79,11 +83,10 @@ Calc 1.0.8](https://cdsoft.fr/hcalc/HandyCalc-1.0.8.tgz)
       - [The Haskell Tool
         Stack](https://docs.haskellstack.org/en/latest/README/)
       - Cygwin or MSYS/Mingw properly installed on Windows
-      - [PP](https://cdsoft.fr/pp) and [Pandoc](http://pandoc.org/) to
+      - [ABP](https://cdsoft.fr/abp) and [Pandoc](http://pandoc.org/) to
         generate the documentation (optional)
-  - Download
-    [HandyCalc-1.0.8.tgz](https://cdsoft.fr/hcalc/HandyCalc-1.0.8.tgz)
-  - Unpack HandyCalc-1.0.8.tgz
+  - Download and unpack
+    [HandyCalc-1.0.9.tgz](https://cdsoft.fr/hcalc/HandyCalc-1.0.9.tgz)
   - Run make
       - `make` compiles `hcalc`
       - `make install` installs `hcalc` in `~/.local/bin`
@@ -102,8 +105,7 @@ Calc with
 (e.g. `rlwrap hcalc`). `rlwrap` will give Handy Calc nice editing
 features.
 
-I use a keyboard shortcut to start Handy Calc in a
-    terminal:
+I use a keyboard shortcut to start Handy Calc in a terminal:
 
 ``` .bash
 urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
@@ -112,7 +114,7 @@ urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
 # Screenshot
 
     +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |     v 1.0.8     | cdsoft.fr/hcalc |
+    |       H A N D Y   C A L C       |     v 1.0.9     | cdsoft.fr/hcalc |
     |---------------------------------------------------------------------|
     | Modes:                          | Numbers:                          |
     |     hex oct bin float reset     |     binary: 0b...                 |
@@ -149,39 +151,36 @@ by Handy Calc.
 
 A typical interactive session looks like this:
 
-``` 
-$ hcalc
-+---------------------------------------------------------------------+
-|       H A N D Y   C A L C       |     v 1.0.8     | cdsoft.fr/hcalc |
-|---------------------------------------------------------------------|
-| Modes:                          | Numbers:                          |
-|     hex oct bin float reset     |     binary: 0b...                 |
-|     hex8/16/32/64 ...           |     octal : 0o...                 |
-|---------------------------------|     hexa  : 0x...                 |
-| Variables and functions:        |     float : 1.2e-3                |
-|     variable = expression       |                                   |
-|     function(x, y) = expression | Strings   : "abcd"                |
-| Multiple statements:            |                                   |
-|     expr1; ...; exprn           | Booleans  : true or false         |
-|---------------------------------|-----------------------------------|
-| Builtin functions:              | Operators:                        |
-|     see help                    |     or xor and not                |
-|---------------------------------|     < <= > >= == !=               |
-| Commands: help license bye      |     cond?expr:expr                |
-|           ascii ...             |     + - * / % ** | ^ & >> << ~    |
-+---------------------------------------------------------------------+
-
-: x = 21
-
-
-: y = 2
-
-
-: (x * y) ** 2
-=       1764
-
-: 
-```
+    +---------------------------------------------------------------------+
+    |       H A N D Y   C A L C       |     v 1.0.9     | cdsoft.fr/hcalc |
+    |---------------------------------------------------------------------|
+    | Modes:                          | Numbers:                          |
+    |     hex oct bin float reset     |     binary: 0b...                 |
+    |     hex8/16/32/64 ...           |     octal : 0o...                 |
+    |---------------------------------|     hexa  : 0x...                 |
+    | Variables and functions:        |     float : 1.2e-3                |
+    |     variable = expression       |                                   |
+    |     function(x, y) = expression | Strings   : "abcd"                |
+    | Multiple statements:            |                                   |
+    |     expr1; ...; exprn           | Booleans  : true or false         |
+    |---------------------------------|-----------------------------------|
+    | Builtin functions:              | Operators:                        |
+    |     see help                    |     or xor and not                |
+    |---------------------------------|     < <= > >= == !=               |
+    | Commands: help license bye      |     cond?expr:expr                |
+    |           ascii ...             |     + - * / % ** | ^ & >> << ~    |
+    +---------------------------------------------------------------------+
+    
+    : x = 21
+    
+    
+    : y = 2
+    
+    
+    : (x * y) ** 2
+    =       1764
+    
+    : 
 
 # User’s manual
 
@@ -740,7 +739,7 @@ to lazyness, functions can also be mutually recursive.
 : help
 
 +---------------------------------------------------------------------+
-|       H A N D Y   C A L C       |     v 1.0.8     | cdsoft.fr/hcalc |
+|       H A N D Y   C A L C       |     v 1.0.9     | cdsoft.fr/hcalc |
 |---------------------------------------------------------------------|
 | Modes:                          | Numbers:                          |
 |     hex oct bin float reset     |     binary: 0b...                 |
@@ -891,7 +890,7 @@ version                     print the version number
 Credits
 =======
 
-Handy Calc 1.0.8
+Handy Calc 1.0.9
 (C) 2016-2019 Christophe Delord
 https://cdsoft.fr/hcalc
 
