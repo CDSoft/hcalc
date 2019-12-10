@@ -32,7 +32,7 @@ It may seem a bit spartan and outdated but entering expressions with the keyboar
 is way easier than with a mouse.
 And you get nice editing features for free (edition, copy/paste, history, ...).
 
-Handy Calc is also an application example for the [FUN](https://fun.cdsoft.fr) project.
+Handy Calc is also an application example for the [FUN](https://cdsoft.fr/fun) project.
 Its development process and methods are based on:
 
 - Haskell
@@ -45,7 +45,7 @@ Its development process and methods are based on:
 So Handy Calc is supposed to be better and safer than its predecessor
 ([Calculadoira](https://cdsoft.fr/calculadoira)).
 
-If you like Handy Calc, please consider supporting my [FUN](https://fun.cdsoft.fr) project.
+If you like Handy Calc, please consider supporting my [FUN](https://cdsoft.fr/fun) project.
 
 You can also contribute to [Handy Calc on GitHub](http://github.com/CDSoft/hcalc).
 

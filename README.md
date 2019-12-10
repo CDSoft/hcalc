@@ -28,7 +28,7 @@ way easier than with a mouse. And you get nice editing features for free
 (edition, copy/paste, history, …).
 
 Handy Calc is also an application example for the
-[FUN](https://fun.cdsoft.fr) project. Its development process and
+[FUN](https://cdsoft.fr/fun) project. Its development process and
 methods are based on:
 
   - Haskell
@@ -42,7 +42,7 @@ So Handy Calc is supposed to be better and safer than its predecessor
 ([Calculadoira](https://cdsoft.fr/calculadoira)).
 
 If you like Handy Calc, please consider supporting my
-[FUN](https://fun.cdsoft.fr) project.
+[FUN](https://cdsoft.fr/fun) project.
 
 You can also contribute to [Handy Calc on
 GitHub](http://github.com/CDSoft/hcalc).
@@ -75,7 +75,7 @@ Handy Calc is powered by Haskell.
 # Download and installation
 
 The current version is [ Handy
-Calc 1.0.9](https://cdsoft.fr/hcalc/HandyCalc-1.0.9.tgz)
+Calc 1.0.10](https://cdsoft.fr/hcalc/HandyCalc-1.0.10.tgz)
 
 **Installation from sources on Linux or Windows:**
 
@@ -86,7 +86,7 @@ Calc 1.0.9](https://cdsoft.fr/hcalc/HandyCalc-1.0.9.tgz)
       - [ABP](https://cdsoft.fr/abp) and [Pandoc](http://pandoc.org/) to
         generate the documentation (optional)
   - Download and unpack
-    [HandyCalc-1.0.9.tgz](https://cdsoft.fr/hcalc/HandyCalc-1.0.9.tgz)
+    [HandyCalc-1.0.10.tgz](https://cdsoft.fr/hcalc/HandyCalc-1.0.10.tgz)
   - Run make
       - `make` compiles `hcalc`
       - `make install` installs `hcalc` in `~/.local/bin`
@@ -114,7 +114,7 @@ urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
 # Screenshot
 
     +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |     v 1.0.9     | cdsoft.fr/hcalc |
+    |       H A N D Y   C A L C       |    v 1.0.10     | cdsoft.fr/hcalc |
     |---------------------------------------------------------------------|
     | Modes:                          | Numbers:                          |
     |     hex oct bin float reset     |     binary: 0b...                 |
@@ -152,7 +152,7 @@ by Handy Calc.
 A typical interactive session looks like this:
 
     +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |     v 1.0.9     | cdsoft.fr/hcalc |
+    |       H A N D Y   C A L C       |    v 1.0.10     | cdsoft.fr/hcalc |
     |---------------------------------------------------------------------|
     | Modes:                          | Numbers:                          |
     |     hex oct bin float reset     |     binary: 0b...                 |
@@ -739,7 +739,7 @@ to lazyness, functions can also be mutually recursive.
 : help
 
 +---------------------------------------------------------------------+
-|       H A N D Y   C A L C       |     v 1.0.9     | cdsoft.fr/hcalc |
+|       H A N D Y   C A L C       |    v 1.0.10     | cdsoft.fr/hcalc |
 |---------------------------------------------------------------------|
 | Modes:                          | Numbers:                          |
 |     hex oct bin float reset     |     binary: 0b...                 |
@@ -890,7 +890,7 @@ version                     print the version number
 Credits
 =======
 
-Handy Calc 1.0.9
+Handy Calc 1.0.10
 (C) 2016-2019 Christophe Delord
 https://cdsoft.fr/hcalc
 
