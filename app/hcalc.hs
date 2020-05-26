@@ -1,5 +1,5 @@
 {- Handy Calc
-Copyright (C) 2016-2019 Christophe Delord
+Copyright (C) 2016-2020 Christophe Delord
 https://cdsoft.fr/hcalc
 
 This file is part of Handy Calc.
@@ -89,7 +89,8 @@ interact' f = do
     input <- getContents
     let inputLines = lines input
 #ifdef linux_HOST_OS
-    writeLines inputLines (f inputLines)
+    tty <- hIsTerminalDevice stdin
+    writeLines tty inputLines (f inputLines)
 #else
     writeLines (f inputLines)
 #endif
@@ -97,15 +98,14 @@ interact' f = do
 -- write the results of the calculator,
 -- as well as the prompt for the next input
 #ifdef linux_HOST_OS
-writeLines :: [String] -> [String] -> IO ()
-writeLines inputs outputs = forM_ (zip ("":inputs) outputs) (\(input, output) -> do
-        tty <- hIsTerminalDevice stdin
+writeLines :: Bool -> [String] -> [String] -> IO ()
+writeLines tty inputs outputs = do
+    forM_ (zip ("":inputs) outputs) $ \(input, output) -> do
         unless tty $ hFlush stdout >> putStrLn input
         hFlush stdout
         putStrLn output
         putStr $ "\n"++prompt ":"
         hFlush stdout
-    )
 #else
 writeLines :: [String] -> IO ()
 writeLines outputs = forM_ outputs (\output -> do

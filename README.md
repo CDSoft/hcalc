@@ -1,6 +1,6 @@
 <!--
 Handy Calc
-Copyright (C) 2016-2019 Christophe Delord
+Copyright (C) 2016-2020 Christophe Delord
 https://cdsoft.fr/hcalc
 
 This file is part of Handy Calc.
@@ -52,7 +52,7 @@ GitHub](http://github.com/CDSoft/hcalc).
 ``` 
 
 Handy Calc
-(C) 2016-2019 Christophe Delord
+(C) 2016-2020 Christophe Delord
 https://cdsoft.fr/hcalc
 
 Handy Calc is free software: you can redistribute it and/or modify
@@ -74,8 +74,8 @@ Handy Calc is powered by Haskell.
 
 # Download and installation
 
-The current version is [ Handy
-Calc 1.0.10](https://cdsoft.fr/hcalc/HandyCalc-1.0.10.tgz)
+The current version is [<span> Handy
+Calc 1.0.11</span>](https://cdsoft.fr/hcalc/HandyCalc-1.0.11.tgz)
 
 **Installation from sources on Linux or Windows:**
 
@@ -86,7 +86,7 @@ Calc 1.0.10](https://cdsoft.fr/hcalc/HandyCalc-1.0.10.tgz)
       - [ABP](https://cdsoft.fr/abp) and [Pandoc](http://pandoc.org/) to
         generate the documentation (optional)
   - Download and unpack
-    [HandyCalc-1.0.10.tgz](https://cdsoft.fr/hcalc/HandyCalc-1.0.10.tgz)
+    [<span>HandyCalc-1.0.11.tgz</span>](https://cdsoft.fr/hcalc/HandyCalc-1.0.11.tgz)
   - Run make
       - `make` compiles `hcalc`
       - `make install` installs `hcalc` in `~/.local/bin`
@@ -114,7 +114,7 @@ urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
 # Screenshot
 
     +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |    v 1.0.10     | cdsoft.fr/hcalc |
+    |       H A N D Y   C A L C       |    v 1.0.11     | cdsoft.fr/hcalc |
     |---------------------------------------------------------------------|
     | Modes:                          | Numbers:                          |
     |     hex oct bin float reset     |     binary: 0b...                 |
@@ -139,8 +139,10 @@ Handy Calc can be used on the command line. Each argument is considered
 as an expression to be evaluated. Only the value of the last expression
 is printed.
 
-    $ hcalc "x = 21" "y = 2" "x * y"
-    =       42
+``` bash
+$ hcalc "x = 21" "y = 2" "x * y"
+=       42
+```
 
 # Interactive usage
 
@@ -152,7 +154,7 @@ by Handy Calc.
 A typical interactive session looks like this:
 
     +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |    v 1.0.10     | cdsoft.fr/hcalc |
+    |       H A N D Y   C A L C       |    v 1.0.11     | cdsoft.fr/hcalc |
     |---------------------------------------------------------------------|
     | Modes:                          | Numbers:                          |
     |     hex oct bin float reset     |     binary: 0b...                 |
@@ -179,8 +181,6 @@ A typical interactive session looks like this:
     
     : (x * y) ** 2
     =       1764
-    
-    : 
 
 # User’s manual
 
@@ -266,8 +266,8 @@ to 32 bit numbers as well as to their IEEE 754 representation.
 ### Automatic type conversion
 
 Number types are automatically converted in a way to preserve the best
-precision. Integers are prefered to rational numbers and rational
-numbers are prefered to floating point numbers.
+precision. Integers are preferred to rational numbers and rational
+numbers are preferred to floating point numbers.
 
     : 1+2/3
     =       5/3
@@ -540,7 +540,7 @@ Functions can be defined with multiple statements and be recursive.
     =       89
 
 You can see in the previous example that the evaluation is lazy\! Thanks
-to lazyness, functions can also be mutually recursive.
+to laziness, functions can also be mutually recursive.
 
     : isEven(n) = n == 0 ? true : isOdd(n-1)
     
@@ -577,6 +577,9 @@ to lazyness, functions can also be mutually recursive.
     : x = pi; y = e; b = 3
     
     
+    : 
+    
+    
     : abs(x)                      # absolute value of x
     =       3.141592653589793
     
@@ -610,6 +613,9 @@ to lazyness, functions can also be mutually recursive.
     : max(x, y)                   # maximum value among its arguments
     =       3.141592653589793
     
+    : 
+    
+    
     : sqr(x)                      # square of x (x**2)
     =       9.869604401089358
     
@@ -618,6 +624,9 @@ to lazyness, functions can also be mutually recursive.
     
     : cbrt(x)                     # cubic root of x (x**(1/3))
     =       1.4645918875615231
+    
+    : 
+    
     
     : cos(x)                      # trigonometric functions
     =       -1.0
@@ -658,6 +667,9 @@ to lazyness, functions can also be mutually recursive.
     : rad(x)                      # angle x (given in degrees) in radians
     =       5.483113556160755e-2
     
+    : 
+    
+    
     : exp(x)                      # e**x
     =       23.140692632779267
     
@@ -683,6 +695,9 @@ to lazyness, functions can also be mutually recursive.
     : x = pi; n = 0x402df854
     
     
+    : 
+    
+    
     : float32
     
     
@@ -699,6 +714,9 @@ to lazyness, functions can also be mutually recursive.
     : x = pi; n = 0x4005bf0a8b145769
     
     
+    : 
+    
+    
     : float64
     
     
@@ -713,6 +731,9 @@ to lazyness, functions can also be mutually recursive.
 ### Specific values
 
     : x = pi
+    
+    
+    : 
     
     
     : isfinite(x)                 # true if x is finite
@@ -739,7 +760,7 @@ to lazyness, functions can also be mutually recursive.
 : help
 
 +---------------------------------------------------------------------+
-|       H A N D Y   C A L C       |    v 1.0.10     | cdsoft.fr/hcalc |
+|       H A N D Y   C A L C       |    v 1.0.11     | cdsoft.fr/hcalc |
 |---------------------------------------------------------------------|
 | Modes:                          | Numbers:                          |
 |     hex oct bin float reset     |     binary: 0b...                 |
@@ -890,8 +911,8 @@ version                     print the version number
 Credits
 =======
 
-Handy Calc 1.0.10
-(C) 2016-2019 Christophe Delord
+Handy Calc 1.0.11
+(C) 2016-2020 Christophe Delord
 https://cdsoft.fr/hcalc
 
 ```

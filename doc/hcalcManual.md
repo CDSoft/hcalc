@@ -4,7 +4,7 @@
 
 <!--
 Handy Calc
-Copyright (C) 2016-2019 Christophe Delord
+Copyright (C) 2016-2020 Christophe Delord
 https://cdsoft.fr/hcalc
 
 This file is part of Handy Calc.
@@ -99,7 +99,7 @@ urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
 Screenshot
 ==========
 
-~~~~~~~~~~~~~~~~~~ {.bash cmd=bash}
+~~~~~~~~~~~~~~~~~~ {cmd=bash}
 hcalc bye | grep -v ^Loading
 ~~~~~~~~~~~~~~~~~~
 
@@ -126,21 +126,20 @@ The next section lists all the operators and functions provided by Handy Calc.
 A typical interactive session looks like this:
 
 ``` meta
-- hcalc: cat % | sed '/^$/d' | hcalc | sed '/Loading/d' | sed '1d'
+hcalc: hcalc < % | sed /Loading/d | tac | sed 1d | tac | sed 1d
 ```
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 x = 21
 y = 2
 (x * y) ** 2
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 User's manual
 =============
 
 ``` meta
-- hcalc: cat % | sed '/^$/d' | hcalc | sed '1,/Loading/d' | sed '1d' | sed '$d' | sed '$d'
+hcalc: hcalc < % | sed 1,/Loading/d | tac | sed 1d | tac | sed 1d
 ```
 
 ## Numbers
@@ -154,7 +153,6 @@ Integers can be decimal, hexadecimal, octal or binary numbers:
 0x24
 0o37
 0b1010
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Rational numbers
@@ -164,14 +162,12 @@ using floating point numbers.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 1 + 2/3
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Some functions don't support rational numbers and will produce floating point numbers.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 1/2 + cos(0)
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Floating point numbers
@@ -192,20 +188,18 @@ float64
 nan
 inf
 -inf
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Automatic type conversion
 
 Number types are automatically converted in a way to preserve the best precision.
-Integers are prefered to rational numbers and rational numbers are prefered
+Integers are preferred to rational numbers and rational numbers are preferred
 to floating point numbers.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 1+2/3
 1/3+2/3
 (2/3) * 0.5
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Display mode
@@ -225,7 +219,6 @@ hex16           # 16 bit hexadecimal numbers
 oct32           # 32 bit octal numbers
 bin64           # 64 bit binary numbers
 reset           # raw decimal value only
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Handy Calc automatically activates some display modes under some circonstances:
@@ -237,7 +230,6 @@ Handy Calc automatically activates some display modes under some circonstances:
 4               # only the default display mode
 0b100           # this number activates the binary display mode
 1<<10           # this operator activates the hexadecimal display mode
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Strings
@@ -250,7 +242,6 @@ Strings can be concatenated, duplicated and produced by converting numbers:
 "abc" + "def"
 "abc" * 3
 "pi = " + pi + "; e = " ++ e
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Booleans
@@ -263,7 +254,6 @@ false
 true and false
 1+1 == 2
 1+1==2 ? "ok" : "bug"
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Operators
@@ -281,7 +271,6 @@ x / 5
 x // 5                  # integral division
 x % 5                   # integral remainder (Euclidean division)
 x ** 2
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Bitwise operators
@@ -294,7 +283,6 @@ bin16
 0b1100 & 0b0110         # bitwise and
 1 << 10                 # left shift
 1024 >> 1               # right shift
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Boolean operators
@@ -304,7 +292,6 @@ not true
 true or false
 true xor false
 true and false
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Comparison operators
@@ -316,7 +303,6 @@ true and false
 12 >= 13
 12 == 13
 12 != 13
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Operator precedence
@@ -349,7 +335,6 @@ y = 2
 x+y
 y = 3
 x+y
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Functions
@@ -359,7 +344,6 @@ Handy Calc can also define functions.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 f(x) = 2 * x
 f(5)
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Functions can be defined with multiple statements and be recursive.
@@ -368,18 +352,16 @@ Functions can be defined with multiple statements and be recursive.
 fib(n) = (f1=fib(n-1); f2=fib(n-2); n<2 ? 1 : f1+f2)
 fib(1)
 fib(10)
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can see in the previous example that the evaluation is lazy!
-Thanks to lazyness, functions can also be mutually recursive.
+Thanks to laziness, functions can also be mutually recursive.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 isEven(n) = n == 0 ? true : isOdd(n-1)
 isOdd(n) = n == 0 ? false : isEven(n-1)
 isEven(10)
 isOdd(10)
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Builtin functions
@@ -391,7 +373,6 @@ int(pi)                     # Integral part
 float(2/3)                  # Conversion to floating point numbers
 rat(pi)                     # Rational approximation
 rat(pi, 1e-2)               # Rational approximation with a given precision
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Math
@@ -435,7 +416,6 @@ ln(x)                       # logarithm of x in base e
 log10(x)                    # logarithm of x in base 10
 log2(x)                     # logarithm of x in base 2
 log(b, x)                   # logarithm of x in base b
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### IEEE 754 representation
@@ -448,7 +428,6 @@ x = pi; n = 0x402df854
 float32
 float2ieee(x)               # IEEE 754 representation of x (32 bits)
 ieee2float(n)               # 32 bit float value of the IEEE 754 integer n
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #### 64 bit numbers
@@ -459,7 +438,6 @@ x = pi; n = 0x4005bf0a8b145769
 float64
 double2ieee(x)              # IEEE 754 representation of x (64 bits)
 ieee2double(n)              # 64 bit float value of the IEEE 754 integer n
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ### Specific values
@@ -470,7 +448,6 @@ x = pi
 isfinite(x)                 # true if x is finite
 isinf(x)                    # true if x is infinite
 isnan(x)                    # true if x is not a number
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ## Other commands
@@ -487,5 +464,4 @@ Online help
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
 help
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
