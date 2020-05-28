@@ -1,9 +1,9 @@
 name:                hcalc
-version:             1.0.11
+version:             1.0.12
 github:              "CDSoft/hcalc"
 license:             GPL-3
 author:              "Christophe Delord"
-maintainer:          "cdsoft.fr"
+maintainer:          "cdelord.fr"
 copyright:           "2016-2020 Christophe Delord"
 
 extra-source-files:

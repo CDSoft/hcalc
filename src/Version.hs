@@ -1,6 +1,6 @@
 {- Handy Calc
 Copyright (C) 2016-2020 Christophe Delord
-https://cdsoft.fr/hcalc
+http://cdelord.fr/hcalc
 
 This file is part of Handy Calc.
 
@@ -33,7 +33,7 @@ shortName :: String
 shortName = "hCalc"
 
 version :: [Int]
-version = [1, 0, 11]
+version = [1, 0, 12]
 
 dates :: [Int]
 dates = [2016 .. 2020]
@@ -42,4 +42,4 @@ tag :: String
 tag = name ++ " " ++ intercalate "." (map show version)
 
 url :: String
-url = "https://cdsoft.fr/" ++ map toLower shortName
+url = "http://cdelord.fr/" ++ map toLower shortName

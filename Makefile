@@ -1,6 +1,6 @@
 # Handy Calc
 # Copyright (C) 2016-2020 Christophe Delord
-# https://cdsoft.fr/hcalc
+# http://cdelord.fr/hcalc
 #
 # This file is part of Handy Calc.
 #
@@ -54,7 +54,7 @@ clean:
 export mdate := $(shell LANG=C date -r $(MANUAL) +'%d %B %Y')
 export version := $(shell stack run -- version)
 export hcalc_tar := $(shell stack run -- version | sed '/^$$/d' | sed 's/ //' | sed 's/ /-/').tgz
-export hcalc_url := https://cdsoft.fr/hcalc/$(hcalc_tar)
+export hcalc_url := http://cdelord.fr/hcalc/$(hcalc_tar)
 
 README.md: $(MANUAL) $(HCALC)
 	export PATH=$(dir $(HCALC)):$$PATH; LANG=en pandoc -F abp -f markdown -t gfm $< -o $@

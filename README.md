@@ -1,7 +1,7 @@
 <!--
 Handy Calc
 Copyright (C) 2016-2020 Christophe Delord
-https://cdsoft.fr/hcalc
+http://cdelord.fr/hcalc
 
 This file is part of Handy Calc.
 
@@ -28,7 +28,7 @@ way easier than with a mouse. And you get nice editing features for free
 (edition, copy/paste, history, …).
 
 Handy Calc is also an application example for the
-[FUN](https://cdsoft.fr/fun) project. Its development process and
+[FUN](http://cdelord.fr/fun) project. Its development process and
 methods are based on:
 
   - Haskell
@@ -39,10 +39,10 @@ methods are based on:
   - code coverage to measure the completeness of the tests
 
 So Handy Calc is supposed to be better and safer than its predecessor
-([Calculadoira](https://cdsoft.fr/calculadoira)).
+([Calculadoira](http://cdelord.fr/calculadoira)).
 
 If you like Handy Calc, please consider supporting my
-[FUN](https://cdsoft.fr/fun) project.
+[FUN](http://cdelord.fr/fun) project.
 
 You can also contribute to [Handy Calc on
 GitHub](http://github.com/CDSoft/hcalc).
@@ -53,7 +53,7 @@ GitHub](http://github.com/CDSoft/hcalc).
 
 Handy Calc
 (C) 2016-2020 Christophe Delord
-https://cdsoft.fr/hcalc
+http://cdelord.fr/hcalc
 
 Handy Calc is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published
@@ -75,7 +75,7 @@ Handy Calc is powered by Haskell.
 # Download and installation
 
 The current version is [<span> Handy
-Calc 1.0.11</span>](https://cdsoft.fr/hcalc/HandyCalc-1.0.11.tgz)
+Calc 1.0.12</span>](http://cdelord.fr/hcalc/HandyCalc-1.0.12.tgz)
 
 **Installation from sources on Linux or Windows:**
 
@@ -83,10 +83,10 @@ Calc 1.0.11</span>](https://cdsoft.fr/hcalc/HandyCalc-1.0.11.tgz)
       - [The Haskell Tool
         Stack](https://docs.haskellstack.org/en/latest/README/)
       - Cygwin or MSYS/Mingw properly installed on Windows
-      - [ABP](https://cdsoft.fr/abp) and [Pandoc](http://pandoc.org/) to
+      - [ABP](http://cdelord.fr/abp) and [Pandoc](http://pandoc.org/) to
         generate the documentation (optional)
   - Download and unpack
-    [<span>HandyCalc-1.0.11.tgz</span>](https://cdsoft.fr/hcalc/HandyCalc-1.0.11.tgz)
+    [<span>HandyCalc-1.0.12.tgz</span>](http://cdelord.fr/hcalc/HandyCalc-1.0.12.tgz)
   - Run make
       - `make` compiles `hcalc`
       - `make install` installs `hcalc` in `~/.local/bin`
@@ -114,7 +114,7 @@ urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
 # Screenshot
 
     +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |    v 1.0.11     | cdsoft.fr/hcalc |
+    |       H A N D Y   C A L C       |    v 1.0.12    | cdelord.fr/hcalc |
     |---------------------------------------------------------------------|
     | Modes:                          | Numbers:                          |
     |     hex oct bin float reset     |     binary: 0b...                 |
@@ -154,7 +154,7 @@ by Handy Calc.
 A typical interactive session looks like this:
 
     +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |    v 1.0.11     | cdsoft.fr/hcalc |
+    |       H A N D Y   C A L C       |    v 1.0.12    | cdelord.fr/hcalc |
     |---------------------------------------------------------------------|
     | Modes:                          | Numbers:                          |
     |     hex oct bin float reset     |     binary: 0b...                 |
@@ -760,7 +760,7 @@ to laziness, functions can also be mutually recursive.
 : help
 
 +---------------------------------------------------------------------+
-|       H A N D Y   C A L C       |    v 1.0.11     | cdsoft.fr/hcalc |
+|       H A N D Y   C A L C       |    v 1.0.12    | cdelord.fr/hcalc |
 |---------------------------------------------------------------------|
 | Modes:                          | Numbers:                          |
 |     hex oct bin float reset     |     binary: 0b...                 |
@@ -911,8 +911,8 @@ version                     print the version number
 Credits
 =======
 
-Handy Calc 1.0.11
+Handy Calc 1.0.12
 (C) 2016-2020 Christophe Delord
-https://cdsoft.fr/hcalc
+http://cdelord.fr/hcalc
 
 ```

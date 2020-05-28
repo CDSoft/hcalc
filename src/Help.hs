@@ -1,6 +1,6 @@
 {- Handy Calc
 Copyright (C) 2016-2020 Christophe Delord
-https://cdsoft.fr/hcalc
+http://cdelord.fr/hcalc
 
 This file is part of Handy Calc.
 
@@ -73,7 +73,7 @@ ${V.name} is powered by Haskell.
 shortHelp :: String
 shortHelp = [iTrim|
 +---------------------------------------------------------------------+
-| ${center 31 title} | ${center 15 version} | ${center 15 url} |
+| ${center 31 title} | ${center 14 version} | ${center 16 url} |
 |---------------------------------------------------------------------|
 | Modes:                          | Numbers:                          |
 |     hex oct bin float reset     |     binary: 0b...                 |
@@ -95,7 +95,7 @@ shortHelp = [iTrim|
     where
         title = map toUpper $ intersperse ' ' V.name
         version = "v " ++ intercalate "." (map show V.version)
-        url = fromMaybe V.url $ stripPrefix "https://" V.url
+        url = fromMaybe V.url $ stripPrefix "http://" V.url
         spaces = repeat ' '
         center w s = take w $ take ((w - length s) `div` 2) spaces ++ s ++ spaces
 
