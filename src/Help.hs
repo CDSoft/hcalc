@@ -39,10 +39,10 @@ dates = intercalate ", " (compress V.dates)
         compress (d:ds) = compress' ds (d, d)
         compress [] = error "Invalid date list"
         compress' :: [Int] -> (Int, Int) -> [String]
-        compress' (d:ds) i@(d1, d2)
+        compress' (d:ds) r@(d1, d2)
             | d == d2+1     = compress' ds (d1, d)
-            | otherwise     = showInterv i : compress' ds (d, d)
-        compress' [] i = [showInterv i]
+            | otherwise     = showInterv r : compress' ds (d, d)
+        compress' [] r = [showInterv r]
         showInterv :: (Int, Int) -> String
         showInterv (d1, d2)
             | d1 == d2      = show d1
