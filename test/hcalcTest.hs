@@ -23,6 +23,9 @@ Currently only the purely functional code is tested.
 The module Main is not formally tested but it seems to work ;-)
 -}
 
+{-# LANGUAGE CPP #-}
+{-# LANGUAGE LambdaCase #-}
+
 module Main(main) where
 
 import ASCII
@@ -55,7 +58,7 @@ main = do
 doUnitTests :: IO ()
 doUnitTests = do
     putStrLn "Starting unit tests"
-    forM_ unitTests (\test -> case test of
+    forM_ unitTests (\case
             Parse s e v st -> do
                 let e' = parse s
                 let (st', v') = eval emptyState e
@@ -80,6 +83,12 @@ doUnitTests = do
                     )
                 where
                     s = filter (\c -> c /='\n' && not (isSpace c))
+#ifndef UNICODE
+                        . map (\case
+                                    '≈' -> '~'
+                                    c -> c
+                              )
+#endif
         )
     putStrLn $ "Unit tests passed (" ++ show (nbUnitTests unitTests) ++ " tests)"
     where
@@ -965,9 +974,9 @@ unitTests =
     , REPL noINI [ ("float64",              "")
                  , ("0x400921FB54442D18",   "= 4614256656552045848 \n hex64   0x400921fb54442d18 \n flt64   3.141592653589793 <=> 0x400921fb54442d18")
                  ]
-    , REPL noINI [ ("1+2/3",    "= 5/3 \n ~       1.6666666666666667")
-                 , ("float32",  "= 5/3 \n ~flt32  1.6666666 <=> 0x3fd55555")
-                 , ("float64",  "= 5/3 \n ~flt64  1.6666666666666667 <=> 0x3ffaaaaaaaaaaaab")
+    , REPL noINI [ ("1+2/3",    "= 5/3 \n ≈       1.6666666666666667")
+                 , ("float32",  "= 5/3 \n ≈flt32  1.6666666 <=> 0x3fd55555")
+                 , ("float64",  "= 5/3 \n ≈flt64  1.6666666666666667 <=> 0x3ffaaaaaaaaaaaab")
                  ]
     , REPL noINI [ ("pi",       "= 3.141592653589793")
                  , ("float32",  "= 3.141592653589793 \n flt32   3.1415927 <=> 0x40490fdb")

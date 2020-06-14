@@ -22,6 +22,8 @@ along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 The configuration is used to display the value in various formats.
 -}
 
+{-# LANGUAGE CPP #-}
+
 module PrettyPrint(prompt, pp) where
 
 import Expression
@@ -37,8 +39,17 @@ import Numeric
 prompt :: String -> String
 -- user input
 prompt ":" = ": "
+prompt "▶" = "▶ "
 -- display type (fixed length)
-prompt msg = msg ++ replicate (8 - length msg) ' '
+prompt msg = msg' ++ replicate (8 - length msg') ' '
+    where
+#ifdef UNICODE
+            msg' = msg
+#else
+            msg' = case msg of
+                    '≈':s -> '~':s
+                    s -> s
+#endif
 
 -- showBase b x s is a string representing the number x in base b
 -- with a size of s digits (no padding if s == 0)
@@ -84,9 +95,9 @@ pp cfg (Q x) = prompt "=" ++ intercalate "\n" xs
         n = numerator x
         d = denominator x
         ppFloat f = case (f cfg, size cfg) of
-            (True, 32) -> [prompt "~flt32" ++ show xf32 ++ " <=> " ++ showBase 16 xi32 32]
-            (True, 64) -> [prompt "~flt64" ++ show xf64 ++ " <=> " ++ showBase 16 xi64 64]
-            (_, _) -> [prompt "~" ++ show (fromRational x :: Double)]
+            (True, 32) -> [prompt "≈flt32" ++ show xf32 ++ " <=> " ++ showBase 16 xi32 32]
+            (True, 64) -> [prompt "≈flt64" ++ show xf64 ++ " <=> " ++ showBase 16 xi64 64]
+            (_, _) -> [prompt "≈" ++ show (fromRational x :: Double)]
         xf32 = doubleToFloat (fromRational x)
         xi32 = floatToInteger xf32
         xf64 = fromRational x

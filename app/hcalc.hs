@@ -45,6 +45,9 @@ import System.Process
 
 main :: IO ()
 main = do
+#ifdef UNICODE
+    hSetEncoding stdout utf8
+#endif
     args <- getArgs
     ini <- getIni
     case args of
@@ -104,14 +107,14 @@ writeLines tty inputs outputs = do
         unless tty $ hFlush stdout >> putStrLn input
         hFlush stdout
         putStrLn output
-        putStr $ "\n"++prompt ":"
+        putStr $ "\n"++prompt "▶"
         hFlush stdout
 #else
 writeLines :: [String] -> IO ()
 writeLines outputs = forM_ outputs (\output -> do
         hFlush stdout
         putStrLn output
-        putStr $ "\n"++prompt ":"
+        putStr $ "\n"++prompt "▶"
         hFlush stdout
     )
 #endif

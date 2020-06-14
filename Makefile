@@ -22,6 +22,7 @@ MAIN		= app/hcalc.hs
 TEST 		= test/hcalcTest.hs
 MANUAL 		= doc/hcalcManual.md
 CSS			= doc/hcalc.css
+CONF		= package.yaml stack.yaml
 
 BIN_DIR := $(shell stack path --local-install-root)/bin
 BUILD = .stack-work
@@ -30,7 +31,7 @@ HCALC = $(BIN_DIR)/hcalc
 
 all: $(HCALC) doc
 
-$(HCALC): $(LIBRARIES) $(MAIN)
+$(HCALC): $(LIBRARIES) $(MAIN) $(CONF)
 	stack build
 
 install: $(HCALC)

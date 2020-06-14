@@ -1,5 +1,5 @@
 name:                hcalc
-version:             1.0.12
+version:             1.1.0
 github:              "CDSoft/hcalc"
 license:             GPL-3
 author:              "Christophe Delord"
@@ -21,7 +21,17 @@ description:         Please see the README on GitHub at <https://github.com/CDSo
 dependencies:
 - base >= 4.7 && < 5
 
+_common: &common
+  cpp-options:
+  - -DUNICODE
+  ghc-options:
+  - -O3
+  - -Werror
+  - -Wall
+  - -fwarn-unused-do-bind
+
 library:
+  <<: *common
   source-dirs: src
   c-sources:   src/IEEE754c.c
   dependencies:
@@ -30,13 +40,9 @@ library:
 
 executables:
   hcalc:
+    <<: *common
     main:                hcalc.hs
     source-dirs:         app
-    ghc-options:
-    - -O3
-    - -Werror
-    - -Wall
-    - -fwarn-unused-do-bind
     dependencies:
     - hcalc
     - directory
@@ -45,12 +51,9 @@ executables:
 
 tests:
   hcalc-test:
+    <<: *common
     main:                hcalcTest.hs
     source-dirs:         test
-    ghc-options:
-    - -Werror
-    - -Wall
-    - -fwarn-unused-do-bind
     dependencies:
     - hcalc
     - containers

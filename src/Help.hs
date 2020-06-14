@@ -21,7 +21,8 @@ along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 {- The module Help defines help and license messages
 -}
 
-{-# LANGUAGE  QuasiQuotes #-}
+{-# LANGUAGE CPP #-}
+{-# LANGUAGE QuasiQuotes #-}
 
 module Help(license, shortHelp, longHelp, defaultIni) where
 
@@ -71,28 +72,37 @@ ${V.name} is powered by Haskell.
 |]
 
 shortHelp :: String
-shortHelp = [iTrim|
-+---------------------------------------------------------------------+
-| ${center 31 title} | ${center 14 version} | ${center 16 url} |
-|---------------------------------------------------------------------|
-| Modes:                          | Numbers:                          |
-|     hex oct bin float reset     |     binary: 0b...                 |
-|     hex8/16/32/64 ...           |     octal : 0o...                 |
-|---------------------------------|     hexa  : 0x...                 |
-| Variables and functions:        |     float : 1.2e-3                |
-|     variable = expression       |                                   |
-|     function(x, y) = expression | Strings   : "abcd"                |
-| Multiple statements:            |                                   |
-|     expr1; ...; exprn           | Booleans  : true or false         |
-|---------------------------------|-----------------------------------|
-| Builtin functions:              | Operators:                        |
-|     see help                    |     or xor and not                |
-|---------------------------------|     < <= > >= == !=               |
-| Commands: help license bye      |     cond?expr:expr                |
-|           ascii ...             |     + - * / % ** | ^ & >> << ~    |
-+---------------------------------------------------------------------+
+shortHelp = convert [iTrim|
+┌─────────────────────────────────┬────────────────┬──────────────────┐
+│ ${center 31 title} │ ${center 14 version} │ ${center 16 url} │
+├─────────────────────────────────┼────────────────┴──────────────────┤
+│ Modes:                          │ Numbers:                          │
+│     hex oct bin float reset     │     binary: 0b...                 │
+│     hex8/16/32/64 ...           │     octal : 0o...                 │
+├─────────────────────────────────┤     hexa  : 0x...                 │
+│ Variables and functions:        │     float : 1.2e-3                │
+│     variable = expression       │                                   │
+│     function(x, y) = expression │ Strings   : "abcd"                │
+│ Multiple statements:            │                                   │
+│     expr1; ...; exprn           │ Booleans  : true or false         │
+├─────────────────────────────────┼───────────────────────────────────┤
+│ Builtin functions:              │ Operators:                        │
+│     see help                    │     or xor and not                │
+├─────────────────────────────────┤     < <= > >= == !=               │
+│ Commands: help license bye      │     cond?expr:expr                │
+│           ascii ...             │     + - * / % ** | ^ & >> << ~    │
+└─────────────────────────────────┴───────────────────────────────────┘
 |]
     where
+#ifdef UNICODE
+        convert = id
+#else
+        convert = map conv
+        conv c | c `elem` "┌┐└┘┼" = '+'
+               | c `elem` "─┬┴" = '-'
+               | c `elem` "│├┤" = '|'
+               | otherwise = c
+#endif
         title = map toUpper $ intersperse ' ' V.name
         version = "v " ++ intercalate "." (map show V.version)
         url = fromMaybe V.url $ stripPrefix "http://" V.url
@@ -100,9 +110,9 @@ shortHelp = [iTrim|
         center w s = take w $ take ((w - length s) `div` 2) spaces ++ s ++ spaces
 
 longHelp :: String
-longHelp = [iTrim|
+longHelp = convert [iTrim|
 Constants                   Value
-=========================== ===============================================
+─────────────────────────── ───────────────────────────────────────────────
 
 nan                         Not a Number
 inf                         Infinite
@@ -110,7 +120,7 @@ pi                          ${show (pi :: Float)}
 e                           ${show (exp 1 :: Float)}
 
 Operators / functions       Description
-=========================== ===============================================
+─────────────────────────── ───────────────────────────────────────────────
 
 +x, -x
 x + y, x - y                sum, difference
@@ -169,7 +179,7 @@ isinf(x)                    true if x is infinite
 isnan(x)                    true if x is not a number
 
 Display modes
-=============
+─────────────
 
 dec, hex, oct, bin and str commands change the display mode.
 When enabled, the integer result is displayed in
@@ -185,7 +195,7 @@ float can have suffixes giving the size of floats (32 or 64).
 The reset command resets the display mode.
 
 Blocks
-======
+──────
 
 A block is made of several expressions separated by `;`.
 The value of the block is the value of the last expression.
@@ -202,12 +212,12 @@ Local definitions can be functions.
 e.g. fact(n) = (f(n,p)=(n==1)?p:f(n-1,n*p); f(n,1))
 
 Operator precedence
-===================
+───────────────────
 
 From highest to lowest precedence:
 
 Operator family             Syntax
-=========================== =================
+─────────────────────────── ─────────────────
 Precedence overloading      (...)
 Function evaluation         f(...)
 Exponentiation              x**y
@@ -223,7 +233,7 @@ Assignment                  x = y
 Blocks                      expr1; ...; exprn
 
 Other commands              Description
-=========================== ===========================
+─────────────────────────── ───────────────────────────
 
 bye, exit, quit             quit
 ascii                       print an ASCII table
@@ -231,13 +241,21 @@ help                        print this help
 version                     print the version number
 
 Credits
-=======
+───────
 
 ${V.tag}
 (C) ${dates} Christophe Delord
 ${V.url}
 
 |]
+    where
+#ifdef UNICODE
+        convert = id
+#else
+        convert = map conv
+        conv c | c `elem` "─" = '='
+               | otherwise = c
+#endif
 
 defaultIni :: String
 defaultIni = [iTrim|

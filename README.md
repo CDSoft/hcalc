@@ -75,7 +75,7 @@ Handy Calc is powered by Haskell.
 # Download and installation
 
 The current version is [<span> Handy
-Calc 1.0.12</span>](http://cdelord.fr/hcalc/HandyCalc-1.0.12.tgz)
+Calc 1.1.0</span>](http://cdelord.fr/hcalc/HandyCalc-1.1.0.tgz)
 
 **Installation from sources on Linux or Windows:**
 
@@ -86,7 +86,7 @@ Calc 1.0.12</span>](http://cdelord.fr/hcalc/HandyCalc-1.0.12.tgz)
       - [ABP](http://cdelord.fr/abp) and [Pandoc](http://pandoc.org/) to
         generate the documentation (optional)
   - Download and unpack
-    [<span>HandyCalc-1.0.12.tgz</span>](http://cdelord.fr/hcalc/HandyCalc-1.0.12.tgz)
+    [<span>HandyCalc-1.1.0.tgz</span>](http://cdelord.fr/hcalc/HandyCalc-1.1.0.tgz)
   - Run make
       - `make` compiles `hcalc`
       - `make install` installs `hcalc` in `~/.local/bin`
@@ -113,25 +113,25 @@ urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
 
 # Screenshot
 
-    +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |    v 1.0.12    | cdelord.fr/hcalc |
-    |---------------------------------------------------------------------|
-    | Modes:                          | Numbers:                          |
-    |     hex oct bin float reset     |     binary: 0b...                 |
-    |     hex8/16/32/64 ...           |     octal : 0o...                 |
-    |---------------------------------|     hexa  : 0x...                 |
-    | Variables and functions:        |     float : 1.2e-3                |
-    |     variable = expression       |                                   |
-    |     function(x, y) = expression | Strings   : "abcd"                |
-    | Multiple statements:            |                                   |
-    |     expr1; ...; exprn           | Booleans  : true or false         |
-    |---------------------------------|-----------------------------------|
-    | Builtin functions:              | Operators:                        |
-    |     see help                    |     or xor and not                |
-    |---------------------------------|     < <= > >= == !=               |
-    | Commands: help license bye      |     cond?expr:expr                |
-    |           ascii ...             |     + - * / % ** | ^ & >> << ~    |
-    +---------------------------------------------------------------------+
+    ┌─────────────────────────────────┬────────────────┬──────────────────┐
+    │       H A N D Y   C A L C       │    v 1.1.0     │ cdelord.fr/hcalc │
+    ├─────────────────────────────────┼────────────────┴──────────────────┤
+    │ Modes:                          │ Numbers:                          │
+    │     hex oct bin float reset     │     binary: 0b...                 │
+    │     hex8/16/32/64 ...           │     octal : 0o...                 │
+    ├─────────────────────────────────┤     hexa  : 0x...                 │
+    │ Variables and functions:        │     float : 1.2e-3                │
+    │     variable = expression       │                                   │
+    │     function(x, y) = expression │ Strings   : "abcd"                │
+    │ Multiple statements:            │                                   │
+    │     expr1; ...; exprn           │ Booleans  : true or false         │
+    ├─────────────────────────────────┼───────────────────────────────────┤
+    │ Builtin functions:              │ Operators:                        │
+    │     see help                    │     or xor and not                │
+    ├─────────────────────────────────┤     < <= > >= == !=               │
+    │ Commands: help license bye      │     cond?expr:expr                │
+    │           ascii ...             │     + - * / % ** | ^ & >> << ~    │
+    └─────────────────────────────────┴───────────────────────────────────┘
 
 # Command line usage
 
@@ -153,25 +153,25 @@ by Handy Calc.
 
 A typical interactive session looks like this:
 
-    +---------------------------------------------------------------------+
-    |       H A N D Y   C A L C       |    v 1.0.12    | cdelord.fr/hcalc |
-    |---------------------------------------------------------------------|
-    | Modes:                          | Numbers:                          |
-    |     hex oct bin float reset     |     binary: 0b...                 |
-    |     hex8/16/32/64 ...           |     octal : 0o...                 |
-    |---------------------------------|     hexa  : 0x...                 |
-    | Variables and functions:        |     float : 1.2e-3                |
-    |     variable = expression       |                                   |
-    |     function(x, y) = expression | Strings   : "abcd"                |
-    | Multiple statements:            |                                   |
-    |     expr1; ...; exprn           | Booleans  : true or false         |
-    |---------------------------------|-----------------------------------|
-    | Builtin functions:              | Operators:                        |
-    |     see help                    |     or xor and not                |
-    |---------------------------------|     < <= > >= == !=               |
-    | Commands: help license bye      |     cond?expr:expr                |
-    |           ascii ...             |     + - * / % ** | ^ & >> << ~    |
-    +---------------------------------------------------------------------+
+    ┌─────────────────────────────────┬────────────────┬──────────────────┐
+    │       H A N D Y   C A L C       │    v 1.1.0     │ cdelord.fr/hcalc │
+    ├─────────────────────────────────┼────────────────┴──────────────────┤
+    │ Modes:                          │ Numbers:                          │
+    │     hex oct bin float reset     │     binary: 0b...                 │
+    │     hex8/16/32/64 ...           │     octal : 0o...                 │
+    ├─────────────────────────────────┤     hexa  : 0x...                 │
+    │ Variables and functions:        │     float : 1.2e-3                │
+    │     variable = expression       │                                   │
+    │     function(x, y) = expression │ Strings   : "abcd"                │
+    │ Multiple statements:            │                                   │
+    │     expr1; ...; exprn           │ Booleans  : true or false         │
+    ├─────────────────────────────────┼───────────────────────────────────┤
+    │ Builtin functions:              │ Operators:                        │
+    │     see help                    │     or xor and not                │
+    ├─────────────────────────────────┤     < <= > >= == !=               │
+    │ Commands: help license bye      │     cond?expr:expr                │
+    │           ascii ...             │     + - * / % ** | ^ & >> << ~    │
+    └─────────────────────────────────┴───────────────────────────────────┘
     
     : x = 21
     
@@ -215,7 +215,7 @@ using floating point numbers.
 
     : 1 + 2/3
     =       5/3
-    ~       1.6666666666666667
+    ≈       1.6666666666666667
 
 Some functions don’t support rational numbers and will produce floating
 point numbers.
@@ -271,7 +271,7 @@ numbers are preferred to floating point numbers.
 
     : 1+2/3
     =       5/3
-    ~       1.6666666666666667
+    ≈       1.6666666666666667
     
     : 1/3+2/3
     =       1
@@ -399,7 +399,7 @@ Boolean values can be used in conditional and boolean expressions.
     
     : x / 5
     =       12/5
-    ~       2.4
+    ≈       2.4
     
     : x // 5                  # integral division
     =       2
@@ -566,11 +566,11 @@ to laziness, functions can also be mutually recursive.
     
     : rat(pi)                     # Rational approximation
     =       884279719003555/281474976710656
-    ~       3.141592653589793
+    ≈       3.141592653589793
     
     : rat(pi, 1e-2)               # Rational approximation with a given precision
     =       22/7
-    ~       3.142857142857143
+    ≈       3.142857142857143
 
 ### Math
 
@@ -759,28 +759,28 @@ to laziness, functions can also be mutually recursive.
 ``` 
 : help
 
-+---------------------------------------------------------------------+
-|       H A N D Y   C A L C       |    v 1.0.12    | cdelord.fr/hcalc |
-|---------------------------------------------------------------------|
-| Modes:                          | Numbers:                          |
-|     hex oct bin float reset     |     binary: 0b...                 |
-|     hex8/16/32/64 ...           |     octal : 0o...                 |
-|---------------------------------|     hexa  : 0x...                 |
-| Variables and functions:        |     float : 1.2e-3                |
-|     variable = expression       |                                   |
-|     function(x, y) = expression | Strings   : "abcd"                |
-| Multiple statements:            |                                   |
-|     expr1; ...; exprn           | Booleans  : true or false         |
-|---------------------------------|-----------------------------------|
-| Builtin functions:              | Operators:                        |
-|     see help                    |     or xor and not                |
-|---------------------------------|     < <= > >= == !=               |
-| Commands: help license bye      |     cond?expr:expr                |
-|           ascii ...             |     + - * / % ** | ^ & >> << ~    |
-+---------------------------------------------------------------------+
+┌─────────────────────────────────┬────────────────┬──────────────────┐
+│       H A N D Y   C A L C       │    v 1.1.0     │ cdelord.fr/hcalc │
+├─────────────────────────────────┼────────────────┴──────────────────┤
+│ Modes:                          │ Numbers:                          │
+│     hex oct bin float reset     │     binary: 0b...                 │
+│     hex8/16/32/64 ...           │     octal : 0o...                 │
+├─────────────────────────────────┤     hexa  : 0x...                 │
+│ Variables and functions:        │     float : 1.2e-3                │
+│     variable = expression       │                                   │
+│     function(x, y) = expression │ Strings   : "abcd"                │
+│ Multiple statements:            │                                   │
+│     expr1; ...; exprn           │ Booleans  : true or false         │
+├─────────────────────────────────┼───────────────────────────────────┤
+│ Builtin functions:              │ Operators:                        │
+│     see help                    │     or xor and not                │
+├─────────────────────────────────┤     < <= > >= == !=               │
+│ Commands: help license bye      │     cond?expr:expr                │
+│           ascii ...             │     + - * / % ** | ^ & >> << ~    │
+└─────────────────────────────────┴───────────────────────────────────┘
 
 Constants                   Value
-=========================== ===============================================
+─────────────────────────── ───────────────────────────────────────────────
 
 nan                         Not a Number
 inf                         Infinite
@@ -788,7 +788,7 @@ pi                          3.1415927
 e                           2.7182817
 
 Operators / functions       Description
-=========================== ===============================================
+─────────────────────────── ───────────────────────────────────────────────
 
 +x, -x
 x + y, x - y                sum, difference
@@ -847,7 +847,7 @@ isinf(x)                    true if x is infinite
 isnan(x)                    true if x is not a number
 
 Display modes
-=============
+─────────────
 
 dec, hex, oct, bin and str commands change the display mode.
 When enabled, the integer result is displayed in
@@ -863,7 +863,7 @@ float can have suffixes giving the size of floats (32 or 64).
 The reset command resets the display mode.
 
 Blocks
-======
+──────
 
 A block is made of several expressions separated by `;`.
 The value of the block is the value of the last expression.
@@ -880,12 +880,12 @@ Local definitions can be functions.
 e.g. fact(n) = (f(n,p)=(n==1)?p:f(n-1,n*p); f(n,1))
 
 Operator precedence
-===================
+───────────────────
 
 From highest to lowest precedence:
 
 Operator family             Syntax
-=========================== =================
+─────────────────────────── ─────────────────
 Precedence overloading      (...)
 Function evaluation         f(...)
 Exponentiation              x**y
@@ -901,7 +901,7 @@ Assignment                  x = y
 Blocks                      expr1; ...; exprn
 
 Other commands              Description
-=========================== ===========================
+─────────────────────────── ───────────────────────────
 
 bye, exit, quit             quit
 ascii                       print an ASCII table
@@ -909,9 +909,9 @@ help                        print this help
 version                     print the version number
 
 Credits
-=======
+───────
 
-Handy Calc 1.0.12
+Handy Calc 1.1.0
 (C) 2016-2020 Christophe Delord
 http://cdelord.fr/hcalc
 
