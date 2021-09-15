@@ -1,5 +1,5 @@
 {- Handy Calc
-Copyright (C) 2016-2020 Christophe Delord
+Copyright (C) 2016-2021 Christophe Delord
 http://cdelord.fr/hcalc
 
 This file is part of Handy Calc.
@@ -33,10 +33,10 @@ shortName :: String
 shortName = "hCalc"
 
 version :: [Int]
-version = [1, 1, 0]
+version = [1, 1, 1]
 
 dates :: [Int]
-dates = [2016 .. 2020]
+dates = [2016 .. 2021]
 
 tag :: String
 tag = name ++ " " ++ intercalate "." (map show version)

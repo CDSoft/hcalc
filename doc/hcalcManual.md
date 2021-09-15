@@ -4,7 +4,7 @@
 
 <!--
 Handy Calc
-Copyright (C) 2016-2020 Christophe Delord
+Copyright (C) 2016-2021 Christophe Delord
 http://cdelord.fr/hcalc
 
 This file is part of Handy Calc.
@@ -59,7 +59,7 @@ hcalc license
 Download and installation
 =========================
 
-[ABP]: http://cdelord.fr/abp
+[Panda]: http://cdelord.fr/panda
 [Pandoc]: http://pandoc.org/
 [Haskell]: https://www.haskell.org/
 [The Haskell Tool Stack]: https://docs.haskellstack.org/en/latest/README/
@@ -126,10 +126,10 @@ The next section lists all the operators and functions provided by Handy Calc.
 A typical interactive session looks like this:
 
 ``` meta
-hcalc: hcalc < % | sed /Loading/d | tac | sed 1d | tac | sed 1d
+hcalc_full = "hcalc < %s | sed /Loading/d | tac | sed 1d | tac | sed 1d"
 ```
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc}}"}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ {cmd="{{hcalc_full}}"}
 x = 21
 y = 2
 (x * y) ** 2
@@ -139,7 +139,7 @@ User's manual
 =============
 
 ``` meta
-hcalc: hcalc < % | sed 1,/Loading/d | tac | sed 1d | tac | sed 1d
+hcalc = "hcalc < %s | sed 1,/Loading/d | tac | sed 1d | tac | sed 1d"
 ```
 
 ## Numbers

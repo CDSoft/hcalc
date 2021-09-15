@@ -58,8 +58,8 @@ export hcalc_tar := $(shell stack run -- version | sed '/^$$/d' | sed 's/ //' | 
 export hcalc_url := http://cdelord.fr/hcalc/$(hcalc_tar)
 
 README.md: $(MANUAL) $(HCALC)
-	export PATH=$(dir $(HCALC)):$$PATH; LANG=en pandoc -F abp -f markdown -t gfm $< -o $@
+	export PATH=$(dir $(HCALC)):$$PATH; LANG=en panda -f markdown -t gfm $< -o $@
 
 doc/hcalcManual.html: $(MANUAL) $(CSS) $(HCALC)
 	@mkdir -p $(dir $@)
-	export PATH=$(dir $(HCALC)):$$PATH; LANG=en pandoc -F abp -f markdown -t html -s --self-contained -N --toc -c $(CSS) $< -o $@
+	export PATH=$(dir $(HCALC)):$$PATH; LANG=en panda -f markdown -t html -s --self-contained -N --toc -c $(CSS) $< -o $@
