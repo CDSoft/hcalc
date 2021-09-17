@@ -1,5 +1,5 @@
 # Handy Calc
-# Copyright (C) 2016-2020 Christophe Delord
+# Copyright (C) 2016-2021 Christophe Delord
 # http://cdelord.fr/hcalc
 #
 # This file is part of Handy Calc.

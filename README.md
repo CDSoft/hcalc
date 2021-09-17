@@ -74,7 +74,7 @@ Handy Calc is powered by Haskell.
 # Download and installation
 
 The current version is [<span>Handy Calc
-1.1.1</span>](http://cdelord.fr/hcalc/HandyCalc-1.1.1.tgz)
+1.1.2</span>](http://cdelord.fr/hcalc/HandyCalc-1.1.2.tgz)
 
 **Installation from sources on Linux or Windows:**
 
@@ -85,7 +85,7 @@ The current version is [<span>Handy Calc
       - \[ABP\] and [Pandoc](http://pandoc.org/) to generate the
         documentation (optional)
   - Download and unpack
-    [HandyCalc-1.1.1.tgz](http://cdelord.fr/hcalc/HandyCalc-1.1.1.tgz)
+    [HandyCalc-1.1.2.tgz](http://cdelord.fr/hcalc/HandyCalc-1.1.2.tgz)
   - Run make
       - `make` compiles `hcalc`
       - `make install` installs `hcalc` in `~/.local/bin`
@@ -113,7 +113,7 @@ urxvt +sb -T hCalc -e rlwrap ~/bin/hcalc
 # Screenshot
 
     ┌─────────────────────────────────┬────────────────┬──────────────────┐
-    │       H A N D Y   C A L C       │    v 1.1.1     │ cdelord.fr/hcalc │
+    │       H A N D Y   C A L C       │    v 1.1.2     │ cdelord.fr/hcalc │
     ├─────────────────────────────────┼────────────────┴──────────────────┤
     │ Modes:                          │ Numbers:                          │
     │     hex oct bin float reset     │     binary: 0b...                 │
@@ -153,7 +153,7 @@ by Handy Calc.
 A typical interactive session looks like this:
 
     ┌─────────────────────────────────┬────────────────┬──────────────────┐
-    │       H A N D Y   C A L C       │    v 1.1.1     │ cdelord.fr/hcalc │
+    │       H A N D Y   C A L C       │    v 1.1.2     │ cdelord.fr/hcalc │
     ├─────────────────────────────────┼────────────────┴──────────────────┤
     │ Modes:                          │ Numbers:                          │
     │     hex oct bin float reset     │     binary: 0b...                 │
@@ -758,7 +758,7 @@ to laziness, functions can also be mutually recursive.
     ▶ help
     
     ┌─────────────────────────────────┬────────────────┬──────────────────┐
-    │       H A N D Y   C A L C       │    v 1.1.1     │ cdelord.fr/hcalc │
+    │       H A N D Y   C A L C       │    v 1.1.2     │ cdelord.fr/hcalc │
     ├─────────────────────────────────┼────────────────┴──────────────────┤
     │ Modes:                          │ Numbers:                          │
     │     hex oct bin float reset     │     binary: 0b...                 │
@@ -909,6 +909,6 @@ to laziness, functions can also be mutually recursive.
     Credits
     ───────
     
-    Handy Calc 1.1.1
+    Handy Calc 1.1.2
     (C) 2016-2021 Christophe Delord
     http://cdelord.fr/hcalc
