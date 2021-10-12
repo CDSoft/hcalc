@@ -278,4 +278,8 @@ label(n) = (
     rev8(w) = rev4((w&0xF0) >> 4) | (rev4(w&0x0F) << 4);
     oct; rev8(n);
 );
+
+# Euclidian distance
+norm(x, y) = sqrt(x**2 + y**2);
+norm(x1, y1, x2, y2) = norm(x2-x1, y2-y1);
 |]
