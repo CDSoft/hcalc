@@ -2,24 +2,27 @@
 Handy Calc
 Copyright (C) 2016-2021 Christophe Delord
 http://cdelord.fr/hcalc
-
-This file is part of Handy Calc.
-
-Handy Calc is free software: you can redistribute it and/or modify
+&#10;This file is part of Handy Calc.
+&#10;Handy Calc is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
-
-Handy Calc is distributed in the hope that it will be useful,
+&#10;Handy Calc is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
+&#10;You should have received a copy of the GNU General Public License
 along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 # Introduction
+
+> **Warning**
+>
+> This repository is no longer maintained and has been archived.
+>
+> Please consider using
+> [Calculadoira](https://github.com/CDSoft/calculadoira) instead.
 
 Handy Calc is a simple yet powerful calculator. Unlike most of other
 calculators, Handy Calc is based on a textual interface. It may seem a
@@ -31,12 +34,12 @@ Handy Calc is also an application example for the
 [FUN](http://cdelord.fr/fun) project. Its development process and
 methods are based on:
 
--   Haskell
--   static and strong typing
--   extreme compiler checks
--   executable specification with embedded tests
--   unit testing to ease evolutions and non regression checks
--   code coverage to measure the completeness of the tests
+- Haskell
+- static and strong typing
+- extreme compiler checks
+- executable specification with embedded tests
+- unit testing to ease evolutions and non regression checks
+- code coverage to measure the completeness of the tests
 
 So Handy Calc is supposed to be better and safer than its predecessor
 ([Calculadoira](http://cdelord.fr/calculadoira)).
@@ -76,19 +79,19 @@ The current version is [Handy Calc
 
 **Installation from sources on Linux or Windows:**
 
--   Prerequisites
-    -   [The Haskell Tool
-        Stack](https://docs.haskellstack.org/en/latest/README/)
-    -   Cygwin or MSYS/Mingw properly installed on Windows
-    -   \[ABP\] and [Pandoc](http://pandoc.org/) to generate the
-        documentation (optional)
--   Download and unpack
-    [HandyCalc-1.1.4.tgz](http://cdelord.fr/hcalc/HandyCalc-1.1.4.tgz)
--   Run make
-    -   `make` compiles `hcalc`
-    -   `make install` installs `hcalc` in `~/.local/bin`
-    -   `make doc` generates the documentation in `doc`
-    -   `make test` runs the non regression tests
+- Prerequisites
+  - [The Haskell Tool
+    Stack](https://docs.haskellstack.org/en/latest/README/)
+  - Cygwin or MSYS/Mingw properly installed on Windows
+  - \[ABP\] and [Pandoc](http://pandoc.org/) to generate the
+    documentation (optional)
+- Download and unpack
+  [HandyCalc-1.1.4.tgz](http://cdelord.fr/hcalc/HandyCalc-1.1.4.tgz)
+- Run make
+  - `make` compiles `hcalc`
+  - `make install` installs `hcalc` in `~/.local/bin`
+  - `make doc` generates the documentation in `doc`
+  - `make test` runs the non regression tests
 
 **Binaries:**
 
@@ -281,11 +284,11 @@ numbers are preferred to floating point numbers.
 By default only the raw value of the result is displayed. The user can
 activate additional display modes by selecting:
 
--   the integral base (`dec`, `hex`, `oct`, `bin`)
--   the number of bits (`8`, `16`, `32`, `64`)
--   the IEEE 754 representation of floating point numbers (`float32`,
-    `float64`)
--   `reset` resets the display mode
+- the integral base (`dec`, `hex`, `oct`, `bin`)
+- the number of bits (`8`, `16`, `32`, `64`)
+- the IEEE 754 representation of floating point numbers (`float32`,
+  `float64`)
+- `reset` resets the display mode
 
 <!-- -->
 
@@ -320,8 +323,8 @@ activate additional display modes by selecting:
 Handy Calc automatically activates some display modes under some
 circonstances:
 
--   integer entered in a specific base
--   usage of a bitwise operator in an expression
+- integer entered in a specific base
+- usage of a bitwise operator in an expression
 
 <!-- -->
 

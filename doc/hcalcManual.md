@@ -26,6 +26,12 @@ along with Handy Calc.  If not, see <http://www.gnu.org/licenses/>.
 Introduction
 ============
 
+> **Warning**
+>
+> This repository is no longer maintained and has been archived.
+>
+> Please consider using [Calculadoira](https://github.com/CDSoft/calculadoira) instead.
+
 Handy Calc is a simple yet powerful calculator.
 Unlike most of other calculators, Handy Calc is based on a textual interface.
 It may seem a bit spartan and outdated but entering expressions with the keyboard
